@@ -1,0 +1,94 @@
+.cell_item {
+  color: white;
+  width: 100%;
+  background: #19678e;
+  z-index: 2;
+}
+.cell_item svg{
+  vertical-align: middle;
+}
+.cell_item span{
+  vertical-align: middle;
+}
+
+.cell_item_sub{
+  color: white;
+  width: 100%;
+  background: #114661;
+  z-index: 1;
+}
+
+.cell_item_select{
+  color: white;
+  width: 100%;
+  background: #81c7ff;
+  z-index: 1;
+}
+
+.mod_card{
+  line-height: 1.5;
+  padding: 5px;
+  width: 98%;
+  margin-top: 5px;
+  height: auto;
+  box-shadow: 3px 3px 3px 3px #137cb35f;
+  margin-left: 1%;
+}
+
+.table_van_div{
+  overflow-y:auto !important;
+}
+.table_van_div ::-webkit-scrollbar{
+  width: 10px;
+  height: 8px;
+}
+.table_van_div ::-webkit-scrollbar-track {/*滚动条里面轨道*/
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  border-radius: 10px;
+  background: #EDEDED;
+}
+.table_van{
+  border-collapse:collapse;
+  width: 100%;
+}
+
+.table_row_title{
+  background: #1989fa;
+  font-size: 12pt;
+  border-right: 1px solid white;
+  color: white;
+  padding: 1px;
+  line-height: 180%;
+}
+
+.table_row_tr1{
+  width: 25%;
+  text-align: center;
+}
+
+.table_row_tr3{
+  padding: 5px;
+  width: 25%;
+  text-align: center;
+}
+
+.table_row_tr3 button{
+  margin-top: 3px;
+}
+
+.table_row_pagin {
+  border: 2px solid #2D64B39f ;
+}
+
+.table_detail{
+  padding:15px;
+  font-size: 11pt;
+}
+
+.table_detail .header_span{
+  font-size: 14pt;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+

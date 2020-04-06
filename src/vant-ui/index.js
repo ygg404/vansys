@@ -1,0 +1,183 @@
+/**
+ * VANT-UI组件,
+ *
+ * 使用:
+ *  1. 项目中需要的组件进行释放(解开注释)
+ *
+ * 注意:
+ *  1. 打包只会包含释放(解开注释)的组件, 减少打包文件大小
+ */
+import Vue from 'vue'
+
+import {
+  AddressEdit,
+  Area,
+  Calendar,
+  Checkbox,
+  CheckboxGroup,
+  CountDown,
+  DatetimePicker,
+  Dialog,
+  DropdownItem,
+  Field,
+  ImagePreview,
+  Lazyload,
+  List,
+  Locale,
+  Notify,
+  Picker,
+  Sku,
+  Swipe,
+  SwipeCell,
+  Tabs,
+  Toast,
+  Uploader,
+
+  ActionSheet,
+  AddressList,
+  Button,
+  Card,
+  Cell,
+  CellGroup,
+  Circle,
+  Col,
+  Collapse,
+  CollapseItem,
+  ContactCard,
+  ContactEdit,
+  ContactList,
+  CouponCell,
+  CouponList,
+  Divider,
+  DropdownMenu,
+  Grid,
+  GridItem,
+  GoodsAction,
+  GoodsActionButton,
+  GoodsActionIcon,
+  Icon,
+  Image,
+  IndexAnchor,
+  IndexBar,
+  Info,
+  Loading,
+  NavBar,
+  NoticeBar,
+  NumberKeyboard,
+  Overlay,
+  Pagination,
+  Panel,
+  PasswordInput,
+  Popup,
+  Progress,
+  PullRefresh,
+  Radio,
+  RadioGroup,
+  Rate,
+  Row,
+  Search,
+  Sidebar,
+  SidebarItem,
+  Skeleton,
+  Slider,
+  Step,
+  Stepper,
+  Steps,
+  Sticky,
+  SubmitBar,
+  SwipeItem,
+  Switch,
+  SwitchCell,
+  Tab,
+  Tabbar,
+  TabbarItem,
+  Tag,
+  TreeSelect
+} from 'vant'
+
+
+Vue.use(AddressEdit)
+Vue.use(Area)
+Vue.use(Calendar)
+Vue.use(Checkbox)
+Vue.use(CheckboxGroup)
+Vue.use(CountDown)
+Vue.use(DatetimePicker)
+Vue.use(Dialog)
+Vue.use(DropdownItem)
+Vue.use(Field)
+Vue.use(ImagePreview)
+Vue.use(Lazyload)
+Vue.use(List)
+Vue.use(Locale)
+Vue.use(Notify)
+Vue.use(Picker)
+Vue.use(Sku)
+Vue.use(Swipe)
+Vue.use(SwipeCell)
+Vue.use(Tabs)
+Vue.use(Toast)
+Vue.use(Uploader)
+
+Vue.use(ActionSheet)
+Vue.use(AddressList)
+Vue.use(Button)
+Vue.use(Card)
+Vue.use(Cell)
+Vue.use(CellGroup)
+Vue.use(Circle)
+Vue.use(Col)
+Vue.use(Collapse)
+Vue.use(CollapseItem)
+Vue.use(ContactCard)
+Vue.use(ContactEdit)
+Vue.use(ContactList)
+Vue.use(CouponCell)
+Vue.use(CouponList)
+Vue.use(Divider)
+Vue.use(DropdownMenu)
+Vue.use(Grid)
+Vue.use(GridItem)
+Vue.use(GoodsAction)
+Vue.use(GoodsActionButton)
+Vue.use(GoodsActionIcon)
+Vue.use(Icon)
+Vue.use(Image)
+Vue.use(IndexAnchor)
+Vue.use(IndexBar)
+Vue.use(Info)
+Vue.use(Loading)
+Vue.use(NavBar)
+Vue.use(NoticeBar)
+Vue.use(NumberKeyboard)
+Vue.use(Overlay)
+Vue.use(Pagination)
+Vue.use(Panel)
+Vue.use(PasswordInput)
+Vue.use(Popup)
+Vue.use(Progress)
+Vue.use(PullRefresh)
+Vue.use(Radio)
+Vue.use(RadioGroup)
+Vue.use(Rate)
+Vue.use(Row)
+Vue.use(Search)
+Vue.use(Sidebar)
+Vue.use(SidebarItem)
+Vue.use(Skeleton)
+Vue.use(Slider)
+Vue.use(Step)
+Vue.use(Stepper)
+Vue.use(Steps)
+Vue.use(Sticky)
+Vue.use(SubmitBar)
+Vue.use(SwipeItem)
+Vue.use(Switch)
+Vue.use(SwitchCell)
+Vue.use(Tab)
+Vue.use(Tabbar)
+Vue.use(TabbarItem)
+Vue.use(Tag)
+Vue.use(TreeSelect)
+
+Vue.prototype.$notify = Notify
