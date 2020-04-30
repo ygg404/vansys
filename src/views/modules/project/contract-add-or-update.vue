@@ -1,77 +1,73 @@
 <template>
-  <el-dialog
-    :title="!dataForm.id ? '新增合同' : '修改合同'"
-    :close-on-click-modal="false"
-    :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="110px" style="text-align: left;">
-      <el-form-item label="合同名称" prop="contractName">
-        <el-input v-model="dataForm.contractName" placeholder="合同名称"></el-input>
-      </el-form-item>
-      <el-form-item label="合同编号" prop="contractNo">
-        <el-input v-model="dataForm.contractNo" placeholder="合同编号" disabled="true"></el-input>
-       </el-form-item>
-       <el-form-item label="项目类型" prop="projectType">
-         <el-select v-model="dataForm.projectTypeIdList" placeholder="项目类型"  multiple style="width: 100%;">
-          <el-option v-for="item in projectTypeList" :label="item.name" :key="item.id" :value="item.id"  ></el-option>
-        </el-select>
-       </el-form-item>
-      <el-form-item label="合同金额" prop="contractMoney" >
-        <el-input v-model.number="dataForm.contractMoney" placeholder="合同金额" type="number"></el-input>
-      </el-form-item>
-        <el-form-item label="合同类型:" prop="contractType">
-          <el-radio-group v-model="dataForm.contractType">
-            <el-radio :label="0">合同委托</el-radio>
-            <el-radio :label="1">一般委托</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="委托单位" prop="contractAuthorize">
-          <el-input v-model="dataForm.contractAuthorize" placeholder="委托单位"></el-input>
-        </el-form-item>
-        <el-form-item label="委托要求" prop="contractNote">
-          <el-input v-model="dataForm.contractNote" placeholder="委托要求"></el-input>
-        </el-form-item>
-      <el-form-item label="联系人姓名" prop="userName">
-        <el-input v-model="dataForm.userName" placeholder="联系人名称"></el-input>
-      </el-form-item>
-        <el-form-item label="联系人电话" prop="userPhone">
-          <el-input v-model="dataForm.userPhone" placeholder="联系人电话" ></el-input>
-        </el-form-item>
-      <el-form-item label="业务负责人" prop="contractBusiness">
-        <el-select v-model="dataForm.contractBusinessId" placeholder="业务负责人"  style="width: 100%;">
-          <el-option v-for="item in businessList" :label="item.username" :key="item.userId" :value="item.userId"  ></el-option>
-        </el-select>
-      </el-form-item>
-        <el-form-item label="合同签订时间" prop="contractAddTime">
-          <el-date-picker v-model="dataForm.contractAddTime" type="date" value-format="yyyy-MM-dd" placeholder="合同签订时间" style="width: 150px;" @change="getDataList"></el-date-picker>
-        </el-form-item>
-      <el-form-item label="文件名称" prop="fileName">
-        <el-upload :action="upContractUrl"
-                   :data="{'contractNo': dataForm.contractNo}"
-                   :limit="1"
-                   name="file"
-                   ref="upload"
-                   accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlxs,image/*"
-                   :headers="tokenHeaders"
-                   :before-upload="handleBeforeUpload"
-                   :on-success="handleSuccess"
-                   :on-error="handleError">
-          <el-button size="small" plain>选择文件</el-button>
-          <div slot="tip" style="color: dodgerblue" v-if="dataForm.filename != null && dataForm.filename != ''">已上传文件:{{dataForm.filename}}</div>
-          <div slot="tip" class="el-upload__tip">只能上传pdf,word,图片文件，且不超过10M</div>
-        </el-upload>
-      </el-form-item>
-    </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="visible = false">取消</el-button>
-        <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
-      </span>
-  </el-dialog>
+  <div>
+    <van-dialog :title="!dataForm.id ? '新增合同' : '修改合同'" use-slot show-cancel-button v-model="visible"
+                @cancel="visible = false" @confirm="dataFormSubmit" :beforeClose="beforeClose">
+      <van-form  ref="dataForm">
+        <van-field v-model="dataForm.contractNo" name="contractNo" label="合同编号" placeholder="合同编号" disabled
+                   :rules="[{ required: true, message: '请填写合同编号' }]" />
+        <van-field v-model="dataForm.contractName" name="contractName" label="合同名称" placeholder="合同名称"
+          :rules="[{ required: true, message: '请填写合同名称' }]" />
+        <van-field v-model="dataForm.projectType" name="projectType" label="项目类型" placeholder="项目类型" readonly @click="typePickerShow = true"
+                   :rules="[{ required: true, message: '请填写项目类型' }]" />
+        <van-field v-model="dataForm.contractMoney" name="contractMoney" type="number" label="合同金额" placeholder="合同金额"
+                   :rules="[{ required: false, message: '请填写合同金额' }]"/>
+        <van-field v-model="dataForm.contractType"  name="contractType" label="合同类型" :rules="[{ required: true, message: '请填写合同类型' }]" >
+          <template slot="input">
+            <van-radio-group v-model="dataForm.contractType" direction="horizontal">
+              <van-radio name="0" >合同委托</van-radio>
+              <van-radio name="1" >一般委托</van-radio>
+            </van-radio-group>
+          </template>
+        </van-field>
+
+        <van-field v-model="dataForm.contractAuthorize" name="contractAuthorize" label="委托单位" placeholder="委托单位"
+                   :rules="[{ required: true, message: '请填写委托单位' }]" />
+        <van-field v-model="dataForm.contractNote" name="" label="委托要求" placeholder="委托要求"
+                   :rules="[{ required: true, message: '请填写委托要求' }]" />
+        <van-field v-model="dataForm.userName" name="userName" label="联系人名称" placeholder="联系人名称"/>
+        <van-field v-model="dataForm.userPhone" name="userPhone" label="联系人电话" placeholder="联系人电话"/>
+        <van-field v-model="dataForm.contractBusiness" name="contractBusiness" label="业务负责人" placeholder="业务负责人" readonly @click="busPickerShow = true"
+                   :rules="[{ required: true, message: '请填写业务负责人' }]"/>
+        <van-field v-model="dataForm.contractAddTime" label="签订时间" rule="contractAddTime" placeholder="合同签订时间" readonly @click="datePickerShow = true"
+                   :rules="[{ required: true, message: '请填写签订时间' }]"/>
+      </van-form>
+      <!-- 上传文件控件-->
+      <div class="folder_style">
+        <van-uploader accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlxs,image/*" :after-read="afterReadHandle" >
+          <van-button  icon="photo" type="primary" size="small">上传文件</van-button>
+        </van-uploader>
+        <span class="folder_span" >{{dataForm.filename}}
+          <van-icon size="large" v-if="dataForm.filename != ''" name="clear" @click="dataForm.filename = '' "></van-icon>
+        </span>
+      </div>
+    </van-dialog>
+    <!-- 日历控件-->
+    <van-calendar v-model="datePickerShow" :default-date="dataForm.contractAddTime == ''?new Date(): new Date(dataForm.contractAddTime)"
+                  :min-date="new Date(2010,0,1)" :max-date="new Date(2050,11,31)"
+                  @confirm="onDateConfirm" color="#07c160" />
+    <!-- 业务员选择 -->
+    <van-popup ref="businessId" v-model="busPickerShow" position="bottom" >
+      <van-picker show-toolbar
+                  title="选择业务负责人" value-key="username"
+                  :columns="businessList"
+                  @cancel="busPickerShow = false"
+                  @confirm="onBusinessConfirm"
+      /></van-popup>
+    <!-- 选择项目类型 -->
+    <van-popup v-model="typePickerShow" style="width: 85%">
+      <select-module title="选择项目类型" v-model="dataForm" :dataList="projectTypeList" @close="typePickerShow = false"></select-module>
+    </van-popup>
+
+
+  </div>
 </template>
 
 <script>
   import Vue from 'vue'
+  import moment from 'moment'
   import {isMobile} from '../../../utils/validate'
   import {isPhone} from '../../../utils/validate'
+  import selectModule from '@/components/select-module'
 
   export default {
     data () {
@@ -87,6 +83,9 @@
         }
       }
       return {
+        typePickerShow: false,
+        datePickerShow: false,
+        busPickerShow: false,
         visible: false,
         dataForm: {
           id: 0,
@@ -100,7 +99,7 @@
           contractBusiness: '',
           contractBusinessId: '',
           contractStage: '',
-          contractMoney: '',
+          contractMoney: 0.0,
           projectType: '',
           filename: '',
           userPhone: '',
@@ -108,45 +107,14 @@
           projectTypeIdList: []
         },
         businessList: [], // 业务员列表
-        projectTypeList: [], // 项目类型列表
-        upContractUrl: window.SITE_CONFIG['baseUrl'] + '/project/contract/upContractFile/',  // 合同上传地址
-        tokenHeaders: { token: Vue.cookie.get('token') },  // token请求
-        dataRule: {
-          contractNo: [
-            { required: true, message: '合同编号不能为空', trigger: 'blur' }
-          ],
-          contractAddTime: [
-            { required: true, message: '合同签订时间不能为空', trigger: 'blur' }
-          ],
-          contractAuthorize: [
-            { required: true, message: '委托单位不能为空', trigger: 'blur' }
-          ],
-          contractName: [
-            { required: true, message: '合同名称不能为空', trigger: 'blur' }
-          ],
-          contractType: [
-            { required: true, message: '合同类型 不能为空', trigger: 'blur' }
-          ],
-          contractNote: [
-            { required: true, message: '委托要求不能为空', trigger: 'blur' }
-          ],
-          contractBusiness: [
-            { required: true, message: '业务负责人不能为空', trigger: 'blur' }
-          ],
-          contractMoney: [
-            { required: true, message: '合同金额不能为空', trigger: 'blur' }
-          ],
-          projectType: [
-            { required: true, message: '项目类型不能为空', trigger: 'blur' }
-          ],
-          userPhone: [
-            { required: false, message: '联系人电话不正确', trigger: 'blur', validator: checkPhone }
-          ]
-        }
+        projectTypeList: [] // 项目类型列表
       }
     },
-    mounted () {
-      this.getProjectTypeList().then()
+    components: {
+      selectModule
+    },
+    created () {
+      this.getProjectTypeList()
       this.getBusinessList()
     },
     methods: {
@@ -154,7 +122,7 @@
         this.dataForm.id = id || 0
         this.visible = true
         this.$nextTick(() => {
-          this.$refs['dataForm'].resetFields()
+          this.$refs['dataForm'].resetValidation()
           if (this.dataForm.id) {
             this.$http({
               url: this.$http.adornUrl(`/project/contract/info/${this.dataForm.id}`),
@@ -207,24 +175,25 @@
           }
         })
       },
+      // 签订时间选择
+      onDateConfirm (date) {
+        this.dataForm.contractAddTime = moment(date).format('YYYY-MM-DD')
+        this.datePickerShow = false
+      },
+      // 业务负责人选择
+      onBusinessConfirm (item) {
+        this.dataForm.contractBusiness = item.username
+        this.busPickerShow = false
+      },
+      // 窗口关闭前的动作
+      beforeClose (action, done) {
+        console.log(this.visible)
+        done(!this.visible)
+      },
       // 表单提交
       dataFormSubmit () {
-        console.log(this.dataForm.projectTypeIdList)
-        // 项目类型
-        this.dataForm.projectType = ''
-        for (let ptypeId of this.dataForm.projectTypeIdList) {
-          for (let ptype of this.projectTypeList) {
-            if (ptypeId === ptype.id) { this.dataForm.projectType += (ptype.name + ',') }
-          }
-        }
-        // 业务负责人
-        for (let bus of this.businessList) {
-          if (this.dataForm.contractBusinessId === bus.userId) this.dataForm.contractBusiness = bus.username
-        }
-        let len = this.dataForm.projectType.length
-        this.dataForm.projectType = len > 0 ? this.dataForm.projectType.substring(0, len - 1) : ''
-        this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
+        this.$refs.dataForm.validateAll().then(
+          success => {
             this.$http({
               url: this.$http.adornUrl(`/project/contract/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
@@ -246,19 +215,14 @@
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.$message({
-                  message: '操作成功',
-                  type: 'success',
-                  duration: 1500
-                })
+                this.$notify({ type: 'success', message: '操作成功'})
                 this.visible = false
                 this.$emit('refreshDataList')
               } else {
-                this.$message.error(data.msg)
+                this.$notify({message: data.msg, type: 'danger'})
               }
             })
-          }
-        })
+          })
       },
       // 新增合同获取合同编号
       getMaxcontractNo () {
@@ -307,6 +271,33 @@
           })
         })
       },
+      // 上传文件
+      afterReadHandle (file) {
+        console.log(file)
+        let size = file.file.size / 1024 / 1024
+        if (size > 10) {
+          this.$notify({type: 'danger', message: '文件必须小于10M'})
+          return
+        }
+        let param = new FormData()
+        param.append('contractNo', this.dataForm.contractNo)
+        param.append('file', file.file)
+        this.$http({
+          url: this.$http.adornUrl(`/project/contract/upContractFile/`),
+          method: 'POST',
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
+          data: param
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.dataForm.filename = data.fileName
+            this.$notify({ type: 'success' , message: '上传成功！'})
+          } else {
+            this.$notify({ type: 'danger' , message: data.msg })
+          }
+        })
+      },
       // 上传文件之前的钩子
       handleBeforeUpload (file) {
         let size = file.size / 1024 / 1024 / 10
@@ -338,3 +329,18 @@
     }
   }
 </script>
+
+<style scoped>
+  .folder_style{
+    padding: 5px;
+    display: flex;
+    justify-content: left;
+  }
+  .folder_style button{
+    min-width: 84px;
+  }
+  .folder_style .folder_span{
+    font-size: 9pt;
+    color: #3b97d7;
+  }
+</style>

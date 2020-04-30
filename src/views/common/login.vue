@@ -153,7 +153,7 @@
     .site-content{
       width: 90%;
       margin-left: 5%;
-
+      z-index: 1;
       background-color: whitesmoke;
       padding: 10px;
       border-radius: 6px;
@@ -170,6 +170,7 @@
       width: 470px;
       bottom: 0;
       margin-bottom: 10px;
+      z-index: 0;
     }
     .site-bottom a{
       color: white

@@ -16,6 +16,7 @@ import 'vant/lib/index.css'
 import '@/assets/css/mobileui.css'
 import VantForm from '@/components/vant-ui-extend/form'
 
+
 Vue.use(VueCookie)
 Vue.component('VantForm',VantForm)
 Vue.config.productionTip = false
@@ -28,6 +29,7 @@ if (process.env.NODE_ENV !== 'production') {
 // 挂载全局
 Vue.prototype.$http = httpRequest // ajax请求方法
 Vue.prototype.isAuth = isAuth     // 权限方法
+
 
 // 保存整站vuex本地储存初始状态
 window.SITE_CONFIG['storeState'] = cloneDeep(store.state)

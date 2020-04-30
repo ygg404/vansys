@@ -1,51 +1,49 @@
 <template>
-  <el-dialog
-    :title="!dataForm.id ? '新增项目' : '修改项目'"
-    :close-on-click-modal="false"
-    width="40%"
-    :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="120px">
-      <el-form-item label="生产负责人" prop="projectProduce" >
-        <el-select v-model="dataForm.projectProduceAccount" placeholder="生产负责人"  style="width: 100%;">
-          <el-option v-for="item in produceList" :label="item.username" :key="item.useraccount" :value="item.useraccount"  ></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="项目编号" prop="projectNo">
-        <el-input v-model="dataForm.projectNo" placeholder="项目编号" disabled></el-input>
-      </el-form-item>
-      <el-form-item label="合同编号" prop="contractNo">
-        <el-input v-model="dataForm.contractNo" placeholder="合同编号" disabled></el-input>
-      </el-form-item>
-      <el-form-item label="项目名称" prop="projectName">
-          <el-input v-model="dataForm.projectName" placeholder="项目名称"></el-input>
-      </el-form-item>
-      <el-form-item label="委托单位" prop="projectAuthorize">
-        <el-input v-model="dataForm.projectAuthorize" placeholder="委托单位" disabled></el-input>
-      </el-form-item>
-      <el-form-item label="委托要求" prop="projectNote">
-        <el-input v-model="dataForm.projectNote" placeholder="委托要求" disabled ></el-input>
-      </el-form-item>
-      <el-form-item label="业务负责人" prop="projectBusiness">
-        <el-input v-model="dataForm.projectBusiness" placeholder="业务负责人" disabled></el-input>
-      </el-form-item>
-      <el-form-item label="项目类型" prop="projectType">
-        <el-input v-model="dataForm.projectType" placeholder="项目类型" disabled></el-input>
-      </el-form-item>
-      <el-form-item label="项目启动时间" prop="projectStartDateTime">
-        <el-date-picker v-model="dataForm.projectStartDateTime" type="date" value-format="yyyy-MM-dd" placeholder="项目启动时间" style="width: 150px;" ></el-date-picker>
-      </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
-    </span>
-  </el-dialog>
+  <div>
+    <van-dialog :title="!dataForm.id ? '新增项目' : '修改项目'" use-slot show-cancel-button v-model="visible"
+                @cancel="visible = false" @confirm="dataFormSubmit" :beforeClose="beforeClose">
+      <van-form  ref="dataForm">
+        <van-field v-model="dataForm.projectProduce" name="projectProduce" label="生产负责人" placeholder="生产负责人"
+                   :rules="[{ required: true, message: '请填写生产负责人' }]" readonly @click="producePickerShow = true"/>
+        <van-field v-model="dataForm.projectNo" name="projectNo" label="项目编号" placeholder="项目编号"
+                   :rules="[{ required: true, message: '请填写项目编号' }]"  disabled/>
+        <van-field v-model="dataForm.contractNo" name="contractNo" label="合同编号" placeholder="合同编号"
+                   :rules="[{ required: true, message: '请填写项目类型' }]"  disabled/>
+        <van-field v-model="dataForm.projectName" name="projectName" label="项目名称" placeholder="项目名称"
+                   :rules="[{ required: false, message: '请填写项目名称' }]"/>
+        <van-field v-model="dataForm.projectBusiness" name="" label="业务负责人" placeholder="业务负责人" disabled
+                   :rules="[{ required: true, message: '请填写业务负责人' }]" disabled/>
+        <van-field v-model="dataForm.projectAuthorize" name="projectAuthorize" label="委托单位" placeholder="委托单位"
+                   :rules="[{ required: true, message: '请填写委托单位' }]" disabled/>
+        <van-field v-model="dataForm.projectNote" name="" label="委托要求" placeholder="委托要求" disabled
+                   :rules="[{ required: true, message: '请填写委托要求' }]" disabled/>
+        <van-field v-model="dataForm.projectStartDateTime" label="项目启动时间" rule="projectStartDateTime" placeholder="项目启动时间" readonly @click="datePickerShow = true"
+                   :rules="[{ required: true, message: '请填写项目启动时间' }]"/>
+      </van-form>
+    </van-dialog>
+    <!-- 日历控件-->
+    <van-calendar v-model="datePickerShow" :default-date="dataForm.projectStartDateTime == ''?new Date(): new Date(dataForm.projectStartDateTime)"
+                  :min-date="new Date(2010,0,1)" :max-date="new Date(2050,11,31)"
+                  @confirm="onDateConfirm" color="#07c160" />
+    <!-- 生产负责人 -->
+    <van-popup ref="businessId" v-model="producePickerShow" position="bottom" >
+      <van-picker show-toolbar
+                  title="选择业务负责人" value-key="username"
+                  :columns="produceList"
+                  @cancel="producePickerShow = false"
+                  @confirm="onProduceConfirm"
+      /></van-popup>
+  </div>
 </template>
 
 <script>
+  import moment from "moment";
+
   export default {
     data () {
       return {
+        datePickerShow: false,
+        producePickerShow: false,
         visible: false,
         dataForm: {
           id: 0,
@@ -105,13 +103,14 @@
         }
       }
     },
+
     methods: {
       init (id, item) {
         this.getProduceList()
         this.dataForm.id = id || 0
         this.visible = true
         this.$nextTick(() => {
-          this.$refs['dataForm'].resetFields()
+          this.$refs['dataForm'].resetValidation()
           if (this.dataForm.id) {
             this.$http({
               url: this.$http.adornUrl(`/project/project/info/${this.dataForm.id}`),
@@ -152,50 +151,61 @@
           }
         })
       },
+      // 启动时间选择
+      onDateConfirm (date) {
+        this.dataForm.projectStartDateTime = moment(date).format('YYYY-MM-DD')
+        this.datePickerShow = false
+      },
+      // 生产负责人选择
+      onProduceConfirm (item) {
+        this.dataForm.projectProduce = item.username
+        this.dataForm.projectProduceAccount = item.useraccount
+        this.producePickerShow = false
+      },
+      // 窗口关闭前的动作
+      beforeClose (action, done) {
+        console.log(this.visible)
+        done(!this.visible)
+      },
       // 表单提交
       dataFormSubmit () {
         // 项目负责人
         console.log(this.dataForm.projectProduceAccount)
-        for (let produce of this.produceList) {
-          if (this.dataForm.projectProduceAccount === produce.useraccount) { this.dataForm.projectProduce = produce.username }
-        }
-        this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
-            this.$http({
-              url: this.$http.adornUrl(`/project/project/${!this.dataForm.id ? 'save' : 'update'}`),
-              method: 'post',
-              data: this.$http.adornData({
-                'id': this.dataForm.id || undefined,
-                'projectNo': this.dataForm.projectNo,
-                'contractNo': this.dataForm.contractNo,
-                'projectName': this.dataForm.projectName,
-                'projectMoney': this.dataForm.projectMoney,
-                'projectAuthorize': this.dataForm.projectAuthorize,
-                'projectNote': this.dataForm.projectNote,
-                'projectBusiness': this.dataForm.projectBusiness,
-                'pStage': this.dataForm.pStage,
-                'examineNote': this.dataForm.examineNote,
-                'projectType': this.dataForm.projectType,
-                'projectStage': this.dataForm.projectStage,
-                'projectProduce': this.dataForm.projectProduce,
-                'projectProduceAccount': this.dataForm.projectProduceAccount,
-                'projectStartDateTime': this.dataForm.projectStartDateTime,
-                'createuserid': this.dataForm.createuserid
-              })
-            }).then(({data}) => {
-              if (data && data.code === 0) {
-                this.$message({
-                  message: '操作成功',
-                  type: 'success',
-                  duration: 1500
-                })
-                this.visible = false
-                this.$emit('refreshDataList')
-              } else {
-                this.$message.error(data.msg)
-              }
+        this.$refs['dataForm'].validateAll().then(success => {
+          this.$http({
+            url: this.$http.adornUrl(`/project/project/${!this.dataForm.id ? 'save' : 'update'}`),
+            method: 'post',
+            data: this.$http.adornData({
+              'id': this.dataForm.id || undefined,
+              'projectNo': this.dataForm.projectNo,
+              'contractNo': this.dataForm.contractNo,
+              'projectName': this.dataForm.projectName,
+              'projectMoney': this.dataForm.projectMoney,
+              'projectAuthorize': this.dataForm.projectAuthorize,
+              'projectNote': this.dataForm.projectNote,
+              'projectBusiness': this.dataForm.projectBusiness,
+              'pStage': this.dataForm.pStage,
+              'examineNote': this.dataForm.examineNote,
+              'projectType': this.dataForm.projectType,
+              'projectStage': this.dataForm.projectStage,
+              'projectProduce': this.dataForm.projectProduce,
+              'projectProduceAccount': this.dataForm.projectProduceAccount,
+              'projectStartDateTime': this.dataForm.projectStartDateTime,
+              'createuserid': this.dataForm.createuserid
             })
-          }
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              this.$message({
+                message: '操作成功',
+                type: 'success',
+                duration: 1500
+              })
+              this.visible = false
+              this.$emit('refreshDataList')
+            } else {
+              this.$message.error(data.msg)
+            }
+          })
         })
       },
       // 添加项目 获取项目编号

@@ -7,8 +7,9 @@
           <el-radio :label="1" :disabled="!isAuth('project:project:plan')">项目安排员</el-radio>
           <el-radio :label="2" :disabled="!isAuth('project:work:list')">项目作业员</el-radio>
           <el-radio :label="3" :disabled="!isAuth('project:quality:list')">质检人员</el-radio>
-          <el-radio :label="4" :disabled="!isAuth('project:checkoutput:list')">产值核算员</el-radio>
-          <el-radio :label="5" :disabled="!isAuth('project:authorize:list')">项目审定员</el-radio>
+          <el-radio :label="4" :disabled="!isAuth('project:checkoutput:list')">质量负责人</el-radio>
+          <el-radio :label="5" :disabled="!isAuth('project:checkoutput:list')">产值核算员</el-radio>
+          <el-radio :label="6" :disabled="!isAuth('project:authorize:list')">项目审定员</el-radio>
         </el-radio-group>
       </div>
       <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()" style="width: 100%;">

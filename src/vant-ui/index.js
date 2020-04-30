@@ -32,7 +32,7 @@ import {
   Tabs,
   Toast,
   Uploader,
-
+  Form,
   ActionSheet,
   AddressList,
   Button,
@@ -95,7 +95,7 @@ import {
   TreeSelect
 } from 'vant'
 
-
+Vue.use(Form)
 Vue.use(AddressEdit)
 Vue.use(Area)
 Vue.use(Calendar)
@@ -181,3 +181,4 @@ Vue.use(Tag)
 Vue.use(TreeSelect)
 
 Vue.prototype.$notify = Notify
+

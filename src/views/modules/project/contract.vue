@@ -1,77 +1,124 @@
 <template>
-  <div class="mod-config">
-    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item>
-        <el-button v-if="isAuth('project:contract:save')" type="primary" @click="addOrUpdateHandle()">添加合同</el-button>
-      </el-form-item>
-      <el-form-item style="margin-left: 20px;">
-        <el-date-picker v-model="dataForm.startDate" type="date"  placeholder="开始日期" style="width: 150px;" :picker-options="pickerOptionsStart" @change="changeEnd"></el-date-picker> 至
-        <el-date-picker v-model="dataForm.endDate" type="date"  placeholder="结束日期" style="width: 150px;" :picker-options="pickerOptionsEnd" @change="changeStart"></el-date-picker>
-      </el-form-item>
-      <el-form-item style="margin-left: 20px;">
-        <el-input v-model="dataForm.key" placeholder="关键字搜索" clearable ></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
-      </el-form-item>
-    </el-form>
-    <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" @sort-change="changeSort" style="width: 100%;">
-      <el-table-column type="expand" >
-        <template slot-scope="props">
-          <el-table  :data="props.row.projectList" style="width: 98%;margin-left: 2%;"  border>
-            <el-table-column label="项目编号" prop="projectNo" width="120"></el-table-column>
-            <el-table-column label="项目名称" prop="projectName" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column label="项目启动时间" prop="projectStartDateTime" width="120" >
-              <template slot-scope="scope">{{scope.row.projectStartDateTime != null? scope.row.projectStartDateTime.substring(0,10) : ''}}</template>
-            </el-table-column>
-            <el-table-column label="业务负责人" prop="projectBusiness" width="120"></el-table-column>
-            <el-table-column label="生产负责人" prop="projectProduce" width="120"></el-table-column>
-            <el-table-column label="项目类型" prop="projectType">
-              <template slot-scope="scope"> <el-tag v-for="(item,index) in scope.row.projectType.split(',')" :key="index" style="margin-left: 5px;">{{item}}</el-tag></template>
-            </el-table-column>
-            <el-table-column  width="150" label="操作">
-              <template slot-scope="scope">
-                <el-button type="primary" size="mini" @click="addOrUpdateProjectHandle(id = scope.row.id)" v-if="isAuth('project:project:update')">修改</el-button>
-                <el-button type="danger" size="mini" @click="deleteProjectHandle(scope.row)">删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </template>
-      </el-table-column>
-      <el-table-column prop="contractNo" header-align="center" align="center" width="120" label="合同编号" sortable :sort-orders="['descending','ascending']"></el-table-column>
-      <el-table-column prop="contractName" header-align="center" align="left" label="合同名称" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="contractAuthorize" header-align="center" align="center" label="委托单位" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="contractType" header-align="center" align="center" width="100" label="合同类型">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.contractType === 0" size="small" type="success">合同委托</el-tag>
-          <el-tag v-else-if="scope.row.contractType === 1" size="small" type="warning">一般合同</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column prop="contractAddTime" header-align="center" align="center" width="120" label="签订时间">
-        <template slot-scope="scope">{{scope.row.contractAddTime != null? scope.row.contractAddTime.substring(0,10) : ''}}</template>
-      </el-table-column>
-      <el-table-column header-align="center" align="left" width="320" label="操作" style="z-index: -1">
-        <template slot-scope="scope">
-          <el-button type="warning" size="mini" @click="addOrUpdateProjectHandle(id = '' ,scope.row)" v-if="isAuth('project:project:save')">添加项目</el-button>
-          <el-button type="primary" size="mini" @click="addOrUpdateHandle(scope.row.id)" v-if="isAuth('project:contract:update')">修改</el-button>
-          <el-button type="danger" size="mini" @click="deleteHandle(scope.row)" v-if="isAuth('project:contract:delete')">删除</el-button>
-          <el-button v-if="scope.row.filename" type="success" size="mini" @click="downloadFile(scope.row)">下载</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-      @size-change="sizeChangeHandle"
-      @current-change="currentChangeHandle"
-      :current-page="pageIndex"
-      :page-sizes="[25, 50, 100]"
-      :page-size="pageSize"
-      :total="totalPage"
-      layout="total, sizes, prev, pager, next, jumper">
-    </el-pagination>
+  <div class="mod_card">
+    <date-module v-model="dataForm" @change="getDataList"></date-module>
+    <van-row type="flex" justify="space-between" align="bottom" style="margin-bottom:5px; padding:4px 0px;">
+      <van-col span="1" />
+      <van-col span="15">
+        <van-search class="searchCon" v-model="dataForm.key" @input="pageIndex=1,getDataList()"
+                    @cancel="pageIndex=1,dataForm.key = '' " show-action placeholder="搜索关键词..."/>
+      </van-col>
+      <van-col span="8" class="addcontract">
+        <div style="float:right;margin-right:20px;">
+          <van-button type="info" @click="addOrUpdateHandle()">添加合同</van-button>
+        </div>
+      </van-col>
+    </van-row>
+    <!-- 表格内容 -->
+    <van-row class="table_header">
+      <van-col span="6" style="text-align:center;">合同编号</van-col>
+      <van-col span="12" style="text-align:center;">合同名称</van-col>
+      <van-col span="6" style="text-align:center;">操作</van-col>
+    </van-row>
+    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 250).toString() + 'px'" class="table_van_div">
+      <table border="1" class="table_van"  >
+        <tbody v-loading="dataListLoading" >
+        <tr class="table_excuse" v-if="dataList.length < 1">暂无数据</tr>
+        <tr v-for="item in dataList" :key="item.id">
+          <td class="table_row_tr1">{{item.contractNo}}</td>
+          <td class="table_row_tr2">{{item.contractName}}</td>
+          <td class="table_row_tr3" >
+            <van-button type="warning" size="small" @click="detailContractShow = true,detailContractItem=item" round>详情</van-button>
+            <van-button v-if="item.filename" type="primary" size="small" @click="downloadFile(item)" round>下载</van-button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--分页控件-->
+    <div class="table_page_common">
+      <van-pagination v-model="pageIndex" :page-count="totalPage" mode="simple" @change="getDataList()" />
+    </div>
+    <!--合同详情弹出层-->
+    <van-dialog v-model="detailContractShow" confirm-button-text="返回" @cancel="detailContractShow = false">
+      <div class="table_detail_info">
+        <van-divider contentPosition="center" style="color:#1989FA;">合同信息</van-divider>
+        <van-row style="margin-top:10px;">
+          <van-col span="7" class="vancoltinfotitlestyle">合同编号:</van-col>
+          <van-col span="17" class="vancolinfostyle">{{detailContractItem.contractNo}}</van-col>
+        </van-row>
+        <van-row style="margin-top:10px;">
+          <van-col span="7" class="vancoltinfotitlestyle">合同名称:</van-col>
+          <van-col span="17" class="vancolinfostyle">{{detailContractItem.contractName}}</van-col>
+        </van-row>
+        <van-row style="margin-top:10px;">
+          <van-col span="7" class="vancoltinfotitlestyle">合同金额:</van-col>
+          <van-col span="17" class="vancolinfostyle">{{detailContractItem.contractMoney}}</van-col>
+        </van-row>
+        <van-row style="margin-top:10px;">
+          <van-col span="7" class="vancoltinfotitlestyle">合同类型:</van-col>
+          <van-col span="17" class="vancolinfostyle">{{detailContractItem.contractType == 0? "合同委托" : "一般委托"}}</van-col>
+        </van-row>
+        <van-row style="margin-top:10px;">
+          <van-col span="7" class="vancoltinfotitlestyle">委托单位:</van-col>
+          <van-col span="17" class="vancolinfostyle">{{detailContractItem.contractAuthorize}}</van-col>
+        </van-row>
+        <van-row style="margin-top:10px;">
+          <van-col span="7" class="vancoltinfotitlestyle">委托要求:</van-col>
+          <van-col span="17" class="vancolinfostyle">{{detailContractItem.contractNote}}</van-col>
+        </van-row>
+        <van-row style="margin-top:10px;">
+          <van-col span="7" class="vancoltinfotitlestyle">业务负责人:</van-col>
+          <van-col span="17" class="vancolinfostyle">{{detailContractItem.contractBusiness}}</van-col>
+        </van-row>
+        <van-row style="margin-top:10px;">
+          <van-col span="7" class="vancoltinfotitlestyle">签订时间:</van-col>
+          <van-col span="17" class="vancolinfostyle">{{detailContractItem.contractAddTime}}</van-col>
+        </van-row>
+        <div style="margin-top:20px; margin-bottom:10px;display: flex;justify-content: space-around">
+          <van-button type="primary" size="small" @click="addOrUpdateProjectHandle(id = '' ,detailContractItem)" v-if="isAuth('project:project:save')" >添加项目</van-button>
+          <van-button type="info" size="small" @click="addOrUpdateHandle(detailContractItem.id)" v-if="isAuth('project:contract:update')" >修改合同</van-button>
+          <van-button type="danger" size="small" @click="deleteHandle(detailContractItem)" v-if="isAuth('project:contract:delete')" >删除合同</van-button>
+        </div>
+        <van-divider contentPosition="center" style="color:#1989FA;" v-if="detailContractItem.projectList != []">该合同下的项目信息</van-divider>
+        <div v-for="item in detailContractItem.projectList">
+          <van-row >
+            <van-col span="7" class="vancoltinfotitlestyle">项目编号</van-col>
+            <van-col span="17" class="vancolinfostyle">{{item.projectNo}}</van-col>
+          </van-row>
+          <van-row style="margin-top:10px;">
+            <van-col span="7" class="vancoltinfotitlestyle">项目名称</van-col>
+            <van-col span="17" class="vancolinfostyle">{{item.projectName}}</van-col>
+          </van-row>
+          <van-row style="margin-top:10px;">
+            <van-col span="7" class="vancoltinfotitlestyle">项目启动时间</van-col>
+            <van-col span="17" class="vancolinfostyle">{{item.projectStartDateTime}}</van-col>
+          </van-row>
+          <van-row style="margin-top:10px;">
+            <van-col span="7" class="vancoltinfotitlestyle">业务负责人</van-col>
+            <van-col span="17" class="vancolinfostyle">{{item.projectBusiness}}</van-col>
+          </van-row>
+          <van-row style="margin-top:10px;">
+            <van-col span="7" class="vancoltinfotitlestyle">生产负责人</van-col>
+            <van-col span="17" class="vancolinfostyle">{{item.projectProduce}}</van-col>
+          </van-row>
+          <van-row style="margin-top:10px;">
+            <van-col span="7" class="vancoltinfotitlestyle">项目类型</van-col>
+            <van-col span="17" class="vancolinfostyle">
+              <van-tag plain type="primary" v-for="(item,index) in (item.projectType == null? '': item.projectType).split(',')"
+                       :key="index" style="margin-left: 5px;">{{item}}</van-tag>
+            </van-col>
+          </van-row>
+          <van-row style="margin-top:10px;padding-left:25%;" class="itemprojectInfobtnstyle">
+            <van-button type="info" @click="addOrUpdateProjectHandle(id = item.id)" v-if="isAuth('project:project:update')">修改</van-button>
+            <van-button type="danger" @click="deleteProjectHandle(item)" style="margin-left:5%;">删除</van-button>
+          </van-row>
+        </div>
+      </div>
+    </van-dialog>
     <!-- 弹窗, 新增 / 修改  合同-->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
     <!-- 弹窗, 新增 / 修改  项目-->
-    <project-add-or-update v-if="projectAddOrUpdateVisible" ref="projectAddOrUpdate" @refreshDataList="getDataList" ></project-add-or-update>
+    <project-add-or-update v-if="projectAddOrUpdateVisible" ref="projectAddOrUpdate" @refreshDataList="getDataList"></project-add-or-update>
   </div>
 </template>
 
@@ -80,12 +127,11 @@
   import AddOrUpdate from './contract-add-or-update'
   import ProjectAddOrUpdate from './project-add-or-update'
   import moment from 'moment'
+  import dateModule from '@/components/date-module'
 
   export default {
     data () {
       return {
-        pickerOptionsStart: {},
-        pickerOptionsEnd: {},
         dataForm: {
           key: '',
           sidx: 'id',
@@ -102,20 +148,26 @@
         dataListLoading: false,
         dataListSelections: [],
         addOrUpdateVisible: false,
-        projectAddOrUpdateVisible: false
+        projectAddOrUpdateVisible: false,
+        detailContractShow: false, // 合同详情展开
+        detailContractItem: '',    // 合同详情
+      }
+    },
+    computed: {
+      documentClientHeight: {
+        get () { return this.$store.state.common.documentClientHeight }
       }
     },
     components: {
       AddOrUpdate,
-      ProjectAddOrUpdate
+      ProjectAddOrUpdate,
+      dateModule
     },
-    activated () {
+    created () {
       this.pageSize = 25
       this.pageIndex = 1
-      this.dataForm.startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
-      this.changeEnd()
-      this.dataForm.endDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1 , 0)
-      this.changeStart()
+      this.dataForm.startDate = moment(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)).format('YYYY-MM-DD')
+      this.dataForm.endDate = moment(new Date(new Date().getFullYear(), new Date().getMonth() + 1 , 0)).format('YYYY-MM-DD')
       this.getDataList()
     },
     methods: {
@@ -136,12 +188,9 @@
         this.getDataList()
       },
       // 获取数据列表
-      getDataList () {
-        let startDate = ''
-        let endDate = ''
-        if (this.dataForm.startDate != null) startDate = moment(new Date(this.dataForm.startDate)).format('YYYY-MM-DD')
-        if (this.dataForm.endDate != null) endDate = moment(new Date(this.dataForm.endDate)).format('YYYY-MM-DD')
+      getDataList (contractNo = '') {
         this.dataListLoading = true
+        this.detailContractShow = false
         this.$http({
           url: this.$http.adornUrl('/project/contract/list'),
           method: 'get',
@@ -151,40 +200,21 @@
             'key': this.dataForm.key,
             'sidx': this.dataForm.sidx,
             'order': this.dataForm.order,
-            'startDate': startDate,
-            'endDate': endDate
+            'startDate': this.dataForm.startDate,
+            'endDate': this.dataForm.endDate
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
             this.dataList = data.page.list
-            this.totalPage = data.page.totalCount
+            this.totalPage = data.page.totalPage
+            this.$refs.dataBox.scrollTop = 0
           } else {
             this.dataList = []
             this.totalPage = 0
-            this.$message.error(data.msg)
+            this.$notify({ type: 'danger', message: data.msg })
           }
           this.dataListLoading = false
         })
-      },
-      // 开始时间改变
-      changeStart () {
-        this.pickerOptionsStart = Object.assign({}, this.pickerOptionsStart, {
-          disabledDate: (time) => {
-            return time.getTime() > this.dataForm.endDate
-          }
-        })
-        this.pageIndex = 1
-        this.getDataList()
-      },
-      // 结束时间改变
-      changeEnd () {
-        this.pickerOptionsEnd = Object.assign({}, this.pickerOptionsEnd, {
-          disabledDate: (time) => {
-            return time.getTime() < this.dataForm.startDate
-          }
-        })
-        this.pageIndex = 1
-        this.getDataList()
       },
       // 每页数
       sizeChangeHandle (val) {
@@ -217,30 +247,33 @@
       },
       // 删除
       deleteHandle (scop) {
+        this.$dialog.confirm({
+          title: '提示',
+          message: '确定对合同编号[' + scop.contractNo + ']进行删除操作?'
+        }).then(() => {
+          this.deleteContractApi(scop)
+        })
+      },
+      // 删除合同接口
+      deleteContractApi(scop){
         var ids = scop.id ? [scop.id] : this.dataListSelections.map(item => {
           return item.ids
         })
-        this.$confirm('确定对合同编号[' + scop.contractNo + ']进行删除操作?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$http({
-            url: this.$http.adornUrl('/project/contract/delete'),
-            method: 'post',
-            data: this.$http.adornData(ids, false)
-          }).then(({data}) => {
-            if (data && data.code === 0) {
-              this.$message({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500
-              })
-              this.getDataList()
-            } else {
-              this.$message.error(data.msg)
-            }
-          })
+        this.$http({
+          url: this.$http.adornUrl('/project/contract/delete'),
+          method: 'post',
+          data: this.$http.adornData(ids, false)
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500
+            })
+            this.getDataList()
+          } else {
+            this.$notify({ type: 'danger', message: data.msg })
+          }
         })
       },
       // 下载合同文件
@@ -274,12 +307,9 @@
       },
       // 删除项目将项目放入回收站
       deleteProjectHandle (item) {
-        console.log(item)
-        let tip = '此操作将项目编号为[' + item.projectNo + ']的项目放入回收站, 是否继续?'
-        this.$confirm(tip, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+        this.$dialog.confirm({
+          title: '提示',
+          message: '此操作将项目编号为[' + item.projectNo + ']的项目放入回收站, 是否继续?'
         }).then(() => {
           this.$http({
             url: this.$http.adornUrl('/project/project/delete'),
@@ -287,14 +317,11 @@
             data: this.$http.adornData(item.id, false)
           }).then(({data}) => {
             if (data && data.code === 0) {
-              this.$message({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500
-              })
+              this.$notify( { type: 'success', message: '操作成功'})
+              this.detailContractShow = false
               this.getDataList()
             } else {
-              this.$message.error(data.msg)
+              this.$notify({ type: 'danger', message: data.msg })
             }
           })
         })
@@ -302,3 +329,164 @@
     }
   }
 </script>
+
+<style scoped>
+  .van-tabs--line .van-tabs__wrap {
+    height: 44px;
+  }
+  .toptab .van-tabs__wrap .van-tabs__nav .van-tab {
+    position: relative;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 0 5px;
+    color: #646566;
+    font-size: 15px;
+    line-height: 44px;
+    text-align: center;
+    cursor: pointer;
+  }
+  .van-tabs__nav--line {
+    box-sizing: content-box;
+    padding-bottom: 10px;
+  }
+  .toptab .van-cell {
+    position: relative;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 7px 13px;
+    overflow: hidden;
+    color: #323233;
+    font-size: 14px;
+    line-height: 24px;
+    background-color: #fff;
+  }
+  .van-search {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 2px 4px;
+    background-color: #fff;
+    border: 1px solid #9b9a9a;
+    border-radius: 14px;
+  }
+  .van-search__content {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    background-color: #f7f8fa;
+  }
+  .searchCon .van-cell {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 4px 1px;
+    overflow: hidden;
+    color: #323233;
+    font-size: 14px;
+    line-height: 24px;
+    background-color: #fff;
+  }
+  .addcontract .van-button {
+    position: relative;
+    display: inline-block;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 38px;
+    width: 80px;
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+    line-height: 35px;
+    text-align: center;
+    border-radius: 2px;
+    cursor: pointer;
+    -webkit-transition: opacity 0.2s;
+    transition: opacity 0.2s;
+    /* -webkit-appearance: none; */
+    -webkit-text-size-adjust: 100%;
+    border-radius: 8px;
+  }
+  .footerbtngroup .van-button {
+    height: 30px;
+    font-size: 14px;
+    line-height: 30px;
+    border-radius: 2px;
+  }
+  .vancoltinfotitlestyle {
+    text-align: right;
+    font-size: 15px;
+  }
+  .vancolinfostyle {
+    text-align: left;
+    padding-left: 10px;
+    font-size: 15px;
+  }
+  .van-divider {
+    border-color: #1989fa;
+    font-size: 16px;
+  }
+  .itemprojectInfobtnstyle {
+    margin-bottom: 3px;
+    border-bottom: 1px dashed #3b97d7bf;
+    padding: 8px;
+  }
+  .itemprojectInfobtnstyle .van-button {
+    height: 25px;
+    line-height: 20px;
+  }
+
+  .table_header{
+    font-size: 12pt;
+    font-weight: 700;
+    color: white;
+    background: #1989fa;
+    width:100%;
+    margin-top:2px;
+    padding: 5px;
+  }
+  table{border:0;border-collapse:collapse}
+  td{border:1px solid #1989faaf;}
+  .table_row_tr1 {
+    width: 27%;
+  }
+  .table_row_tr2{
+    width: 46%;
+  }
+  .table_row_tr3{
+    width: 27%;
+  }
+  .table_excuse{
+    width: 100%;
+    text-align: center;
+    padding: 5px;
+    color: #6f7180;
+    line-height: 300%;
+    border: 1px solid #1989faaf;
+  }
+  .table_detail_info {
+    min-height:320px;
+    max-height:550px;
+    margin:0 auto;
+    border-bottom:1px dashed #000;
+    overflow:scroll;
+  }
+
+</style>

@@ -1,67 +1,30 @@
 <template>
   <div class="mod_card">
-    <van-row type="flex" justify="space-between" align="bottom" style="border-top: 1px solid rgb(195, 197, 199); border-bottom: 1px solid rgb(195, 197, 199);">
-      <van-col span="12" >
-        <van-cell   center title="开始日期"  :value="startDatedata" @click="startDateshow = true" />
-        <van-calendar v-model="startDateshow" @confirm="startDateConfirm"  :default-date="nowStartDate" :min-date="minStartDate" :max-date="maxStartDate" color="#1989fa"/>
+    <date-module v-model="dataForm" @change="getDataList"></date-module>
+    <van-row type="flex" justify="space-between" align="bottom" style="margin-bottom:5px; padding:4px 0px;">
+      <van-col span="1" />
+      <van-col span="15">
+        <van-search class="searchCon" v-model="dataForm.key" @input="pageIndex=1,getDataList()"
+                    @cancel="pageIndex=1,dataForm.key = '' " show-action placeholder="搜索关键词..."/>
       </van-col>
-      <van-col span="12">
-        <van-cell  center  title="结束日期"  :value="endDatedata" @click="endDateshow = true" />
-        <van-calendar v-model="endDateshow" @confirm="endDateConfirm" :default-date="nowEndDate" :min-date="minEndDate" :max-date="maxEndDate" color="#1989fa"/>
-      </van-col>
+      <van-col span="8" class="addcontract"></van-col>
     </van-row>
-
-    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item style="margin-left: 20px;">
-        <el-date-picker v-model="dataForm.startDate" type="date"  placeholder="开始日期" style="width: 150px;" :picker-options="pickerOptionsStart" @change="changeEnd"></el-date-picker> 至
-        <el-date-picker v-model="dataForm.endDate" type="date"  placeholder="结束日期" style="width: 150px;" :picker-options="pickerOptionsEnd" @change="changeStart"></el-date-picker>
-      </el-form-item>
-      <el-form-item style="margin-left: 20px;">
-        <el-input v-model="dataForm.key" placeholder="关键字搜索" clearable @change="getDataList"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
-      </el-form-item>
-    </el-form>
-<!--    <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" @sort-change="changeSort" style="width: 100%;">-->
-<!--      <el-table-column prop="projectNo" header-align="center" align="center" width="120" label="项目编号" sortable="custom" :sort-orders="['descending','ascending','descending']"></el-table-column>-->
-<!--      &lt;!&ndash;<el-table-column prop="contractNo" header-align="center" align="center" width="120" label="合同编号" ></el-table-column>&ndash;&gt;-->
-<!--      <el-table-column prop="projectName" header-align="center" align="left" label="项目名称" :show-overflow-tooltip="true"></el-table-column>-->
-<!--      <el-table-column prop="projectCharge" header-align="center" align="center" label="项目负责人" :show-overflow-tooltip="true" width="100"></el-table-column>-->
-<!--      <el-table-column prop="projectAuthorize" header-align="center" align="center" label="委托单位" :show-overflow-tooltip="true"></el-table-column>-->
-<!--      <el-table-column prop="projectStartDateTime" header-align="center" align="center" label="项目启动时间" :show-overflow-tooltip="true">-->
-<!--        <template slot-scope="scope">{{scope.row.projectStartDateTime != null? scope.row.projectStartDateTime.substring(0,10) : ''}}</template>-->
-<!--      </el-table-column>-->
-<!--      &lt;!&ndash;<el-table-column prop="projectStageName" header-align="center" align="center" label="项目阶段" :show-overflow-tooltip="true"></el-table-column>&ndash;&gt;-->
-<!--      <el-table-column header-align="center" align="left" width="190" label="操作" style="z-index: -1">-->
-<!--        <template slot-scope="scope">-->
-<!--          <el-button type="primary" size="mini" @click="restoreHandle(scope.row)">恢复项目</el-button>-->
-<!--          <el-button type="danger" size="mini" @click="deleteHandle(scope.row.projectNo)">删除</el-button>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-<!--    </el-table>-->
-<!--    <el-pagination-->
-<!--      @size-change="sizeChangeHandle"-->
-<!--      @current-change="currentChangeHandle"-->
-<!--      :current-page="pageIndex"-->
-<!--      :page-sizes="[25, 50, 100]"-->
-<!--      :page-size="pageSize"-->
-<!--      :total="totalPage"-->
-<!--      layout="total, sizes, prev, pager, next, jumper">-->
-<!--    </el-pagination>-->
-    <div :style="'max-height: ' + (documentClientHeight - 225).toString() + 'px'" class="table_van_div">
+    <!-- 表格内容 -->
+    <van-row class="table_header">
+      <van-col span="6" style="text-align:center;">合同编号</van-col>
+      <van-col span="12" style="text-align:center;">合同名称</van-col>
+      <van-col span="6" style="text-align:center;">操作</van-col>
+    </van-row>
+    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 250).toString() + 'px'" class="table_van_div">
       <table border="1" class="table_van" >
-        <thead class="table_row_title" >
-          <tr ><th class="table-th-css">项目编号</th><th class="table-th-css">项目名称</th><th class="table-th-css">操作</th></tr>
-        </thead>
         <tbody v-loading="dataListLoading" >
           <tr v-for="(item,index) in dataList">
             <td class="table_row_tr1">{{item.projectNo}}</td>
             <td>{{item.projectName}}</td>
             <td class="table_row_tr3" >
-              <van-button type="info" size="small" @click="showDetailHandle(item)">详情</van-button>
-              <van-button type="primary" size="small" @click="restoreHandle(item)">恢复项目</van-button>
-              <van-button type="danger" size="small" @click="deleteHandle(item.projectNo)">删除</van-button>
+              <van-button type="info" size="small" @click="showDetailHandle(item)" circle>详情</van-button>
+              <van-button type="primary" size="small" @click="restoreHandle(item)" circle>恢复项目</van-button>
+              <van-button type="danger" size="small" @click="deleteHandle(item.projectNo)" circle>删除</van-button>
             </td>
           </tr>
         </tbody>
@@ -91,6 +54,7 @@
 
 <script>
   import moment from 'moment'
+  import dateModule from '@/components/date-module'
 
   export default {
     data () {
@@ -103,8 +67,8 @@
           key: '',
           sidx: 'id',
           order: 'desc',
-          startDate: '',
-          endDate: ''
+          startDate: moment(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1) ).format('YYYY-MM-DD'),
+          endDate: moment(new Date(new Date().getFullYear(), new Date().getMonth() + 1 , 0)).format('YYYY-MM-DD')
         },
         dataList: [],
         pageIndex: 1,
@@ -114,6 +78,9 @@
         dataListSelections: [],
         addOrUpdateVisible: false
       }
+    },
+    components: {
+      dateModule
     },
     created () {
       this.getDataList()
@@ -185,6 +152,7 @@
             this.dataList = []
             this.totalPage = 0
           }
+          this.$refs.dataBox.scrollTop = 0
           this.dataListLoading = false
         })
       },
@@ -263,9 +231,161 @@
 </script>
 
 <style scoped>
-  .table-th-css {
-    position: relative !important;
+  .van-tabs--line .van-tabs__wrap {
+    height: 44px;
+  }
+  .toptab .van-tabs__wrap .van-tabs__nav .van-tab {
+    position: relative;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 0 5px;
+    color: #646566;
+    font-size: 15px;
+    line-height: 44px;
     text-align: center;
-    top: 0;
+    cursor: pointer;
+  }
+  .van-tabs__nav--line {
+    box-sizing: content-box;
+    padding-bottom: 10px;
+  }
+  .toptab .van-cell {
+    position: relative;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 7px 13px;
+    overflow: hidden;
+    color: #323233;
+    font-size: 14px;
+    line-height: 24px;
+    background-color: #fff;
+  }
+  .van-search {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 2px 4px;
+    background-color: #fff;
+    border: 1px solid #9b9a9a;
+    border-radius: 14px;
+  }
+  .van-search__content {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    background-color: #f7f8fa;
+  }
+  .searchCon .van-cell {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 4px 1px;
+    overflow: hidden;
+    color: #323233;
+    font-size: 14px;
+    line-height: 24px;
+    background-color: #fff;
+  }
+  .addcontract .van-button {
+    position: relative;
+    display: inline-block;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 38px;
+    width: 80px;
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+    line-height: 35px;
+    text-align: center;
+    border-radius: 2px;
+    cursor: pointer;
+    -webkit-transition: opacity 0.2s;
+    transition: opacity 0.2s;
+    /* -webkit-appearance: none; */
+    -webkit-text-size-adjust: 100%;
+    border-radius: 8px;
+  }
+  .footerbtngroup .van-button {
+    height: 30px;
+    font-size: 14px;
+    line-height: 30px;
+    border-radius: 2px;
+  }
+  .vancoltinfotitlestyle {
+    text-align: right;
+    font-size: 15px;
+  }
+  .vancolinfostyle {
+    text-align: left;
+    padding-left: 10px;
+    font-size: 15px;
+  }
+  .van-divider {
+    border-color: #1989fa;
+    font-size: 16px;
+  }
+  .itemprojectInfobtnstyle {
+    margin-bottom: 3px;
+    border-bottom: 1px dashed #3b97d7bf;
+    padding: 8px;
+  }
+  .itemprojectInfobtnstyle .van-button {
+    height: 25px;
+    line-height: 20px;
+  }
+
+  .table_header{
+    font-size: 12pt;
+    font-weight: 700;
+    color: white;
+    background: #1989fa;
+    width:100%;
+    margin-top:2px;
+    padding: 5px;
+  }
+  table{border:0;border-collapse:collapse}
+  td{border:1px solid #1989faaf;}
+  .table_row_tr1 {
+    width: 27%;
+  }
+  .table_row_tr2{
+    width: 46%;
+  }
+  .table_row_tr3{
+    width: 27%;
+  }
+  .table_excuse{
+    width: 100%;
+    text-align: center;
+    padding: 5px;
+    color: #6f7180;
+    line-height: 300%;
+    border: 1px solid #1989faaf;
+  }
+  .table_detail_info {
+    min-height:320px;
+    max-height:550px;
+    margin:0 auto;
+    border-bottom:1px dashed #000;
+    overflow:scroll;
   }
 </style>
