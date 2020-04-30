@@ -22,9 +22,9 @@
             <td class="table_row_tr1">{{item.projectNo}}</td>
             <td>{{item.projectName}}</td>
             <td class="table_row_tr3" >
-              <van-button type="info" size="small" @click="showDetailHandle(item)" circle>详情</van-button>
-              <van-button type="primary" size="small" @click="restoreHandle(item)" circle>恢复项目</van-button>
-              <van-button type="danger" size="small" @click="deleteHandle(item.projectNo)" circle>删除</van-button>
+              <van-button type="info" size="small" @click="showDetailHandle(item)" round>详情</van-button>
+              <van-button type="primary" size="small" @click="restoreHandle(item)" round>恢复项目</van-button>
+              <van-button type="danger" size="small" @click="deleteHandle(item.projectNo)" round>删除</van-button>
             </td>
           </tr>
         </tbody>
