@@ -12,27 +12,30 @@
         </el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle"
-              @sort-change="changeSort" style="width: 100%;">
-      <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" label="ID" width="80"></el-table-column>
-      <el-table-column prop="typeName" header-align="center" align="center" label="类型名称"></el-table-column>
-      <el-table-column prop="unit" header-align="center" align="center" label="单位" width="110"></el-table-column>
-      <el-table-column prop="unitOutput" header-align="center" align="center" label="单位产值" width="110"></el-table-column>
-      <el-table-column label="项目类型" prop="projectTypeName" header-align="center" align="center">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.projectTypeName != ''" v-for="(item,index) in scope.row.projectTypeName.split(',')"
-                  :key="index" style="margin-left: 5px;">{{item}}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button type="danger" size="mini" @click="deleteHandle(scope.row.id)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 250).toString() + 'px'" class="table_van_div">
+      <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle"
+                @sort-change="changeSort" style="width: 100%;">
+        <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
+        <el-table-column prop="id" header-align="center" align="center" label="ID" width="80"></el-table-column>
+        <el-table-column prop="typeName" header-align="center" align="center" label="类型名称"></el-table-column>
+        <el-table-column prop="unit" header-align="center" align="center" label="单位" width="110"></el-table-column>
+        <el-table-column prop="unitOutput" header-align="center" align="center" label="单位产值" width="110"></el-table-column>
+        <el-table-column label="项目类型" prop="projectTypeName" header-align="center" align="center" width="200">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.projectTypeName != ''" v-for="(item,index) in scope.row.projectTypeName.split(',')"
+                    :key="index" style="margin-left: 5px;">{{item}}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+            <el-button type="danger" size="mini" @click="deleteHandle(scope.row.id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
     <el-pagination
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
@@ -73,7 +76,12 @@
     components: {
       AddOrUpdate
     },
-    activated () {
+    computed: {
+      documentClientHeight: {
+        get () { return this.$store.state.common.documentClientHeight }
+      }
+    },
+    created () {
       this.getProjectList().then(success => {
         this.getDataList()
       })

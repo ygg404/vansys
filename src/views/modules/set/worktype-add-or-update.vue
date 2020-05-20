@@ -1,5 +1,5 @@
 <template>
-  <el-dialog
+  <el-dialog width="99%"
     :title="!dataForm.id ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
@@ -15,14 +15,14 @@
     </el-form-item>
 
       <el-form-item label="项目类型" prop="ProjectTypeIdList">
-    <el-select v-model="dataForm.ProjectTypeIdList" outlined multiple placeholder="请选择项目类型" style="width: 100%;">
-                                    <el-option
-                                            v-for="item in ProjectTypeList"
-                                            :key="item.id"
-                                            :label="item.name"
-                                            :value="item.id">
-                                    </el-option>
-                                </el-select>
+        <el-select v-model="dataForm.ProjectTypeIdList" outlined multiple placeholder="请选择项目类型" style="width: 100%;">
+          <el-option
+            v-for="item in ProjectTypeList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
 
     </el-form>
@@ -60,7 +60,7 @@
         },
         //项目类型数据
         ProjectTypeList:[]
-       
+
       }
     },
     methods: {
@@ -98,7 +98,7 @@
             if (data && data.code === 0) {
                 //项目类型数据 赋值
                 this.ProjectTypeList = data.list;
-                
+
                 // for(let item of data.list){
                 //   let option = {
                 //     value:item.id,
@@ -127,7 +127,7 @@
                 'unit': this.dataForm.unit,
                 'unitOutput': this.dataForm.unitOutput,
                 'projectTypeIdList': this.dataForm.ProjectTypeIdList
-               
+
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
@@ -136,14 +136,14 @@
                   message: '操作成功',
                   type: 'success',
                   duration: 1500
-                      
+
                 })
                  this.visible = false
                     this.$emit('refreshDataList')
               } else {
                 this.$message.error(data.msg)
               }
-              
+
             })
           }
         })

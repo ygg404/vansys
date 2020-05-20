@@ -1,6 +1,6 @@
 <template>
   <div class="mod_card">
-    <date-module v-model="dataForm" @change="getDataList"></date-module>
+    <date-module v-model="dataForm" @change="pageIndex=1,getDataList()"></date-module>
     <van-row type="flex" justify="space-between" align="bottom" style="margin-bottom:5px; padding:4px 0px;">
       <van-col span="1" />
       <van-col span="15">
@@ -11,8 +11,8 @@
     </van-row>
     <!-- 表格内容 -->
     <van-row class="table_header">
-      <van-col span="6" style="text-align:center;">合同编号</van-col>
-      <van-col span="12" style="text-align:center;">合同名称</van-col>
+      <van-col span="6" style="text-align:center;">项目编号</van-col>
+      <van-col span="12" style="text-align:center;">项目名称</van-col>
       <van-col span="6" style="text-align:center;">操作</van-col>
     </van-row>
     <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 250).toString() + 'px'" class="table_van_div">

@@ -1,74 +1,76 @@
 <template>
   <div class="mod-log">
-    <el-form :inline="true" :model="dataForm" >
+    <el-form :inline="true" :model="dataForm" style="margin-top: 4px;">
       <el-form-item>
         <el-input v-model="dataForm.key" placeholder="用户名／用户操作" @change="getDataListbefore()" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataListbefore()" >查询</el-button>
+        <el-button @click="pageIndex=1,getDataListbefore()" >查询</el-button>
       </el-form-item>
     </el-form>
-    <el-table
-      :data="dataList"
-      border
-      v-loading="dataListLoading"
-      style="width: 100%">
-      <el-table-column
-        prop="id"
-        header-align="center"
-        align="center"
-        width="80"
-        label="ID">
-      </el-table-column>
-      <el-table-column
-        prop="username"
-        header-align="center"
-        align="center"
-        label="用户名">
-      </el-table-column>
-      <el-table-column
-        prop="operation"
-        header-align="center"
-        align="center"
-        label="用户操作">
-      </el-table-column>
-      <el-table-column
-        prop="method"
-        header-align="center"
-        align="center"
-        width="150"
-        :show-overflow-tooltip="true"
-        label="请求方法">
-      </el-table-column>
-      <el-table-column
-        prop="params"
-        header-align="center"
-        align="center"
-        width="150"
-        :show-overflow-tooltip="true"
-        label="请求参数">
-      </el-table-column>
-      <el-table-column
-        prop="time"
-        header-align="center"
-        align="center"
-        label="执行时长(毫秒)">
-      </el-table-column>
-      <el-table-column
-        prop="ip"
-        header-align="center"
-        align="center"
-        width="150"
-        label="IP地址">
-      </el-table-column>
-      <el-table-column
-        prop="createDate"
-        header-align="center"
-        align="center"
-        width="180"
-        label="创建时间">
-      </el-table-column>
-    </el-table>
+    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 150).toString() + 'px'" class="table_van_div">
+      <el-table
+        :data="dataList"
+        border
+        v-loading="dataListLoading"
+        style="width: 100%">
+        <el-table-column
+          prop="id"
+          header-align="center"
+          align="center"
+          width="80"
+          label="ID">
+        </el-table-column>
+        <el-table-column
+          prop="username"
+          header-align="center"
+          align="center"
+          label="用户名">
+        </el-table-column>
+        <el-table-column
+          prop="operation"
+          header-align="center"
+          align="center"
+          label="用户操作">
+        </el-table-column>
+        <el-table-column
+          prop="method"
+          header-align="center"
+          align="center"
+          width="150"
+          :show-overflow-tooltip="true"
+          label="请求方法">
+        </el-table-column>
+        <el-table-column
+          prop="params"
+          header-align="center"
+          align="center"
+          width="150"
+          :show-overflow-tooltip="true"
+          label="请求参数">
+        </el-table-column>
+        <el-table-column
+          prop="time"
+          header-align="center"
+          align="center"
+          label="执行时长(毫秒)">
+        </el-table-column>
+        <el-table-column
+          prop="ip"
+          header-align="center"
+          align="center"
+          width="150"
+          label="IP地址">
+        </el-table-column>
+        <el-table-column
+          prop="createDate"
+          header-align="center"
+          align="center"
+          width="180"
+          label="创建时间">
+        </el-table-column>
+      </el-table>
+    </div>
     <el-pagination
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
@@ -76,7 +78,7 @@
       :page-sizes="[25, 50, 100]"
       :page-size="pageSize"
       :total="totalPage"
-      layout="total, sizes, prev, pager, next, jumper">
+      layout="prev, pager, next, jumper">
     </el-pagination>
   </div>
 </template>
@@ -98,6 +100,11 @@
     },
     created () {
       this.getDataList()
+    },
+    computed: {
+      documentClientHeight: {
+        get () { return this.$store.state.common.documentClientHeight }
+      }
     },
     methods: {
       // 获取数据列表

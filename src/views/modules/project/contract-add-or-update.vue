@@ -13,10 +13,12 @@
                    :rules="[{ required: false, message: '请填写合同金额' }]"/>
         <van-field v-model="dataForm.contractType"  name="contractType" label="合同类型" :rules="[{ required: true, message: '请填写合同类型' }]" >
           <template slot="input">
-            <van-radio-group v-model="dataForm.contractType" direction="horizontal">
-              <van-radio name="0" >合同委托</van-radio>
-              <van-radio name="1" >一般委托</van-radio>
-            </van-radio-group>
+            <input type="radio"  v-model="dataForm.contractType" id="s1" value="0"  style="zoom:2;"/>合同委托
+            <input type="radio"  v-model="dataForm.contractType" id="s2" value="1"  style="zoom:2;margin-left: 3px;"/>一般合同
+<!--            <van-radio-group v-model="dataForm.contractType" direction="horizontal">-->
+<!--              <van-radio name="0" >合同委托</van-radio>-->
+<!--              <van-radio name="1" >一般委托</van-radio>-->
+<!--            </van-radio-group>-->
           </template>
         </van-field>
 
@@ -297,34 +299,6 @@
             this.$notify({ type: 'danger' , message: data.msg })
           }
         })
-      },
-      // 上传文件之前的钩子
-      handleBeforeUpload (file) {
-        let size = file.size / 1024 / 1024 / 10
-        if (size > 10) {
-          this.$message({
-            message: '文件必须小于10M',
-            type: 'warning',
-            duration: 1500
-          })
-        }
-      },
-      // 文件上传成功时的钩子
-      handleSuccess (res, file, fileList) {
-        console.log(res.fileName)
-        this.dataForm.filename = res.fileName
-        this.$message({
-          message: '文件上传成功',
-          type: 'success',
-          duration: 1500,
-          onClose: () => {
-            this.$refs.upload.clearFiles()
-          }
-        })
-      },
-      // 文件上传失败时的钩子
-      handleError (err, file, fileList) {
-        this.$message.error('文件上传失败')
       }
     }
   }
@@ -343,4 +317,5 @@
     font-size: 9pt;
     color: #3b97d7;
   }
+
 </style>

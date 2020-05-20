@@ -10,18 +10,20 @@
         <el-button v-if="isAuth('set:projecttype:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" @sort-change="changeSort" style="width: 100%;">
-      <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" label="ID"  width="100"></el-table-column>
-      <el-table-column prop="name" header-align="center" align="center" label="内容"></el-table-column>
+    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 250).toString() + 'px'" class="table_van_div">
+      <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" @sort-change="changeSort" style="width: 100%;">
+        <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
+        <el-table-column prop="id" header-align="center" align="center" label="ID"  width="100"></el-table-column>
+        <el-table-column prop="name" header-align="center" align="center" label="内容"></el-table-column>
 
-      <el-table-column fixed="right" header-align="center" align="center" width="200" label="操作">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button type="danger" size="mini" @click="deleteHandle(scope.row.id)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+        <el-table-column fixed="right" header-align="center" align="center" width="200" label="操作">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+            <el-button type="danger" size="mini" @click="deleteHandle(scope.row.id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
     <el-pagination
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
@@ -55,10 +57,15 @@
         addOrUpdateVisible: false
       }
     },
+    computed: {
+      documentClientHeight: {
+        get () { return this.$store.state.common.documentClientHeight }
+      }
+    },
     components: {
       AddOrUpdate
     },
-    activated () {
+    created () {
       this.getDataList()
     },
     methods: {

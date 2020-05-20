@@ -1,8 +1,8 @@
 <template>
     <transition name="fade">
-      <van-pull-refresh v-model="isLoading" @refresh="onRefresh" success-text="刷新成功" class="refresh-main" :style="{ 'height': documentClientHeight + 'px' }">
+<!--      <van-pull-refresh v-model="isLoading" @refresh="onRefresh" success-text="刷新成功" class="refresh-main" :style="{ 'height': documentClientHeight + 'px' }">-->
         <router-view></router-view>
-      </van-pull-refresh>
+<!--      </van-pull-refresh>-->
     </transition>
 </template>
 

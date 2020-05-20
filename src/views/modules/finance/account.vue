@@ -101,7 +101,7 @@
       EditAccount
     },
 
-    activated () {
+    created () {
       this.dataForm.startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
       this.changeEnd()
       this.dataForm.endDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)

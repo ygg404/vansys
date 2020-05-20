@@ -12,55 +12,57 @@
         </el-button>
       </el-form-item>
     </el-form>
-    <el-table
-      :data="dataList"
-      border
-      v-loading="dataListLoading"
-      @selection-change="selectionChangeHandle"
-      @sort-change="changeSort"
-      style="width: 100%;">
-      <el-table-column
-        type="selection"
-        header-align="center"
-        align="center"
-        width="50">
-      </el-table-column>
-      <el-table-column
-        prop="id"
-        header-align="center"
-        align="center"
-        label="ID"
-        sortable
-        :sort-orders="['descending','ascending']"
-        width="80">
-      </el-table-column>
-      <el-table-column
-        prop="shortcutName"
-        header-align="center"
-        align="center"
-        sortable
-        :sort-orders="['descending','ascending']"
-        label="输入项">
-      </el-table-column>
-      <el-table-column
-        prop="shortcutNote"
-        header-align="center"
-        align="center"
-        label="文字内容"
-        min-width="200">
-      </el-table-column>
-      <el-table-column
-        fixed="right"
-        header-align="center"
-        align="center"
-        width="150"
-        label="操作">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button type="danger" size="mini" @click="deleteHandle(scope.row.id)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 250).toString() + 'px'" class="table_van_div">
+      <el-table
+        :data="dataList"
+        border
+        v-loading="dataListLoading"
+        @selection-change="selectionChangeHandle"
+        @sort-change="changeSort"
+        style="width: 100%;">
+        <el-table-column
+          type="selection"
+          header-align="center"
+          align="center"
+          width="50">
+        </el-table-column>
+        <el-table-column
+          prop="id"
+          header-align="center"
+          align="center"
+          label="ID"
+          sortable
+          :sort-orders="['descending','ascending']"
+          width="80">
+        </el-table-column>
+        <el-table-column
+          prop="shortcutName"
+          header-align="center"
+          align="center"
+          sortable
+          :sort-orders="['descending','ascending']"
+          label="输入项" min-width="150">
+        </el-table-column>
+        <el-table-column
+          prop="shortcutNote"
+          header-align="center"
+          align="center"
+          label="文字内容"
+          min-width="200">
+        </el-table-column>
+        <el-table-column
+          fixed="right"
+          header-align="center"
+          align="center"
+          width="150"
+          label="操作">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+            <el-button type="danger" size="mini" @click="deleteHandle(scope.row.id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
     <el-pagination
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
@@ -95,10 +97,15 @@
         addOrUpdateVisible: false
       }
     },
+    computed: {
+      documentClientHeight: {
+        get () { return this.$store.state.common.documentClientHeight }
+      }
+    },
     components: {
       AddOrUpdate
     },
-    activated () {
+    created () {
       this.getDataList()
     },
     methods: {

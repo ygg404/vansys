@@ -195,15 +195,11 @@
             })
           }).then(({data}) => {
             if (data && data.code === 0) {
-              this.$message({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500
-              })
+              this.$notify({message: '操作成功', type: 'success'})
               this.visible = false
               this.$emit('refreshDataList')
             } else {
-              this.$message.error(data.msg)
+              this.$notify({message: data.msg, type: 'danger'})
             }
           })
         })
@@ -237,7 +233,7 @@
               this.produceList = data.list
               resolve(data.list)
             } else {
-              this.$message.error(data.msg)
+              this.$notify({message: data.msg, type: 'danger'})
               reject(data.msg)
             }
           })

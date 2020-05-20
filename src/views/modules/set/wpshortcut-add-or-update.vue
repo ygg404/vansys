@@ -1,5 +1,5 @@
 <template>
-  <el-dialog
+  <el-dialog width="99%"
     :title="!dataForm.id ? '新增快捷短语' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">

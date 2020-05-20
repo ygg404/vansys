@@ -1,5 +1,5 @@
 <template>
-  <el-dialog
+  <el-dialog width="99%"
     :title="!dataForm.id ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
@@ -114,7 +114,7 @@
       },
       getCaptainList () {
         this.$http({
-          url: this.$http.adornUrl('/sys/user/getCaptain'),
+          url: this.$http.adornUrl('/sys/user/getAllUserList'),
           method: 'get'
         }).then(({data}) => {
           if (data && data.code === 0) {
@@ -142,11 +142,6 @@
         }
 
         this.$refs['dataForm'].validate((valid) => {
-          console.log('this.dataForm.headMan: ' + this.dataForm.headMan)
-          console.log('this.dataForm.deputyLeader: ' + this.dataForm.deputyLeader)
-          console.log('this.dataForm.headId: ' + this.dataForm.headId)
-          console.log('this.dataForm.deputyId: ' + this.dataForm.deputyId)
-
           if (valid) {
             this.$http({
               url: this.$http.adornUrl(`/set/workgroup/${!this.dataForm.id ? 'save' : 'update'}`),

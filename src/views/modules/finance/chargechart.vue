@@ -89,7 +89,7 @@
         dataList: ''
       }
     },
-    activated () {
+    created () {
       this.dataForm.startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
       this.changeEnd()
       // 业务负责人选项
