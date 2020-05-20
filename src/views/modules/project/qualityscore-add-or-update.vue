@@ -1,27 +1,56 @@
 <template>
-  <el-dialog title="质量评分" :close-on-click-modal="false" :visible.sync="visible" width="80%">
-    <div v-for="(scoreDetail, index) in scoreDetailList">
-      <div class="form_title" v-if="index==0">作业依据、空间基准及数学精度(权:0.3) <span class="from_span">质量元素扣分: <span style="color: red">{{kjScore}}</span></span></div>
-      <div class="form_title" v-if="index==6">数据采集、处理质量(权:0.4) <span class="from_span">质量元素扣分:<span style="color: red">{{cjScore}}</span></span></div>
-      <div class="form_title" v-if="index==18">成果资料质量(权:0.3) <span class="from_span">质量元素扣分:<span style="color: red">{{cgScore}}</span></span></div>
-      <el-row>
-        <el-col :span="4" ><div class="form_disable_item">检查项内容:{{scoreDetail.checkcontent}}</div></el-col>
-        <el-col :span="3"><div class="form_disable_item"><el-input placeholder="检查类型" v-model="scoreDetail.check_type"></el-input></div></el-col>
-        <el-col :span="3"><div class="form_disable_item"><el-input placeholder="检查结果" v-model="scoreDetail.check_result"></el-input></div></el-col>
-        <el-col :span="2"><div  style="text-align: right">错漏数量:</div></el-col>
-        <el-col :span="2"><div class="form_disable_item"><el-input placeholder="A类" type="number" v-model="scoreDetail.check_a" @change="scoreChangeHandler" min="0"></el-input></div></el-col>
-        <el-col :span="2"><div class="form_disable_item"><el-input placeholder="B类" type="number" v-model="scoreDetail.check_b" @change="scoreChangeHandler" min="0"></el-input></div></el-col>
-        <el-col :span="2"><div class="form_disable_item"><el-input placeholder="C类" type="number" v-model="scoreDetail.check_c" @change="scoreChangeHandler" min="0"></el-input></div></el-col>
-        <el-col :span="2"><div class="form_disable_item"><el-input placeholder="D类" type="number" v-model="scoreDetail.check_d" @change="scoreChangeHandler" min="0"></el-input></div></el-col>
-        <el-col :span="3"><div >检查项扣分:<span style="color: red">{{scoreDetail.score}}</span></div></el-col>
-      </el-row>
+  <van-dialog title="质量评分" v-model="visible" width="90%" @cancel="visible = false" 
+              show-cancel-button @confirm="dataFormSubmit()">
+    <div style="overflow:scroll; width:100%; height:500px;">
+        <div :key="index" v-for="(scoreDetail, index) in scoreDetailList">
+        <div class="form_title" v-if="index==0" style="margin-bottom:10px;padding-left:5px;">作业依据、空间基准及数学精度(权:0.3) <span class="from_span">质量元素扣分: <span style="color: red">{{kjScore}}</span></span></div>
+        <div class="form_title" v-if="index==6" style="margin-bottom:10px;padding-left:5px;">数据采集、处理质量(权:0.4) <span class="from_span">质量元素扣分:<span style="color: red">{{cjScore}}</span></span></div>
+        <div class="form_title" v-if="index==18" style="margin-bottom:10px;padding-left:5px;">成果资料质量(权:0.3) <span class="from_span">质量元素扣分:<span style="color: red">{{cgScore}}</span></span></div>
+  
+        <div style="border: 1px dotted rgb(195, 197, 199);margin:5px;padding:5px;">
+          <van-row>
+            <van-col span="12" style="font-size:14px;padding-left:5px;">检查项内容:{{scoreDetail.checkcontent}}</van-col>
+            <van-col span="12">
+              <div style="margin-left:10%;width:80%;" class="numinputstyle">
+                <van-field v-model="scoreDetail.check_result" placeholder="检查结果" />
+              </div>
+            </van-col>
+          </van-row>
+          <van-row>
+            <div style="padding-top:10px;padding-bottom:10px;">
+              <div style="width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+                 <div style="margin-left:20px;" class="typeunitstyle">错漏数量:</div>
+                 <div class="typeunitstyle" style="margin-right:100px;">检查项扣分:<span style="color: red">{{scoreDetail.score}}</span></div>
+              </div>
+              <div style="width:100%;height:25px; display:flex;align-items:center;" >
+                 <div style="width:25%;float:left;">
+                    <div style="margin-left:10%;width:80%;" class="numinputstyle">
+                       <van-field v-model="scoreDetail.check_a" value="A类" type="number" @change="scoreChangeHandler" />
+                    </div>
+                 </div>
+                 <div style="width:25%;float:left;">
+                    <div style="margin-left:10%;width:80%;" class="numinputstyle">
+                       <van-field v-model="scoreDetail.check_b" value="B类" type="number" @change="scoreChangeHandler"/>
+                    </div>
+                 </div>
+                 <div style="width:25%;float:left;">
+                    <div style="margin-left:10%;width:80%;" class="numinputstyle">
+                       <van-field v-model="scoreDetail.check_c" value="C类" type="number" @change="scoreChangeHandler"/>
+                    </div>
+                 </div>
+                 <div style="width:25%;float:left;">
+                    <div style="margin-left:10%;width:80%;" class="numinputstyle">
+                       <van-field v-model="scoreDetail.check_d" value="D类" type="number" @change="scoreChangeHandler"/>
+                    </div>
+                 </div>
+              </div>
+            </div>
+          </van-row>
+        </div>
+      </div>
     </div>
-    <div class="form_title">总分：<span style="color: #00b7ee">{{allScore}}</span></div>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
-    </span>
-  </el-dialog>
+    <div style="margin-top:10px;margin-left:10px;">总分：<span style="color:#1989fa;">{{allScore}}</span></div>
+  </van-dialog>
 </template>
 
 <script>
@@ -213,7 +242,7 @@
 
 <style>
   .form_line{
-    border-bottom: 1px dotted #ccc;
+    /* border-bottom: 1px dotted #ccc; */
     border-radius: 0px;
   }
   .form_disable_item{
@@ -223,14 +252,22 @@
   }
   .form_title {
     color: black;
-    font-weight: 700;
-    font-size: 18px;
+    font-weight: bolder;
+    font-size: 15px;
     margin-top: 10px;
   }
-
   .form_title .from_span{
     color: black;
-    font-weight: 500;
+    font-weight: bolder;
     font-size: 15px;
   }
+  .typeunitstyle{
+  font-size:14px;
+}
+.numinputstyle .van-field__control{
+    border: 1px solid #cfcfcc;
+}
+.numinputstyle .van-cell{
+  padding: 0px;
+}
 </style>

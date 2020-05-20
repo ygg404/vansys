@@ -1,28 +1,31 @@
 <template>
-  <el-dialog
+  <van-dialog
     title="新增进度"
-    :close-on-click-modal="false"
-    width="50%"
-    :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="120px;">
-      <el-form-item label="项目编号" prop="projectNo">
-        <el-input v-model="dataForm.projectNo" placeholder="项目编号" disabled ></el-input>
-      </el-form-item>
-      <el-form-item label="项目名称" prop="projectNo">
-        <el-input v-model="dataForm.projectName" placeholder="项目名称" disabled ></el-input>
-      </el-form-item>
-      <el-form-item label="进度百分比" prop="scheduleRate">
-        <el-slider v-model="dataForm.scheduleRate" show-input style="width: 100%;margin-top: 30px;" @change="sliderChangeHandle"></el-slider>
-      </el-form-item>
-      <el-form-item label="进度内容" prop="scheduleNote">
-        <el-input type="textarea" maxlength="1000" size="large" show-word-limit rows="4" v-model="dataForm.scheduleNote" placeholder="进度内容"></el-input>
-      </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
-    </span>
-  </el-dialog>
+    width="95%" 
+    v-model="visible"
+    show-cancel-button  @confirm="dataFormSubmit" :style="'max-height: ' + (documentClientHeight - 200).toString() + 'px'">
+    <van-cell-group>
+      <van-field v-model="dataForm.projectNo" label="项目编号" placeholder="项目编号" disabled />
+    </van-cell-group>
+    <van-cell-group>
+      <van-field v-model="dataForm.projectName" label="项目名称" placeholder="项目名称" disabled />
+    </van-cell-group>
+    <van-row type="flex" align="center" justify="center">
+      <van-col span="2"></van-col>
+      <van-col span="10">进度百分比</van-col>
+      <van-col span="12"><van-stepper v-model="scheduleRatenum" @change="sliderChangeHandle"/></van-col>
+    </van-row>
+    <van-row type="flex" align="center" class="mbmt20">
+      <van-col span="1"></van-col>
+      <van-col span="22">
+        <van-slider v-model="scheduleRatenum" @change="sliderChangeHandle"/>
+      </van-col>
+      <van-col span="1"></van-col>
+    </van-row>
+     <div style="margin:auto 10%;">
+       <textarea  class="pc" v-model="dataForm.scheduleNote"></textarea>
+     </div>
+  </van-dialog>
 </template>
 
 <script>
@@ -30,6 +33,7 @@
     data () {
       return {
         visible: false,
+        scheduleRatenum:0,
         dataForm: {
           id: 0,
           projectNo: '',
@@ -38,16 +42,15 @@
           scheduleRate: '',
           createTime: ''
         },
-        dataRule: {
-          projectNo: [
-            { required: true, message: '项目编号不能为空', trigger: 'blur' }
-          ],
-          scheduleRate: [
-            { required: true, message: '进度百分比不能为空', trigger: 'blur' }
-          ]
-        }
       }
     },
+        computed: {
+    documentClientHeight: {
+      get() {
+        return this.$store.state.common.documentClientHeight;
+      }
+    }
+  },
     methods: {
       init (item) {
         this.visible = true
@@ -57,48 +60,66 @@
           this.dataForm.projectName = item.projectName
           this.dataForm.scheduleNote = ''
           this.dataForm.scheduleRate = item.scheduleRate !== null ? item.scheduleRate : 0
+          this.scheduleRatenum = parseInt(this.dataForm.scheduleRate,10);
         })
       },
       // 进度改变
       sliderChangeHandle () {
-        if (this.dataForm.scheduleRate > 90) {
-          this.$message.error('作业进度不得超过90%')
+        if(this.scheduleRatenum > 90){
+          this.$notify({ type: 'danger', message: '作业进度不得超过90%' });
           this.dataForm.scheduleRate = 90
+          this.scheduleRatenum = 90
+        }else{
+          this.dataForm.scheduleRate = this.scheduleRatenum.toString()
         }
       },
       // 表单提交
-      dataFormSubmit () {
-        this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
-            if (this.dataForm.scheduleRate > 90) {
-              this.$message.error('作业进度不得超过90%')
-              this.dataForm.scheduleRate = 90
-              return
-            }
-            this.$http({
-              url: this.$http.adornUrl(`/project/schedule/save`),
-              method: 'post',
-              data: this.$http.adornData({
-                'projectNo': this.dataForm.projectNo,
-                'scheduleNote': this.dataForm.scheduleNote,
-                'scheduleRate': this.dataForm.scheduleRate
-              })
-            }).then(({data}) => {
-              if (data && data.code === 0) {
-                this.$message({
+      dataFormSubmit () {       
+        if (this.scheduleRatenum > 90) {
+            this.$notify({ type: 'danger', message: '作业进度不得超过90%' });
+            this.dataForm.scheduleRate = 90
+            this.scheduleRatenum = 90
+            return
+          }else{
+            this.dataForm.scheduleRate = this.scheduleRatenum.toString()
+                this.$http({
+            url: this.$http.adornUrl(`/project/schedule/save`),
+            method: 'post',
+            data: this.$http.adornData({
+              'projectNo': this.dataForm.projectNo,
+              'scheduleNote': this.dataForm.scheduleNote,
+              'scheduleRate': this.dataForm.scheduleRate
+            })
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+                this.$notify({
                   message: '操作成功',
                   type: 'success',
                   duration: 1500
                 })
                 this.visible = false
                 this.$emit('refreshDataList')
-              } else {
-                this.$message.error(data.msg)
-              }
-            })
+            } else {
+              this.$message.error(data.msg)
+            }
+          })
           }
-        })
+      
+        }
       }
-    }
   }
 </script>
+
+<style scoped>
+  .pc{
+    width:100%;
+    border: 1px dotted rgb(195, 197, 199);
+    border-radius:10px;
+    overflow:scroll;
+    height:120px;
+    letter-spacing:1.4px;
+  }
+  .mbmt20{
+margin-bottom:20px;margin-top:20px;
+}
+</style>
