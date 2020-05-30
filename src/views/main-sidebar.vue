@@ -67,7 +67,7 @@
         set (val) { this.$store.commit('navtab/updateMenuName', val) }
       },
       menuSelectId: {
-        get () { return this.$store.state.navtab.menuSelectId === '' ? localStorage.getItem('menuSelectId') : this.$store.state.navtab.menuSelectId},
+        get () { return this.$store.state.navtab.menuSelectId === '' ? localStorage.getItem('menuSelectId') : this.$store.state.navtab.menuSelectId },
         set (val) { this.$store.commit('navtab/updateMenuSelectId', val) }
       }
     },
@@ -87,7 +87,7 @@
           return
         }
         for (let route of this.dynamicMenuRoutes) {
-          if (route.path === path.replace('/' ,'') ) {
+          if (route.path === path.replace('/', '')) {
             this.menuName = route.meta.title
             this.menuSelectId = route.meta.menuId
             break

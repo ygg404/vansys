@@ -1,21 +1,23 @@
 <!--收费统计表-->
 <template>
-  <div class="mod-config">
-    <el-card>
-      <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-        <el-form-item style="margin-left: 20px;">
-          <el-date-picker v-model="dataForm.startDate" type="date"  placeholder="开始日期" style="width: 150px;" :picker-options="pickerOptionsStart" @change="changeEnd"></el-date-picker> 至
-          <el-date-picker v-model="dataForm.endDate" type="date"  placeholder="结束日期" style="width: 150px;" :picker-options="pickerOptionsEnd" @change="changeStart"></el-date-picker>
+  <div>
+    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+      <div style="width:95%;margin:0 auto;">
+        <el-form-item style="margin-bottom:5px;margin-top:10px;">
+          <el-date-picker style="float:left;width:45%;" v-model="dataForm.startDate" type="date"  placeholder="开始日期"  :picker-options="pickerOptionsStart" @change="changeEnd"></el-date-picker>
+          <div style="float:left;width:10%;text-align: center;">至</div>
+          <el-date-picker style="float:left;width:45%;" v-model="dataForm.endDate" type="date"  placeholder="结束日期"  :picker-options="pickerOptionsEnd" @change="changeStart"></el-date-picker>
         </el-form-item>
-        <el-form-item label="业务负责人:" >
-          <el-select v-model="dataForm.business" placeholder="全部" clearable  style="width: 150px;" @change="getChargeChart">
+      </div>
+      <div style="width:95%;margin:0 auto;">
+        <el-form-item>
+          <el-select v-model="dataForm.business" placeholder="业务负责人(全部)" clearable  style="width:80%" @change=" getServiceChart">
             <el-option v-for="item in ContractBusinessList" :key="item" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item>
-          <el-button icon="el-icon-printer" type="primary" @click="printChart">打印</el-button>
-        </el-form-item>
-      </el-form>
+      </div>
+    </el-form>
+
       <div id="chartId">
         <div class="chart_title">
           <div>收费统计表</div>
@@ -54,7 +56,7 @@
           </el-row>
         </div>
       </div>
-    </el-card>
+
   </div>
 </template>
 

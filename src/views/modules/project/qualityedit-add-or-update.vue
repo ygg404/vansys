@@ -1,9 +1,9 @@
 <template>
-  <van-dialog 
+  <van-dialog
     title="编辑质检反馈"
     show-cancel-button
-    width="90%" style="height:440px;" 
-    v-model="visible" @cancel="closeHandle" @confirm="setReportHandle">  
+    width="90%" style="height:440px;"
+    v-model="visible" @cancel="closeHandle" @confirm="setReportHandle">
       <div>
         <wang-editor :content="ueContent" :id='id' :projectNo="projectNo" @refreshContent="getReportHandle" class="toolbar"></wang-editor>
       </div>
@@ -26,15 +26,15 @@
     components: {
       WangEditor
     },
-      computed: {
-    documentClientHeight: {
-      get() {
-        return this.$store.state.common.documentClientHeight;
+    computed: {
+      documentClientHeight: {
+        get () {
+          return this.$store.state.common.documentClientHeight
+        }
       }
-    }
-  },
+    },
     methods: {
-      init (content,projectNo) {
+      init (content, projectNo) {
         // if (this.editor !== '') this.editor.empty()
         this.projectNo = projectNo
         this.visible = true

@@ -152,101 +152,100 @@
 </template>
 
 <script>
-import moment from "moment";
-import index from "../../../icons";
-import Vue from "vue";
-import chartcommonModule from "@/components/chartcommon-module";
+import moment from 'moment'
+import Vue from 'vue'
+import chartcommonModule from '@/components/chartcommon-module'
 export default {
-  data() {
+  data () {
     return {
       sdshow: false,
       edshow: false,
       minDate: new Date(2000, 0, 1),
       maxDate: new Date(2025, 10, 1),
-      sDateStr: "",
-      eDateStr: "",
-      workgroupname: "",
+      sDateStr: '',
+      eDateStr: '',
+      workgroupname: '',
       dataForm: {
-        groupId: "",
-        startDate: "",
-        endDate: ""
+        groupId: '',
+        startDate: '',
+        endDate: ''
       },
-      monthTitle: "", // 月份标题
+      monthTitle: '', // 月份标题
       workGroupList: [],
       totalOutput: 0, // 合计总产值
       totalProjectSum: 0, // 项目合计数
       dataListLoading: false,
       dataList: []
-    };
+    }
   },
   components: {
     chartcommonModule
   },
-  created() {
-    let datenow = new Date();
+  created () {
+    let datenow = new Date()
     this.dataForm.startDate = this.dataForm.endDate = new Date(
       datenow.getFullYear(),
       datenow.getMonth() - 1,
       1
-    );
-    this.getWorkGroupDataListFromApi();
-    this.getOutputChart();
+    )
+    this.getWorkGroupDataListFromApi()
+    this.getOutputChart()
   },
   methods: {
-    sdPicker(val) {
-      this.dataForm.startDate = val;
-      this.dataForm.endDate = this.dataForm.startDate;
+    sdPicker (val) {
+      this.dataForm.startDate = val
+      this.dataForm.endDate = this.dataForm.startDate
       this.sDateStr = this.eDateStr = moment(this.dataForm.startDate).format(
-        "YYYY-MM"
-      );
-      this.getOutputChart();
-      this.sdshow = false;
+       'YYYY-MM'
+      )
+      this.getOutputChart()
+      this.sdshow = false
     },
-    edPicker(val) {
-      this.dataForm.endDate = val;
+    edPicker (val) {
+      this.dataForm.endDate = val
       if (this.dataForm.endDate < this.dataForm.startDate) {
-        this.dataForm.startDate = this.dataForm.endDate;
-        this.sDateStr = moment(this.dataForm.startDate).format("YYYY-MM");
+        this.dataForm.startDate = this.dataForm.endDate
+        this.sDateStr = moment(this.dataForm.startDate).format('YYYY-MM')
       }
-      this.eDateStr = moment(this.dataForm.endDate).format("YYYY-MM");
-      this.getOutputChart();
-      this.edshow = false;
+      this.eDateStr = moment(this.dataForm.endDate).format('YYYY-MM')
+      this.getOutputChart()
+      this.edshow = false
     },
-    formatter(type, val) {
-      if (type === "year") {
-        return `${val}年`;
-      } else if (type === "month") {
-        return `${val}月`;
+    formatter (type, val) {
+      if (type === 'year') {
+        return `${val}年`
+      } else if (type === 'month') {
+        return `${val}月`
       }
-      return val;
+      return val
     },
-    onworkGroupConfirm(item) {
-      this.dataForm.groupId = item.id;
-      this.workgroupname = item.name;
-      this.getOutputChart();
+    onworkGroupConfirm (item) {
+      this.dataForm.groupId = item.id
+      this.workgroupname = item.name
+      this.getOutputChart()
     },
-    goBack() {
-      this.$router.push({ name: "project-project" });
+    goBack () {
+      this.$router.push({ name: 'project-project' })
     },
     // 获取数据列表
-    getOutputChart() {
+    getOutputChart () {
       // 月份标题
       if (this.dataForm.startDate === this.dataForm.endDate) {
         this.monthTitle =
           this.dataForm.startDate.getFullYear() +
-          "年" +
+          '年' +
           (this.dataForm.startDate.getMonth() + 1) +
-          "月";
+          '月'
       } else {
         this.monthTitle =
           this.dataForm.startDate.getFullYear() +
-          "年" +
+          '年' +
           (this.dataForm.startDate.getMonth() + 1) +
-          "月至" +
+          '月至' +
           this.dataForm.endDate.getFullYear() +
-          "年" +
+          '年' +
           (this.dataForm.endDate.getMonth() + 1) +
-          "月";
+          '月'
       }
       this.sDateStr = moment(
         new Date(
@@ -254,18 +253,18 @@ export default {
           this.dataForm.startDate.getMonth(),
           1
         )
-      ).format("YYYY-MM");
+      ).format('YYYY-MM')
       this.eDateStr = moment(
         new Date(
           this.dataForm.endDate.getFullYear(),
           this.dataForm.endDate.getMonth(),
           1
         )
-      ).format("YYYY-MM");
-      this.dataListLoading = true;
+      ).format('YYYY-MM')
+      this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl("/project/chartoutput/list"),
-        method: "get",
+        url: this.$http.adornUrl('/project/chartoutput/list'),
+        method: 'get',
         params: this.$http.adornParams({
           groupId: this.dataForm.groupId,
           startDate: this.sDateStr,
@@ -274,132 +273,132 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 0) {
           // this.dataList = data.list
-          this.tableDataInit(data.list);
+          this.tableDataInit(data.list)
         } else {
-          this.dataList = [];
+          this.dataList = []
         }
-        this.dataListLoading = false;
-      });
+        this.dataListLoading = false
+      })
     },
     // 表格初始化
-    tableDataInit(datalist) {
-      this.totalOutput = 0;
-      this.totalProjectSum = 0;
-      this.dataList = [];
-      let groupName = null;
+    tableDataInit (datalist) {
+      this.totalOutput = 0
+      this.totalProjectSum = 0
+      this.dataList = []
+      let groupName = null
       datalist.forEach((item, index) => {
-        item.groupShow = false;
-        item.footerShow = false;
-        this.totalProjectSum += 1;
+        item.groupShow = false
+        item.footerShow = false
+        this.totalProjectSum += 1
         let outputtemp = parseFloat(
           (item.projectActuallyOutput == null
             ? 0
             : item.projectActuallyOutput
           ).toFixed(2)
-        );
+        )
         this.totalOutput = parseFloat(
           (this.totalOutput + outputtemp).toFixed(2)
-        );
-      });
-      console.log(this.totalOutput);
+        )
+      })
+      console.log(this.totalOutput)
       datalist.forEach((item, index) => {
         if (groupName !== item.groupName) {
-          item.groupShow = true;
-          groupName = item.groupName;
-          let projectSum = 0;
-          let outputSum = 0;
+          item.groupShow = true
+          groupName = item.groupName
+          let projectSum = 0
+          let outputSum = 0
           for (let i = index; i < datalist.length; i++) {
             if (datalist[i].groupName === groupName) {
-              projectSum += 1;
-              outputSum += datalist[i].projectActuallyOutput;
-              datalist[i].projectSum = projectSum;
-              datalist[i].outputSum = parseFloat(outputSum.toFixed(2));
-              if (i >= datalist.length - 1) datalist[i].footerShow = true;
+              projectSum += 1
+              outputSum += datalist[i].projectActuallyOutput
+              datalist[i].projectSum = projectSum
+              datalist[i].outputSum = parseFloat(outputSum.toFixed(2))
+              if (i >= datalist.length - 1) datalist[i].footerShow = true
             } else {
-              datalist[i - 1].footerShow = true;
-              break;
+              datalist[i - 1].footerShow = true
+              break
             }
           }
           // this.dataList.push(groupdat)
         }
-      });
-      this.dataList = datalist;
-      console.log(this.datalist);
+      })
+      this.dataList = datalist
+      console.log(this.datalist)
     },
     // 从后台获得工作组数据列表内容  填充至选项
-    getWorkGroupDataListFromApi() {
+    getWorkGroupDataListFromApi () {
       return new Promise((resolve, reject) => {
         this.$http({
-          url: this.$http.adornUrl("/set/workgroup/selectworkgroup"),
-          method: "get"
+          url: this.$http.adornUrl('/set/workgroup/selectworkgroup'),
+          method: 'get'
         }).then(({ data }) => {
           if (data && data.code === 0) {
-            this.workGroupList = data.list;
-            resolve(data.list);
+            this.workGroupList = data.list
+            resolve(data.list)
           } else {
-            this.workGroupList = [];
+            this.workGroupList = []
           }
-        });
-      });
+        })
+      })
     },
 
     // 导出excel表
-    exportChartHandle() {
-      this.dataListLoading = true;
-      let that = this;
+    exportChartHandle () {
+      this.dataListLoading = true
+      let that = this
       let startDate = moment(
         new Date(
           this.dataForm.startDate.getFullYear(),
           this.dataForm.startDate.getMonth(),
           1
         )
-      ).format("YYYY-MM-DD");
+      ).format('YYYY-MM-DD')
       let endDate = moment(
         new Date(
           this.dataForm.endDate.getFullYear(),
           this.dataForm.endDate.getMonth() + 1,
           1
         )
-      ).format("YYYY-MM-DD");
-      let downTitle = this.monthTitle;
+      ).format('YYYY-MM-DD')
+      let downTitle = this.monthTitle
       let downurl =
-        window.SITE_CONFIG["baseUrl"] +
-        "/project/chartoutput/exportExcel?startDate=" +
+        window.SITE_CONFIG['baseUrl'] +
+        '/project/chartoutput/exportExcel?startDate=' +
         startDate +
-        "&endDate=" +
+        '&endDate=' +
         endDate +
-        "&groupId=" +
-        this.dataForm.groupId;
-      let xhr = new XMLHttpRequest();
+        '&groupId=' +
+        this.dataForm.groupId
+      let xhr = new XMLHttpRequest()
       // GET请求,请求路径url,async(是否异步)
-      xhr.open("GET", downurl, true);
+      xhr.open('get', downurl, true)
       // 设置请求头参数的方式,如果没有可忽略此行代码
-      xhr.setRequestHeader("token", Vue.cookie.get("token"));
+      xhr.setRequestHeader('token', Vue.cookie.get('token'))
       // 设置响应类型为 blob
-      xhr.responseType = "blob";
+      xhr.responseType = 'blob'
       // 关键部分
-      xhr.onload = function(e) {
-        that.dataListLoading = false;
+      xhr.onload = function (e) {
+        that.dataListLoading = false
         // 如果请求执行成功
         if (this.status === 200) {
-          let blob = this.response;
-          console.log(e);
-          let filename = downTitle + "产值统计表.xls";
-          let a = document.createElement("a");
+          let blob = this.response
+          console.log(e)
+          let filename = downTitle + '产值统计表.xls'
+          let a = document.createElement('a')
           // 创键临时url对象
-          var url = URL.createObjectURL(blob);
-          a.href = url;
-          a.download = filename;
-          a.click();
+          var url = URL.createObjectURL(blob)
+          a.href = url
+          a.download = filename
+          a.click()
           // 释放之前创建的URL对象
-          window.URL.revokeObjectURL(url);
+          window.URL.revokeObjectURL(url)
         }
-      };
+      }
       // 发送请求
-      xhr.send();
+      xhr.send()
     }
   }
-};
+}
 </script>
 
 <style scoped>

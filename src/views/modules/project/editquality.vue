@@ -1,7 +1,7 @@
 <template>
   <div class="mod-config">
     <projectInfo :Info="projectInfo" :infotype="3"/>
-  
+
   <van-collapse :value="panelRShow" @change="panelRShowEvent" style="width:95%;margin:0 auto;">
     <van-collapse-item title="返修记录信息" name="1" class="InfoTitle">
        <van-row style="margin-top:2px;padding-top:5px;padding-bottom:5px;border-bottom: 1px solid rgb(195, 197, 199);">
@@ -27,7 +27,7 @@
    </van-collapse-item>
  </van-collapse>
 
- 
+
     <van-row style="height:40px; padding:10px;" type="flex" justify="center" align="center">
         <van-col span="8">
         <van-row type="flex" justify="center" align="center">
@@ -41,7 +41,7 @@
          <button class="cnbtn" @click="addQualityscoreHandler">编辑质量评分</button>
        </van-col>
     </van-row>
-  
+
   <van-collapse :value="panelQIFShow" @change="panelQIFShowEvent" style="width:95%;margin:0 auto;">
     <van-collapse-item title="质检反馈" name="1" class="InfoTitle">
     <div ref="reportId"></div>
@@ -52,18 +52,17 @@
     <van-form  ref="dataForm">
         <van-row type="flex" align="center" justify="center" class="qsn">
           <van-col span="15">
-            <van-field v-model="dataForm.qualityScore"  label="质量分数" type="number" 
+            <van-field v-model="dataForm.qualityScore"  label="质量分数" type="number"
                    :rules="[{ required: true, message: '质量分数不能为空' }]" />
           </van-col>
         </van-row>
       </van-form>
-  <!---->
 
  <van-row style="margin-bottom:20px;">
    <van-col span="6" class="footerbtngroup"><button style="width:80%;" class="cnbtn btnyellow"  @click="goBack">返回</button></van-col>
    <van-col span="6" class="footerbtngroup"><button style="width:80%;" class="cnbtn" @click="dataFormSubmit" :disabled="isCheck == 2">提交</button></van-col>
    <van-col span="6" class="footerbtngroup"><button style="width:80%;" class="cnbtn btnpink" @click="repairNoteSubmit" :disabled="isCheck == 2">退回返修</button></van-col>
-   <van-col span="6" class="footerbtngroup"><button style="width:80%;" class="cnbtn btnLightpink" @click="recallRepairHandle" :disabled="isCheck != 2">撤回返修</button></van-col> 
+   <van-col span="6" class="footerbtngroup"><button style="width:80%;" class="cnbtn btnLightpink" @click="recallRepairHandle" :disabled="isCheck != 2">撤回返修</button></van-col>
 </van-row>
 
 
@@ -91,20 +90,12 @@
         reportTitle: '',
         qualityScoreVisible: false,
         repairVisible: false,
-        editVisible:false,
+        editVisible: false,
         backWorkList: [],
         dataForm: {
           id: '',
           qualityNote: '',
           qualityScore: ''
-        },
-        dataRule: {
-          qualityNote: [
-            { required: true, message: '质量综述不能为空', trigger: 'blur' }
-          ],
-          qualityScore: [
-            { required: true, message: '质量分数不能为空', trigger: 'blur' }
-          ]
         },
         repairNotelist: [], // 返修快捷输入列表
         repairValue: '', // 返修短语
@@ -123,37 +114,28 @@
       qualityeditAddOrUpdate,
       projectInfo
     },
-    created(){
+    created () {
       this.init()
     },
-      methods: {
-      panelPShowEvent() {
-        if(this.panelPShow.length == 1)
-        {
+    methods: {
+      panelPShowEvent () {
+        if (this.panelPShow.length == 1) {
           this.panelPShow = []
-        }
-        else
-        {
+        } else {
           this.panelPShow = ['1']
         }
       },
-      panelRShowEvent() {
-        if(this.panelRShow.length == 1)
-        {
+      panelRShowEvent () {
+        if (this.panelRShow.length == 1) {
           this.panelRShow = []
-        }
-        else
-        {
+        } else {
           this.panelRShow = ['1']
         }
       },
-      panelQIFShowEvent() {
-        if(this.panelQIFShow.length == 1)
-        {
+      panelQIFShowEvent () {
+        if (this.panelQIFShow.length === 1) {
           this.panelQIFShow = []
-        }
-        else
-        {
+        } else {
           this.panelQIFShow = ['1']
         }
       },
@@ -172,47 +154,45 @@
       },
       // 提交数据
       dataFormSubmit () {
-         this.$refs.dataForm.validateAll().then(
+        this.$refs.dataForm.validateAll().then(
         success => {
-             let that = this
-            that.dataLoading = true
-            that.loadingText = ''
-            that.activeNames = []
-            this.$http({
-              url: this.$http.adornUrl(`/project/quality/save`),
-              method: 'post',
-              data: this.$http.adornData({
-                'projectNo': this.projectNo,
-                'qualityNote': this.dataForm.qualityNote,
-                'qualityScore': this.dataForm.qualityScore,
-                'qualityReport': this.dataForm.qualityReport
-              }),
-              onUploadProgress (proEvent) {
-                that.loadingText = '正在上传中（' + parseInt(proEvent.loaded * 100 / proEvent.total).toString() + '%)'
-              }
-            }).then(({data}) => {
-              if (data && data.code === 0) {
-                that.dataLoading = false
-                this.$notify({
+          let that = this
+          that.dataLoading = true
+          that.loadingText = ''
+          that.activeNames = []
+          this.$http({
+            url: this.$http.adornUrl(`/project/quality/save`),
+            method: 'post',
+            data: this.$http.adornData({
+              'projectNo': this.projectNo,
+              'qualityNote': this.dataForm.qualityNote,
+              'qualityScore': this.dataForm.qualityScore,
+              'qualityReport': this.dataForm.qualityReport
+            }),
+            onUploadProgress (proEvent) {
+              that.loadingText = '正在上传中（' + parseInt(proEvent.loaded * 100 / proEvent.total).toString() + '%)'
+            }
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              that.dataLoading = false
+              this.$notify({
                 message: '保存并提交成功',
                 type: 'success',
                 duration: 1500
               })
-                this.visible = false
-                this.$emit('refreshDataList')
-                this.goBack()
-              } else {
-                 this.$notify({
+              this.visible = false
+              this.$emit('refreshDataList')
+              this.goBack()
+            } else {
+              this.$notify({
                 message: data.msg,
                 type: 'danger',
                 duration: 1500
               })
-              }
-            })
-
+            }
+          })
         }
          )
-       
       },
       // 查看质检反馈内容
       checkReportHandle (item) {
@@ -247,17 +227,17 @@
         })
       },
       // 获取质检信息
-      getQualityByProjectNo (projectNo ) {
+      getQualityByProjectNo (projectNo) {
         return new Promise((resolve, reject) => {
           this.$http({
             url: this.$http.adornUrl(`/project/quality/getInfo`),
             method: 'get',
             params: this.$http.adornParams({
-              'projectNo': projectNo,
+              'projectNo': projectNo
             })
           }).then(({data}) => {
             if (data && data.code === 0) {
-              if ( data.checkQuality != null) {
+              if (data.checkQuality != null) {
                 this.dataForm.id = data.checkQuality.id
                 this.dataForm.qualityNote = data.checkQuality.qualityNote
                 this.dataForm.qualityScore = data.checkQuality.qualityScore
@@ -336,49 +316,48 @@
         this.activeNames = []
         let that = this
         this.$dialog.alert({
-             title: "提示", 
-             message: "是否确定退回返修，并将质检报告反馈于作业人员？",
-             showCancelButton: true 
-        }).then(() => { 
-            if (this.dataForm.qualityReport === null || this.dataForm.qualityReport === ''){
-                this.$message.error('质检反馈报告不能为空!')
-                return
+          title: '提示',
+          message: '是否确定退回返修，并将质检报告反馈于作业人员？',
+          showCancelButton: true
+        }).then(() => {
+          if (this.dataForm.qualityReport === null || this.dataForm.qualityReport === '') {
+            this.$message.error('质检反馈报告不能为空!')
+            return
+          }
+          that.dataLoading = true
+          that.loadingText = ''
+          this.$http({
+            url: this.$http.adornUrl(`/project/backwork/save`),
+            method: 'post',
+            data: this.$http.adornData({
+              'projectNo': this.projectNo,
+              'backNote': this.dataForm.qualityReport
+            }),
+            onUploadProgress (proEvent) {
+              that.loadingText = '正在上传中（' + parseInt(proEvent.loaded * 100 / proEvent.total).toString() + '%)'
             }
-            that.dataLoading = true
-            that.loadingText = ''
-            this.$http({
-                url: this.$http.adornUrl(`/project/backwork/save`),
-                method: 'post',
-                data: this.$http.adornData({
-                  'projectNo': this.projectNo,
-                  'backNote': this.dataForm.qualityReport
-                }),
-                onUploadProgress (proEvent) {
-                  that.loadingText = '正在上传中（' + parseInt(proEvent.loaded * 100 / proEvent.total).toString() + '%)'
-                }
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                   this.$notify({
-                     message: '操作成功',
-                     type: 'success',
-                     duration: 1500
-                   })
-                   that.dataLoading = false
-                   this.visible = false
-                   this.$emit('refreshDataList')
-                   this.goBack()
-                } else {
-                   this.$notify({
-                     message:data.msg,
-                     type: 'danger',
-                     duration: 1500
-                  })
-                }
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              this.$notify({
+                message: '操作成功',
+                type: 'success',
+                duration: 1500
               })
-          }).catch(() => { 
-
+              that.dataLoading = false
+              this.visible = false
+              this.$emit('refreshDataList')
+              this.goBack()
+            } else {
+              this.$notify({
+                message: data.msg,
+                type: 'danger',
+                duration: 1500
+              })
+            }
           })
-    
+        }).catch(() => {
+
+        })
       },
       // 添加质量评分
       addQualityscoreHandler () {
@@ -401,7 +380,7 @@
       editQualityReportHandler () {
         this.editVisible = true
         this.$nextTick(() => {
-          this.$refs.qualityeditAddOrUpdate.init(this.dataForm.qualityReport,this.projectNo)
+          this.$refs.qualityeditAddOrUpdate.init(this.dataForm.qualityReport, this.projectNo)
         })
       },
       // 撤回返修

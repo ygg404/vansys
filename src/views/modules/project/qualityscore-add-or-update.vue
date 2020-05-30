@@ -1,14 +1,14 @@
 <template>
-  <van-dialog title="质量评分" v-model="visible" width="90%" @cancel="visible = false" 
+  <van-dialog title="质量评分" v-model="visible" width="90%" @cancel="visible = false"
               show-cancel-button @confirm="dataFormSubmit()">
     <div style="overflow:scroll; width:100%; height:500px;">
-        <div :key="index" v-for="(scoreDetail, index) in scoreDetailList">
-        <div class="form_title" v-if="index==0" style="margin-bottom:10px;padding-left:5px;">作业依据、空间基准及数学精度(权:0.3) <span class="from_span">质量元素扣分: <span style="color: red">{{kjScore}}</span></span></div>
+      <div :key="index" v-for="(scoreDetail, index) in scoreDetailList">
+        <div class="form_title" v-if="index==0" style="margin-bottom:10px;padding-left:5px;">作业依据、空间基准及数学精度(权:0.3) <span class="from_span">质量元素扣分: <span style="color: #ff0000">{{kjScore}}</span></span></div>
         <div class="form_title" v-if="index==6" style="margin-bottom:10px;padding-left:5px;">数据采集、处理质量(权:0.4) <span class="from_span">质量元素扣分:<span style="color: red">{{cjScore}}</span></span></div>
-        <div class="form_title" v-if="index==18" style="margin-bottom:10px;padding-left:5px;">成果资料质量(权:0.3) <span class="from_span">质量元素扣分:<span style="color: red">{{cgScore}}</span></span></div>
-  
-        <div style="border: 1px dotted rgb(195, 197, 199);margin:5px;padding:5px;">
-          <van-row>
+        <div class="form_title" v-if="index==18" style="margin-bottom:10px;padding-left:5px;">成果资料质量(权:0.3) <span class="from_span">质量元素扣分:<span style="color: #ff0000">{{cgScore}}</span></span></div>
+
+        <div style="border: 1px dotted rgb(195, 197, 199);margin:5px;padding:6px;">
+          <van-row style="margin-bottom:5px;">
             <van-col span="12" style="font-size:14px;padding-left:5px;">检查项内容:{{scoreDetail.checkcontent}}</van-col>
             <van-col span="12">
               <div style="margin-left:10%;width:80%;" class="numinputstyle">
@@ -16,36 +16,18 @@
               </div>
             </van-col>
           </van-row>
-          <van-row>
-            <div style="padding-top:10px;padding-bottom:10px;">
-              <div style="width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
-                 <div style="margin-left:20px;" class="typeunitstyle">错漏数量:</div>
-                 <div class="typeunitstyle" style="margin-right:100px;">检查项扣分:<span style="color: red">{{scoreDetail.score}}</span></div>
-              </div>
-              <div style="width:100%;height:25px; display:flex;align-items:center;" >
-                 <div style="width:25%;float:left;">
-                    <div style="margin-left:10%;width:80%;" class="numinputstyle">
-                       <van-field v-model="scoreDetail.check_a" value="A类" type="number" @change="scoreChangeHandler" />
-                    </div>
-                 </div>
-                 <div style="width:25%;float:left;">
-                    <div style="margin-left:10%;width:80%;" class="numinputstyle">
-                       <van-field v-model="scoreDetail.check_b" value="B类" type="number" @change="scoreChangeHandler"/>
-                    </div>
-                 </div>
-                 <div style="width:25%;float:left;">
-                    <div style="margin-left:10%;width:80%;" class="numinputstyle">
-                       <van-field v-model="scoreDetail.check_c" value="C类" type="number" @change="scoreChangeHandler"/>
-                    </div>
-                 </div>
-                 <div style="width:25%;float:left;">
-                    <div style="margin-left:10%;width:80%;" class="numinputstyle">
-                       <van-field v-model="scoreDetail.check_d" value="D类" type="number" @change="scoreChangeHandler"/>
-                    </div>
-                 </div>
-              </div>
-            </div>
+
+          <van-row style="margin-bottom:5px;">
+            <van-col span="10" class="tac fs14">错漏数量:</van-col>
+            <van-col span="10" class="tac fs14">检查项扣分:<span style="color: red">{{scoreDetail.score}}</span></van-col>
           </van-row>
+          <van-row class="numinputstyle" style="padding-bottom:4px;" type="flex" justify="space-around">
+            <van-col span="5"><van-field v-model="scoreDetail.check_a" placeholder="A类" type="number" @change="scoreChangeHandler" /></van-col>
+            <van-col span="5"><van-field v-model="scoreDetail.check_b" placeholder="B类" type="number" @change="scoreChangeHandler"/></van-col>
+            <van-col span="5"><van-field v-model="scoreDetail.check_c" placeholder="C类" type="number" @change="scoreChangeHandler"/></van-col>
+            <van-col span="5"><van-field v-model="scoreDetail.check_d" placeholder="D类" type="number" @change="scoreChangeHandler"/></van-col>
+          </van-row>
+
         </div>
       </div>
     </div>
@@ -102,7 +84,7 @@
           '图、文（表）一致性',
           '资料规整性（字体、大小、格式、页码、纸张大小）',
           '成果资料的齐全性'
-    ],
+        ],
         kjScore: 0, // 空间扣分
         cjScore: 0,   // 采集扣分
         cgScore: 0,  // 成果质量扣分
@@ -169,9 +151,9 @@
         this.cgScore = 0
         this.scoreDetailList.forEach((item, index) => {
           item.score = (item.check_a === '' ? 0 : item.check_a * 42)
-                      + (item.check_b === '' ? 0 : item.check_b * 12)
-                      + (item.check_c === '' ? 0 : item.check_c * 4)
-                      + (item.check_d === '' ? 0 : item.check_d * 1)
+            + (item.check_b === '' ? 0 : item.check_b * 12)
+            + (item.check_c === '' ? 0 : item.check_c * 4)
+            + (item.check_d === '' ? 0 : item.check_d * 1)
           if (index >= 0 && index < 6) this.kjScore += item.score
           if (index >= 6 && index < 18) this.cjScore += item.score
           if (index >= 18) this.cgScore += item.score
@@ -261,13 +243,18 @@
     font-weight: bolder;
     font-size: 15px;
   }
-  .typeunitstyle{
-  font-size:14px;
-}
-.numinputstyle .van-field__control{
+  .fs14{
+    font-size:14px;
+  }
+  .numinputstyle .van-field__control{
     border: 1px solid #cfcfcc;
-}
-.numinputstyle .van-cell{
-  padding: 0px;
-}
+  }
+  .numinputstyle .van-cell{
+    padding: 0px;
+  }
+  .tac{
+    text-align: center;
+  }
+
+
 </style>

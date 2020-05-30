@@ -11,12 +11,10 @@
                    :rules="[{ required: true, message: '请填写项目类型' }]"  disabled/>
         <van-field v-model="dataForm.projectName" name="projectName" label="项目名称" placeholder="项目名称"
                    :rules="[{ required: false, message: '请填写项目名称' }]"/>
-        <van-field v-model="dataForm.projectBusiness" name="" label="业务负责人" placeholder="业务负责人" disabled
-                   :rules="[{ required: true, message: '请填写业务负责人' }]" disabled/>
-        <van-field v-model="dataForm.projectAuthorize" name="projectAuthorize" label="委托单位" placeholder="委托单位"
-                   :rules="[{ required: true, message: '请填写委托单位' }]" disabled/>
-        <van-field v-model="dataForm.projectNote" name="" label="委托要求" placeholder="委托要求" disabled
-                   :rules="[{ required: true, message: '请填写委托要求' }]" disabled/>
+        <van-field v-model="dataForm.projectAuthorize" name="projectAuthorize" label="委托单位" placeholder="委托单位" disabled/>
+        <van-field v-model="dataForm.projectNote" name="" label="委托要求" placeholder="委托要求" disabled/>
+        <van-field v-model="dataForm.projectBusiness" name="" label="业务负责人" placeholder="业务负责人" disabled/>
+        <van-field v-model="dataForm.projectType" name="" label="项目类型" placeholder="项目类型" disabled/>
         <van-field v-model="dataForm.projectStartDateTime" label="项目启动时间" rule="projectStartDateTime" placeholder="项目启动时间" readonly @click="datePickerShow = true"
                    :rules="[{ required: true, message: '请填写项目启动时间' }]"/>
       </van-form>
@@ -37,8 +35,7 @@
 </template>
 
 <script>
-  import moment from "moment";
-
+  import moment from 'moment'
   export default {
     data () {
       return {

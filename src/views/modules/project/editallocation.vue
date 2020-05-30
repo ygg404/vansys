@@ -9,14 +9,15 @@
         </van-row>
         <van-row v-if="dataForm.projectCharge != null" class="mlmrmtwhbb">
           <div v-for="group in this.groupWorkList" :key="group.groupId">
-            <div
-              v-if="group.checked"
-              class="groupitem"
-            >
+            <div  v-if="group.checked" class="groupitem">
               {{group.groupName}}:占比{{group.outputRate}}%，产值:{{group.projectOutput}}，最短工期:{{group.shortDateTime}}，最长工期:{{group.lastDateTime}}
             </div>
+            <!---->
+            <!---->
           </div>
         </van-row>
+
+
       </van-row>
 
       <van-form ref="dataForm" class="vf">
@@ -81,37 +82,35 @@
           />
         </div>
 
-        <van-row type="flex" justify="center" align="center">
-          <van-col span="12">
-            <div class="ccl">
-              <van-field
-                @change="countWorkDateHandler"
-                v-model="dataForm.projectOutput"
-                label="预计产值"
-                type="number"
-                :rules="[{ required: true, message: '预计产值不能为空' }]"
-              />
-              <van-field
-                v-model="dataForm.projectWorkDate"
-                label="作业工期"
-                type="number"
-                :rules="[{ required: true, message: '作业工期不能为空' }]"
-              />
-              <van-field
-                v-model="dataForm.projectQualityDate"
-                label="预计产值"
-                type="number"
-                :rules="[{ required: true, message: '预计产值不能为空' }]"
-              />
-            </div>
+        <van-row type="flex" justify="space-between" align="center">
+          <van-col span="15">
+
+             <div class="ccl" style="border:1px solid #d9d2d2;">
+               <van-field class="cfield" @change="countWorkDateHandler" v-model="dataForm.projectOutput" type="number" :rules="[{ required: true, message: '预计产值不能为空' }]">
+                 <template slot="label">
+                   <div style="font-size:16px;">预计产值</div>
+                 </template>
+               </van-field>
+               <van-field class="cfield" v-model="dataForm.projectWorkDate" type="number" :rules="[{ required: true, message: '作业工期不能为空' }]">
+                 <template slot="label">
+                   <div style="font-size:16px;">作业工期</div>
+                 </template>
+               </van-field>
+               <van-field class="cfield" v-model="dataForm.projectQualityDate" type="number" :rules="[{ required: true, message: '预计产值不能为空' }]">
+                 <template slot="label">
+                   <div style="font-size:16px;">预计产值</div>
+                 </template>
+               </van-field>
+             </div>
+
           </van-col>
-          <van-col span="8" class="pobtn">
+          <van-col span="9">
             <van-button type="info" @click="setProjectOutputHandle()">产值明细计算</van-button>
           </van-col>
         </van-row>
 
         <van-row type="flex" justify="center" align="center" class="mtmb10">
-          <van-col span="8" class="pobtn">
+          <van-col span="8">
             <van-button type="info" @click="projectGroupHandle(projectNo)">选择作业组</van-button>
           </van-col>
         </van-row>
@@ -166,48 +165,37 @@
           <div class="mbmt5">
             <span class="fsml">预计总产值：{{totalOutPut}}</span>
           </div>
+          <van-row type="flex" justify="space-around" class="f13">
+            <van-col span="10" class="tac">作业类型</van-col>
+            <van-col span="10" class="tac">量单位</van-col>
+          </van-row>
           <van-row class="ptsdv">
             <van-col span="6" class="tac">产值单位</van-col>
             <van-col span="6" class="tac">难度系数</van-col>
             <van-col span="6" class="tac">工作量</van-col>
             <van-col span="6" class="tac">产值</van-col>
           </van-row>
+
           <div>
             <van-list :key="item.id + index" v-for="(item,index) in chooseRatio(workTypelist)">
-              <van-row>
-                <van-col>
-                  <van-row type="flex" align="center" justify="center" class="pglsfirst">
-                    <van-col span="16" style="padding:4px;">{{item.typeName}}</van-col>
-                    <van-col span="8">
-                      <van-row type="flex" align="center" justify="center">
-                        <van-col>{{item.unit}}</van-col>
-                      </van-row>
-                    </van-col>
+              <van-row class="ptpd5">
+                <van-col span="24">
+                  <van-row type="flex" align="center" justify="space-around" class="pglsfirst">
+                    <van-col span="10" class="tac">{{item.typeName}}</van-col>
+                    <van-col span="10" class="tac">{{item.unit}}</van-col>
                   </van-row>
-                  <div class="whdfaic">
-                    <div class="w25fl">
-                      <div class="nis">{{item.unitOutput}}</div>
-                    </div>
-                    <div class="w25fl">
-                      <div class="nis">
-                        <van-field v-model="item.projectRatio" @change="checkOutputVoInit"/>
-                      </div>
-                    </div>
-                    <div class="w25fl">
-                      <div class="nis">
-                        <van-field v-model="item.workLoad" @change="checkOutputVoInit"/>
-                      </div>
-                    </div>
-                    <div class="w25fl">
-                      <div class="nis">{{item.typeOutput}}</div>
-                    </div>
-                  </div>
+                  <van-row type="flex" align="center">
+                    <van-col span="6" class="tac">{{item.unitOutput}}</van-col>
+                    <van-col span="6" class="tac"><div class="nis"><van-field v-model="item.projectRatio" @change="checkOutputVoInit"/></div></van-col>
+                    <van-col span="6" class="tac"><div class="nis"><van-field v-model="item.workLoad" @change="checkOutputVoInit"/></div></van-col>
+                    <van-col span="6" class="tac">{{item.typeOutput}}</van-col>
+                  </van-row>
                 </van-col>
               </van-row>
             </van-list>
           </div>
           <!---->
-          <div style="margin-left:10%;margin-bottom:10px;">备注填写</div>
+          <div class="bztx">备注填写</div>
 
           <textarea class="tas" v-model="projectInfo.outputRemark"/>
           <!---->
@@ -225,7 +213,10 @@
         <van-col span="4" class="tc">产值</van-col>
       </van-row>
       <van-row class="whmlmr">
-        <div class="pbpt" :key="index" v-for="(item,index) in chooseRatio(workTypelist)">
+       <div  v-if="chooseRatio(workTypelist).length === 0" class="zw">
+         暂无数据
+       </div>
+        <div v-else class="pbpt" :key="index" v-for="(item,index) in chooseRatio(workTypelist)">
           <van-row>
             <van-col span="4" class="tc">{{item.typeName}}</van-col>
             <van-col span="4" class="tc">{{item.unit}}</van-col>
@@ -315,7 +306,7 @@
       <van-popup v-model="pstVisible" style="width: 85%;">
         <div>
           <div class="header">项目类型</div>
-          <div class="check_group">
+          <div class="check_group" >
             <van-checkbox-group v-model="ptValue">
               <van-checkbox
                 v-for="item in projectTypelist"
@@ -327,9 +318,9 @@
               </van-checkbox>
             </van-checkbox-group>
           </div>
-          <div class="btn_bottom">
-            <van-button plain @click="pstVisible = false">取消</van-button>
-            <van-button type="info" @click="projectTypeChangeHandler()">确认</van-button>
+          <div>
+            <button  class="confirmbtn"  @click="projectTypeChangeHandler()">确认</button>
+            <button  class="confirmbtn"  @click="pstVisible = false">取消</button>
           </div>
         </div>
       </van-popup>
@@ -1026,8 +1017,9 @@
   }
 
   .ccl {
-    padding-top: 10px;
-    padding-left: 20px;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right:10px;
   }
 
   .ccl .van-cell {
@@ -1036,10 +1028,6 @@
 
   .ccl .van-field__label {
     width: 70px;
-  }
-
-  .pobtn .van-button {
-    height: 35px;
   }
 
   .tc {
@@ -1059,12 +1047,13 @@
   }
 
   .mlmrmtwhbb {
-    margin-left: 1%;
-    margin-right: 1%;
-    margin-top: 5px;
-    overflow: scroll;
-    width: 98%;
-    height: 150px;
+    /*margin-left: 1%;*/
+    /*margin-right: 1%;*/
+    /*margin-top: 5px;*/
+    /*overflow: scroll;*/
+    /*width: 98%;*/
+    /*height: 150px;*/
+    min-height: 2px;
     border-bottom: 1px solid rgb(195, 197, 199);
   }
 
@@ -1102,10 +1091,11 @@
 
   .whmlmr {
     width: 98%;
-    height: 150px;
+    max-height: 150px;
     overflow: scroll;
     margin-left: 1%;
     margin-right: 1%;
+    border-bottom: 1px solid rgb(195, 197, 199);
   }
 
   .pbpt {
@@ -1175,9 +1165,17 @@
     border-bottom: 1px dotted rgb(195, 197, 199)
   }
 
+  .f13{
+    border-top:1px solid rgb(195, 197, 199);
+    color: rgb(125, 127, 130);
+    padding-top:5px;
+    padding-bottom:3px;
+    font-size:13px;
+  }
   .ptsdv {
-    margin-top: 2px;
-    padding-top: 5px;
+    font-size:15px;
+    padding-top:1px;
+    color: rgb(125, 127, 130);
     padding-bottom: 5px;
     border-bottom: 1px solid rgb(195, 197, 199)
   }
@@ -1198,20 +1196,15 @@
     width: 80%;
   }
 
-  .nis .van-field__control {
-    border: 1px solid #cfcfcc;
+  .nis .van-field {
+    border: 1px solid #c9c1c1;;
   }
 
   .nis .van-cell {
     padding: 0px;
   }
 
-  .whdfaic {
-    width: 100%;
-    height: 25px;
-    display: flex;
-    align-items: center;
-  }
+
 
   .wdfjacb {
     width: 100%;
@@ -1240,11 +1233,6 @@
     border: 1px solid #cfcfcc;
   }
 
-  .w25fl {
-    width: 25%;
-    float: left;
-  }
-
   .psts .van-cell {
     padding: 5px 17px 3px 9px;
   }
@@ -1259,7 +1247,6 @@
   .psts .van-cell__value {
     font-size: 15px;
   }
-
   .tac {
     text-align: center;
   }
@@ -1280,4 +1267,53 @@
     padding: 0px;
     border-radius: 5px;overflow:scroll; letter-spacing:1.4px;
   }
+  .zw{
+    margin-top:5px;margin-bottom:5px;text-align:center;color:#909399;font-size:16px;
+  }
+  .cfield{
+    margin-top:5px;
+    /*border:1px solid #d9d2d2;*/
+  }
+
+  .header{
+    height:40px;
+    text-align: center;
+    font-size:16px;
+    line-height: 40px;
+    font-weight: 600;
+    border-bottom:1px solid #9f9595;
+  }
+  .confirmbtn {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    overflow: visible;
+    text-transform: none;
+    font: inherit;
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    text-align: center;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: opacity .2s;
+    -webkit-appearance: none;
+    color: #323233;
+    background-color: #fff;
+    width: 50%;
+    height: 50px;
+    line-height: 48px;
+    border: 0;
+    float:right;
+    border-top:1px solid  #9f9595;
+  }
+  .ptpd5{
+    padding-top:5px; padding-bottom:5px;
+  }
+  .bztx{
+    border-top:1px solid rgb(195, 197, 199); padding-left:10%;margin-bottom:10px;margin-top:5px;padding-top:5px;
+  }
+
 </style>

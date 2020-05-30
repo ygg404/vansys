@@ -1,67 +1,66 @@
 <template>
-  <div class="mod-config">
-    <el-card>
-      <el-form :inline="true" :model="dataForm" @keyup.enter.native="getFinance()">
-        <el-form-item style="margin-left: 20px;">
-          <el-date-picker v-model="dataForm.startDate" type="date"  placeholder="开始日期" style="width: 150px;" :picker-options="pickerOptionsStart" @change="changeEnd"></el-date-picker> 至
-          <el-date-picker v-model="dataForm.endDate" type="date"  placeholder="结束日期" style="width: 150px;" :picker-options="pickerOptionsEnd" @change="changeStart"></el-date-picker>
+  <div>
+    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getFinance()" >
+      <div style="width:95%;margin:0 auto;">
+        <el-form-item style="margin-bottom:5px;margin-top:10px;">
+          <el-date-picker style="float:left;width:45%;" v-model="dataForm.startDate" type="date"  placeholder="开始日期"  :picker-options="pickerOptionsStart" @change="changeEnd"></el-date-picker>
+          <div style="float:left;width:10%;text-align: center;">至</div>
+          <el-date-picker style="float:left;width:45%;" v-model="dataForm.endDate" type="date"  placeholder="结束日期"  :picker-options="pickerOptionsEnd" @change="changeStart"></el-date-picker>
         </el-form-item>
+      </div>
+      <div style="width:90%;margin:0 auto;">
         <el-form-item>
           <el-select v-model="dataForm.projectType" placeholder="类型选择" clearable style="width: 150px;"
                      @change="getFinance">
             <el-option v-for="item in workGroupList" :key="item.name" :label="item.name" :value="item.name"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item style="margin-left: 10px;">
+        <el-form-item style="width:120px;">
           <el-input v-model="dataForm.contractname" placeholder="合同关键字搜索" clearable></el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="getFinance()">查询</el-button>
         </el-form-item>
-      </el-form>
-      <div class="chart_title">
-        <div>财务操作</div>
-        <div class="date_title">{{dateTitle}}</div>
       </div>
-      <div class="table_class">
+    </el-form>
+    <!--标题-->
+    <div class="chart_title" style="padding-bottom:10px;">
+      <div style="padding-bottom:2px;">财务操作</div>
+      <div class="date_title">{{dateTitle}}</div>
+    </div>
 
-        <el-table :data="dataList" border  v-loading="dataListLoading" @sort-change="changeSort" style="width: 100%;">
-          <el-table-column prop="contractNo" header-align="center" align="center" label="合同编号" sortable width="110"
-                           :sort-orders="['descending','ascending']"></el-table-column>
-          <el-table-column prop="contractName" header-align="center" align="center" label="合同名称" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column prop="contractAuthorize" header-align="center" align="center" label="委托单位" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column prop="contractBusiness" header-align="center" align="center" label="业务负责人" width="120"></el-table-column>
-          <el-table-column label="签订时间" prop="contractAddTime" header-align="center" align="center" width="120"></el-table-column>
-          <el-table-column prop="contractMoney" header-align="center" align="center" label="应收" width="90"></el-table-column>
-          <el-table-column prop="projectActuallyReceipts" header-align="center" align="center" label="实收" width="90"></el-table-column>
-          <el-table-column prop="projectNotReceipts" header-align="center" align="center" label="未收" width="90"></el-table-column>
-          <el-table-column prop="projectExpenditure" header-align="center" align="center" label="支出" width="90"></el-table-column>
-          <el-table-column  header-align="center" align="center" width="100" label="操作">
-            <template slot-scope="scope">
-              <el-button type="primary" size="mini" @click="addOrUpdateHandle(scope.row.contractNo)">编辑</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-pagination
-          @size-change="sizeChangeHandle"
-          @current-change="currentChangeHandle"
-          :current-page="pageIndex"
-          :page-sizes="[25, 50, 100]"
-          :page-size="pageSize"
-          :total="totalPage"
-          layout="total, sizes, prev, pager, next, jumper">
-        </el-pagination>
-        <!-- 编辑 -->
-        <edit-account v-if="visible" ref="ShowAccount" @refreshDataList="getFinance"></edit-account>
-
+    <!--列表数据-->
+    <div :style="'max-height: ' + (documentClientHeight - 300).toString() + 'px'" class="os">
+      <div :key="item + index" v-for="(item,index) in dataList" style="width:98%;margin:0 auto;border-top:1px solid rgb(195, 197, 199);padding-top:3px;padding-bottom:3px;">
+        <van-row style="padding-bottom:3px;">
+          <van-col span="5" class="tac">{{item.contractNo}}</van-col>
+          <van-col span="10">{{item.contractName}}</van-col>
+          <van-col span="9">{{item.contractAuthorize}}</van-col>
+        </van-row>
+        <van-row type="flex" justify="space-around" >
+          <van-col span="9" class="tac" style="font-size:15px;">{{item.contractBusiness}}</van-col>
+          <van-col span="15" class="tac" style="font-size:15px;">{{item.contractAddTime}}</van-col>
+        </van-row>
+        <van-row type="flex" align="center" justify="space-around" style="padding-bottom:2px;">
+          <van-col span="5" class="tac" style="font-size:15px;">{{item.contractMoney}}</van-col>
+          <van-col span="5" class="tac" style="font-size:15px;">{{item.projectActuallyReceipts}}</van-col>
+          <van-col span="5" class="tac" style="font-size:15px;">{{item.projectNotReceipts}}</van-col>
+          <van-col span="5" class="tac" style="font-size:15px;">{{item.projectExpenditure}}</van-col>
+          <van-col span="4" class="tac" style="font-size:15px;"><button class="btn" @click="addOrUpdateHandle(item.contractNo)">操作</button></van-col>
+        </van-row>
       </div>
-    </el-card>
+    </div>
+    <!--分页控件-->
+    <div style="padding-top:10px;">
+      <van-pagination v-model="pageIndex" :total-items="totalPage" items-per-page="25" mode="simple" @change="getFinance"/>
+    </div>
+
+    <edit-account v-if="visible" ref="ShowAccount" @refreshDataList="getFinance"></edit-account>
   </div>
 </template>
 
 <script>
   import moment from 'moment'
-  import index from '../../../icons'
   import EditAccount from './edit-account'
 
   export default {
@@ -70,11 +69,11 @@
         pickerOptionsStart: {},
         pickerOptionsEnd: {},
         dataForm: {
-          //关键字搜索 这里定为合同名称
+          // 关键字搜索 这里定为合同名称
           key: '',
-          //业务负责人
+          // 业务负责人
           business: '',
-          //类型选择
+          // 类型选择
           projectType: '',
           startDate: '',
           endDate: '',
@@ -82,13 +81,13 @@
           sidx: 'id'
         },
         monthTitle: '', // 月份标题
-        //业务负责人列表
+        // 业务负责人列表
         workGroupList: [],
         dataList: [],
         totalProjectSum: 0,  // 项目合计数
         totalProjectShould: 0, // 统计实收
-        totalProjectAct: 0, //统计实收
-        totalProjectNot: 0, //统计未收
+        totalProjectAct: 0, // 统计实收
+        totalProjectNot: 0, // 统计未收
         dataListLoading: false,
         pageIndex: 1,
         pageSize: 25,
@@ -96,7 +95,13 @@
         visible: false
       }
     },
-
+    computed: {
+      documentClientHeight: {
+        get () {
+          return this.$store.state.common.documentClientHeight
+        }
+      }
+    },
     components: {
       EditAccount
     },
@@ -225,18 +230,21 @@
   .month_type {
     width: 150px;
   }
+  .el-form--inline .el-form-item{
+    margin-right:0px;
+  }
 
   .chart_title {
     width: 100%;
     text-align: center;
-    margin-top: 20px;
-    font-size: 27px;
-    font-weight: 700;
+    margin-top: 10px;
+    font-size: 17px;
+    font-weight: 600;
   }
 
   .chart_title .date_title {
     margin-top: 4px;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 500;
   }
 
@@ -262,7 +270,34 @@
     font-weight: 700;
     font-size: 15px;
   }
-
+  .el-form-item{
+    margin-bottom: 2px;
+  }
+.tac{
+  text-align:center;
+}
+  .btn{
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    height: 30px;
+    margin: 0;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 2px;
+    cursor: pointer;
+    -webkit-transition: opacity .2s;
+    transition: opacity .2s;
+    -webkit-appearance: none;
+    -webkit-text-size-adjust: 100%;
+    background-color: #fff;
+    border: 1px solid #ebedf0;
+    padding:0 10px;
+    font-size:12px;
+  }
+  .os {
+    overflow: scroll;
+  }
 </style>
 
 

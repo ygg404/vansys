@@ -1,17 +1,17 @@
 <template>
   <div style="width: 98%;">
     <van-tabs v-model="roleradio" class="roletab" title-active-color="#ff0000">
-      <van-tab title="安排" :disabled="!isAuth('project:project:plan')" />
-      <van-tab title="作业" :disabled="!isAuth('project:work:list')" />
-      <van-tab title="质检" :disabled="!isAuth('project:quality:list')" />
-      <van-tab title="质审" :disabled="!isAuth('project:quality:auth')" />
-      <van-tab title="核算" :disabled="!isAuth('project:checkoutput:list')" />
-      <van-tab title="审定" :disabled="!isAuth('project:authorize:list')" />
+      <van-tab title="安排" :disabled="!isAuth('project:project:plan')"/>
+      <van-tab title="作业" :disabled="!isAuth('project:work:list')"/>
+      <van-tab title="质检" :disabled="!isAuth('project:quality:list')"/>
+      <van-tab title="质审" :disabled="!isAuth('project:quality:auth')"/>
+      <van-tab title="核算" :disabled="!isAuth('project:checkoutput:list')"/>
+      <van-tab title="审定" :disabled="!isAuth('project:authorize:list')"/>
     </van-tabs>
     <date-module v-model="dataForm" @change="getDataList"></date-module>
-
+    <!---->
     <van-row type="flex" justify="space-between" align="bottom" class="mb5p40">
-      <van-col span="1" />
+      <van-col span="1"/>
       <van-col span="15">
         <van-search
           class="searchCon"
@@ -41,11 +41,7 @@
       <van-col span="6" class="tac">操作</van-col>
     </van-row>
 
-    <div
-      ref="dataBox"
-      :style="'max-height: ' + (documentClientHeight - 320).toString() + 'px'"
-      class="table_van_div"
-    >
+    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 350).toString() + 'px'" class="os">
       <van-row
         :key="index"
         v-for="(item,index) in dataList"
@@ -137,22 +133,15 @@
       </van-row>
     </div>
     <!--分页控件-->
-    <div class="table_page_common">
-      <van-pagination
-        v-model="pageIndex"
-        :page-count="totalPage"
-        mode="simple"
-        @change="getDataList()"
-      />
+    <div style="margin-top:5px;padding-top:5px;border-top:1px solid rgb(213, 226, 239);">
+      <van-pagination v-model="pageIndex" :page-count="totalPage" mode="simple" @change="getDataList()"/>
     </div>
 
-    <!---->
     <van-dialog
       ref="pd"
       v-model="planProjectPopupShow"
-      show-cancel-button
-      :confirmButtonText="editbtntext"
-      @confirm="confirmedit"
+      :showConfirmButton="confirmShow"
+      showCancelButton
     >
       <div slot="title" style="font-size:18px;font-weight:700;">项目详情</div>
       <div style="width:100%;">
@@ -178,7 +167,8 @@
             <van-col
               span="16"
               class="dc"
-            >{{dpiData.projectStartDateTime == null?'-':dpiData.projectStartDateTime}}</van-col>
+            >{{dpiData.projectStartDateTime == null?'-':dpiData.projectStartDateTime}}
+            </van-col>
           </van-row>
           <van-row class="mt8">
             <van-col span="8" class="dt">项目负责人:</van-col>
@@ -189,49 +179,56 @@
             <van-col
               span="16"
               class="dc"
-            >{{dpiData.projectBegunDateTime == null?'-':dpiData.projectBegunDateTime}}</van-col>
+            >{{dpiData.projectBegunDateTime == null?'-':dpiData.projectBegunDateTime}}
+            </van-col>
           </van-row>
           <van-row class="mt8">
             <van-col span="8" class="dt">作业完成时间:</van-col>
             <van-col
               span="16"
               class="dc"
-            >{{dpiData.wFinishDateTime == null?'-':dpiData.wFinishDateTime}}</van-col>
+            >{{dpiData.wFinishDateTime == null?'-':dpiData.wFinishDateTime}}
+            </van-col>
           </van-row>
           <van-row class="mt8">
             <van-col span="8" class="dt">质检完成时间:</van-col>
             <van-col
               span="16"
               class="dc"
-            >{{dpiData.qFinishDateTime == null?'-':dpiData.qFinishDateTime}}</van-col>
+            >{{dpiData.qFinishDateTime == null?'-':dpiData.qFinishDateTime}}
+            </van-col>
           </van-row>
           <van-row class="mt8">
             <van-col span="8" class="dt">结算时间:</van-col>
             <van-col
               span="16"
               class="dc"
-            >{{dpiData.cutOffTime == null?'-':dpiData.cutOffTime.substring(0,7)}}</van-col>
+            >{{dpiData.cutOffTime == null?'-':dpiData.cutOffTime.substring(0,7)}}
+            </van-col>
           </van-row>
           <van-row class="mt8">
             <van-col span="8" class="dt">作业工期:</van-col>
             <van-col
               span="16"
               class="dc"
-            >{{dpiData.projectWorkDate == null?'-':dpiData.projectWorkDate}}</van-col>
+            >{{dpiData.projectWorkDate == null?'-':dpiData.projectWorkDate}}
+            </van-col>
           </van-row>
           <van-row class="mt8">
             <van-col span="8" class="dt">质检工期:</van-col>
             <van-col
               span="16"
               class="dc"
-            >{{dpiData.projectQualityDate == null?'-':dpiData.projectQualityDate}}</van-col>
+            >{{dpiData.projectQualityDate == null?'-':dpiData.projectQualityDate}}
+            </van-col>
           </van-row>
           <van-row class="mt8">
             <van-col span="8" class="dt">质检工期:</van-col>
             <van-col
               span="16"
               class="dc"
-            >{{dpiData.projectQualityDate == null?'-':dpiData.projectQualityDate}}</van-col>
+            >{{dpiData.projectQualityDate == null?'-':dpiData.projectQualityDate}}
+            </van-col>
           </van-row>
           <van-row class="mt8">
             <van-col span="8" class="dt">返修天数:</van-col>
@@ -246,7 +243,8 @@
             <van-col
               span="16"
               class="dc"
-            >{{dpiData.woverTime == null || dpiData.projectStatus == 1?'-':dpiData.woverTime}}</van-col>
+            >{{dpiData.woverTime == null || dpiData.projectStatus == 1?'-':dpiData.woverTime}}
+            </van-col>
           </van-row>
           <van-row class="mt8">
             <van-col span="8" class="dt">质检超时天数:</van-col>
@@ -279,15 +277,48 @@
             </van-col>
           </van-row>
 
-          <van-row v-if="(isAuth('project:work:update')) && roleradio == 1">
-            <van-col span="8" class="dt"></van-col>
-            <van-col span="16" class="workfooterbtnstyle">
+          <van-row v-if="(isAuth('project:work:update')) && roleradio == 1" type="flex" justify="space-around"
+                   class="workfooterbtnstyle">
+            <!--<van-col span="8" class="dt"></van-col>-->
+            <van-col span="10">
               <van-button
                 :style="{color:dpiData.projectStatus === 0?'red':'#1989fa',border:dpiData.projectStatus === 0?'1px solid red':'1px solid #1989fa'}"
                 @click="stopProjectHandle(dpiData)"
-              >{{dpiData.projectStatus === 0? '暂停项目' : '启动项目'}}</van-button>
+              >{{dpiData.projectStatus === 0? '暂停项目' : '启动项目'}}
+              </van-button>
+            </van-col>
+            <van-col span="10">
+              <van-button style="color:orangered;border:1px solid orangered"
+                          v-if="dpiData.submitNote == null && dpiData.backId != null & dpiData.isCharge === 1"
+                          @click="setBackworkHandle(dpiData,true)">查看返修
+              </van-button>
             </van-col>
           </van-row>
+
+          <div>
+            <button class="confirmbtn" style="float:right;" v-if="roleradio === 0 && isAuth('project:project:plan')"
+                    @click="editProjectHandle(dpiData)">编辑安排
+            </button>
+            <button class="confirmbtn" style="float:right;"
+                    v-if="roleradio === 1 && isAuth('project:work:update') && dpiData.isCharge === 1"
+                    @click="editWorkHandle(dpiData)">编辑作业
+            </button>
+            <button class="confirmbtn" style="float:right;" v-if="roleradio === 2 && isAuth('project:quality:update')"
+                    @click="editQualityHandle(dpiData)">编辑质检
+            </button>
+            <button class="confirmbtn" style="float:right;"
+                    v-if="roleradio === 3 && isAuth('project:quality:auth') && dpiData.isCheck === 1"
+                    @click="editQualityAuthHandle(dpiData)">编辑质审
+            </button>
+            <button class="confirmbtn" style="float:right;"
+                    v-if="roleradio === 4 && isAuth('project:checkoutput:update')" @click="editOutputHandle(dpiData)">
+              编辑核算
+            </button>
+            <button class="confirmbtn" style="float:right;" v-if="roleradio === 5 && isAuth('project:project:plan')"
+                    @click="editExamineHandle(dpiData)">编辑审定
+            </button>
+          </div>
+
         </div>
       </div>
     </van-dialog>
@@ -300,7 +331,7 @@
       @confirm="updateStatusHandle(selectedItem)"
     >
       <van-cell-group>
-        <van-field v-model="suspendExcuse" placeholder="请填写暂停的缘由" />
+        <van-field v-model="suspendExcuse" placeholder="请填写暂停的缘由"/>
       </van-cell-group>
     </van-dialog>
 
@@ -358,620 +389,626 @@
   </div>
 </template>
 
- <script>
-import AddOrUpdate from "./contract-add-or-update";
-import ProjectAddOrUpdate from "./project-add-or-update";
-import moment from "moment";
-import dateModule from "@/components/date-module";
-import { isAuth } from "../../../utils";
-import projectscheduleAddOrUpdate from "./projectschedule-add-or-update";
-import backworkAddOrUpdate from "./backwork-add-or-update";
-export default {
-  data() {
-    return {
-      editbtntext: "",
-      roleradio: 1,
-      loading: false,
-      finished: false,
-      //折叠面板模拟数据
-      activeNames: [],
-      suspendVisible: false, // 暂停项目窗口
-      planProjectPopupShow: false,
-      backworkVisible: false,
-      projectscheduleVisible: false,
-      dpiData: "",
-      // 新增 / 修改 合同 (标志)
-      addOrUpdateVisible: false,
-      // 新增 / 修改 项目 (标志)
-      projectAddOrUpdateVisible: false,
-      suspendExcuse: "", // 暂停缘由
-      selectedItem: "", // 暂停选中的项目
-      //总页数
-      allPage: 1,
-      //数据
-      dataList: [],
-      dataForm: {
-        dateItemId: 0,
-        key: "",
-        sidx: "id",
-        order: "desc",
-        startDate: "",
-        endDate: ""
+<script>
+  import moment from 'moment'
+  import dateModule from '@/components/date-module'
+  import {isAuth} from '../../../utils'
+  import projectscheduleAddOrUpdate from './projectschedule-add-or-update'
+  import backworkAddOrUpdate from './backwork-add-or-update'
+
+  export default {
+    data () {
+      return {
+        roleradio: 1,
+        confirmShow: false,
+        loading: false,
+        finished: false,
+        // 折叠面板模拟数据
+        activeNames: [],
+        suspendVisible: false, // 暂停项目窗口
+        planProjectPopupShow: false,
+        backworkVisible: false,
+        projectscheduleVisible: false,
+        dpiData: '',
+        // 新增 / 修改 合同 (标志)
+        addOrUpdateVisible: false,
+        // 新增 / 修改 项目 (标志)
+        projectAddOrUpdateVisible: false,
+        suspendExcuse: '', // 暂停缘由
+        selectedItem: '', // 暂停选中的项目
+        // 总页数
+        allPage: 1,
+        // 数据
+        dataList: [],
+        dataForm: {
+          dateItemId: 0,
+          key: '',
+          sidx: 'id',
+          order: 'desc',
+          startDate: '',
+          endDate: ''
+        },
+        pageIndex: 1,
+        pageSize: 10,
+        totalPage: 0,
+        dataListLoading: false,
+        scheduleDialogVisible: false,
+        scheduleTip: '',
+        scheduleList: []
+      }
+    },
+
+    // 组件注册
+    components: {
+      projectscheduleAddOrUpdate,
+      backworkAddOrUpdate,
+      dateModule
+    },
+    computed: {
+      documentClientHeight: {
+        get () {
+          return this.$store.state.common.documentClientHeight
+        }
+      }
+    },
+    created () {
+      this.pageSize = 10
+      this.pageIndex = 1
+      this.dataForm.startDate = moment(
+        new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
+      ).format('YYYY-MM-DD')
+      this.dataForm.endDate = moment(
+        new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
+      ).format('YYYY-MM-DD')
+      this.getDataList()
+    },
+    mounted () {
+      this.planProjectPopupShow = false
+      this.dateItemList = [
+        {id: 0, dateItem: '项目启动时间'},
+        {id: 1, dateItem: '项目开工时间'},
+        {id: 2, dateItem: '作业完成时间'},
+        {id: 3, dateItem: '质检完成时间'},
+        {id: 4, dateItem: '结算时间'}
+      ]
+      this.pageIndex = 1
+      this.pageSize = 10
+      // 角色选择初始化
+      if (isAuth('project:authorize:list')) this.roleradio = 5
+      if (isAuth('project:checkoutput:list')) this.roleradio = 4
+      if (isAuth('project:quality:auth')) this.roleradio = 3
+      if (isAuth('project:quality:list')) this.roleradio = 2
+      if (isAuth('project:work:list')) this.roleradio = 1
+      if (isAuth('project:project:plan')) this.roleradio = 0
+      if (
+        this.$cookie.get('jxrole') !== null &&
+        this.$cookie.get('jxrole') !== ''
+      ) {
+        this.roleradio = parseInt(this.$cookie.get('jxrole'))
+      }
+    },
+
+    methods: {
+      // 排序字段改变
+      changeSort (val) {
+        switch (val.order) {
+          case 'ascending':
+            this.dataForm.order = 'asc'
+            break
+          case 'descending':
+            this.dataForm.order = 'desc'
+            break
+          default:
+            this.dataForm.order = 'desc'
+        }
+        if (val.prop === 'projectNo') {
+          this.dataForm.sidx = 'id'
+        } else {
+          this.dataForm.sidx = val.prop
+        }
+        this.getDataList()
       },
-      pageIndex: 1,
-      pageSize: 10,
-      totalPage: 0,
-      dataListLoading: false,
-      scheduleDialogVisible: false,
-      scheduleTip: "",
-      scheduleList: []
-    };
-  },
 
-  //组件注册
-  components: {
-    projectscheduleAddOrUpdate,
-    backworkAddOrUpdate,
-    dateModule
-  },
-
-  watch: {
-    roleradio() {
-      if (isAuth("project:project:plan") && this.roleradio == 0) {
-        this.editbtntext = "编辑安排";
-      }
-      if (isAuth("project:work:update") && this.roleradio == 1) {
-        this.editbtntext = "编辑工作";
-      }
-      if (isAuth("project:quality:update") && this.roleradio == 2) {
-        this.editbtntext = "编辑质检";
-      }
-      if (isAuth("project:quality:auth") && this.roleradio == 3) {
-        this.editbtntext = "编辑质审";
-      }
-      if (isAuth("project:checkoutput:update") && this.roleradio == 4) {
-        this.editbtntext = "编辑核算";
-      }
-      if (isAuth("project:authorize:update") && this.roleradio == 5) {
-        this.editbtntext = "编辑审定";
-      }
-    }
-  },
-  computed: {
-    documentClientHeight: {
-      get() {
-        return this.$store.state.common.documentClientHeight;
-      }
-    }
-  },
-  created() {
-    this.pageSize = 10;
-    this.pageIndex = 1;
-    this.dataForm.startDate = moment(
-      new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
-    ).format('YYYY-MM-DD');
-    this.dataForm.endDate = moment(
-      new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
-    ).format('YYYY-MM-DD');
-    this.getDataList();
-  },
-  mounted() {
-    this.planProjectPopupShow = false;
-    this.dateItemList = [
-      { id: 0, dateItem: "项目启动时间" },
-      { id: 1, dateItem: "项目开工时间" },
-      { id: 2, dateItem: "作业完成时间" },
-      { id: 3, dateItem: "质检完成时间" },
-      { id: 4, dateItem: "结算时间" }
-    ];
-    this.pageIndex = 1;
-    this.pageSize = 10;
-    // 角色选择初始化
-    if (isAuth("project:authorize:list")) this.roleradio = 5;
-    if (isAuth("project:checkoutput:list")) this.roleradio = 4;
-    if (isAuth("project:quality:auth")) this.roleradio = 3;
-    if (isAuth("project:quality:list")) this.roleradio = 2;
-    if (isAuth("project:work:list")) this.roleradio = 1;
-    if (isAuth("project:project:plan")) this.roleradio = 0;
-    if (
-      this.$cookie.get("jxrole") !== null &&
-      this.$cookie.get("jxrole") !== ""
-    )
-      this.roleradio = parseInt(this.$cookie.get("jxrole"));
-  },
-
-  methods: {
-    // 排序字段改变
-    changeSort(val) {
-      switch (val.order) {
-        case "ascending":
-          this.dataForm.order = "asc";
-          break;
-        case "descending":
-          this.dataForm.order = "desc";
-          break;
-        default:
-          this.dataForm.order = "desc";
-      }
-      if (val.prop === "projectNo") {
-        this.dataForm.sidx = "id";
-      } else {
-        this.dataForm.sidx = val.prop;
-      }
-      this.getDataList();
-    },
-    confirmedit() {
-      if (this.roleradio == 0) {
-        this.editProjectHandle(this.dpiData);
-      }
-      if (this.roleradio == 1) {
-        this.editWorkHandle(this.dpiData);
-      }
-      if (this.roleradio == 2) {
-        this.editQualityHandle(this.dpiData);
-      }
-      if (this.roleradio == 3) {
-        this.editQualityAuthHandle(this.dpiData);
-      }
-      if (this.roleradio == 4) {
-        this.editOutputHandle(this.dpiData);
-      }
-      if (this.roleradio == 5) {
-        this.editExamineHandle(this.dpiData);
-      }
-      return;
-    },
-    // 获取数据列表
-    getDataList() {
-      this.$http({
-        url: this.$http.adornUrl("/project/manage/page"),
-        method: 'get',
-        params: this.$http.adornParams({
-          page: this.pageIndex,
-          limit: this.pageSize,
-          key: this.dataForm.key,
-          sidx: this.dataForm.sidx,
-          order: this.dataForm.order,
-          startDate: this.dataForm.startDate,
-          endDate: this.dataForm.endDate,
-          dateItemId: this.dataForm.dateItemId
-        })
-      }).then(({ data }) => {
-        if (data && data.code === 0) {
-          this.dataList = data.page.list
-          this.totalPage = data.page.totalPage
-          // 计算 质检 和 作业超时时间
-          for (let data of this.dataList) {
-            data.backDateNum = data.backDateNum === null ? 0 : data.backDateNum
-            // 开工时间为空
-            if (data.projectBegunDateTime == null) {
-              data.woverTime = null
-              data.qoverTime = null
-            } else if (data.isPlan === 1) {
-              // 项目已经安排
-              // 作业时间为空 工作时间 为当前时间
-              if (data.wFinishDateTime === null) {
-                let woverTime = parseInt(
-                  (new Date() - new Date(data.projectBegunDateTime)) /
-                    (24 * 60 * 60 * 1000) -
-                    data.projectWorkDate +
-                    data.backDateNum
-                );
-                data.woverTime = woverTime < 0 ? 0 : woverTime
+      // 获取数据列表
+      getDataList () {
+        this.$http({
+          url: this.$http.adornUrl('/project/manage/page'),
+          method: 'get',
+          params: this.$http.adornParams({
+            page: this.pageIndex,
+            limit: this.pageSize,
+            key: this.dataForm.key,
+            sidx: this.dataForm.sidx,
+            order: this.dataForm.order,
+            startDate: this.dataForm.startDate,
+            endDate: this.dataForm.endDate,
+            dateItemId: this.dataForm.dateItemId
+          })
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.dataList = data.page.list
+            this.totalPage = data.page.totalPage
+            // 计算 质检 和 作业超时时间
+            for (let data of this.dataList) {
+              data.backDateNum = data.backDateNum === null ? 0 : data.backDateNum
+              // 开工时间为空
+              if (data.projectBegunDateTime == null) {
+                data.woverTime = null
                 data.qoverTime = null
-              } else {
-                let woverTime = parseInt(
-                  (new Date(data.wFinishDateTime) -
-                    new Date(data.projectBegunDateTime)) /
+              } else if (data.isPlan === 1) {
+                // 项目已经安排
+                // 作业时间为空 工作时间 为当前时间
+                if (data.wFinishDateTime === null) {
+                  let woverTime = parseInt(
+                    (new Date() - new Date(data.projectBegunDateTime)) /
                     (24 * 60 * 60 * 1000) -
                     data.projectWorkDate +
                     data.backDateNum
-                );
-                data.woverTime = woverTime < 0 ? 0 : woverTime
-                // 质检时间为空 质检时间 为当前时间
-                if (data.qFinishDateTime === null) {
-                  let qoverTime = parseInt(
-                    (new Date() - new Date(data.wFinishDateTime)) /
-                      (24 * 60 * 60 * 1000) -
-                      data.projectQualityDate
                   )
-                  data.qoverTime = qoverTime < 0 ? 0 : qoverTime
+                  data.woverTime = woverTime < 0 ? 0 : woverTime
+                  data.qoverTime = null
                 } else {
-                  let qoverTime = parseInt(
-                    (new Date(data.qFinishDateTime) -
-                      new Date(data.wFinishDateTime)) /
+                  let woverTime = parseInt(
+                    (new Date(data.wFinishDateTime) -
+                      new Date(data.projectBegunDateTime)) /
+                    (24 * 60 * 60 * 1000) -
+                    data.projectWorkDate +
+                    data.backDateNum
+                  )
+                  data.woverTime = woverTime < 0 ? 0 : woverTime
+                  // 质检时间为空 质检时间 为当前时间
+                  if (data.qFinishDateTime === null) {
+                    let qoverTime = parseInt(
+                      (new Date() - new Date(data.wFinishDateTime)) /
                       (24 * 60 * 60 * 1000) -
                       data.projectQualityDate
-                  );
-                  data.qoverTime = qoverTime < 0 ? 0 : qoverTime
+                    )
+                    data.qoverTime = qoverTime < 0 ? 0 : qoverTime
+                  } else {
+                    let qoverTime = parseInt(
+                      (new Date(data.qFinishDateTime) -
+                        new Date(data.wFinishDateTime)) /
+                      (24 * 60 * 60 * 1000) -
+                      data.projectQualityDate
+                    )
+                    data.qoverTime = qoverTime < 0 ? 0 : qoverTime
+                  }
                 }
               }
             }
+            this.$refs.dataBox.scrollTop = 0
+          } else {
+            this.dataList = []
+            this.totalPage = 0
+            this.$notify.error(data.msg)
           }
-          this.$refs.dataBox.scrollTop = 0
-        } else {
-          this.dataList = []
-          this.totalPage = 0
-          this.$notify.error(data.msg)
-        }
-      });
-    },
-
-    // 取消搜索
-    CancelSearch () {
-      this.dataForm.key = ""
-      this.getDataList()
-    },
-
-    // 合同详情按钮点击事件
-    showDetailsDialogEvent(item) {
-      this.planProjectPopupShow = true;
-      this.dpiData = item;
-    },
-
-    // 获取进度列表
-    getScheduleHandle (item) {
-      let projectNo = item.projectNo;
-      this.scheduleDialogVisible = true;
-      this.scheduleTip = '项目进度表（编号：" + projectNo + ")'
-      this.$http({
-        url: this.$http.adornUrl('/project/schedule/list'),
-        method: 'get',
-        params: this.$http.adornParams({
-          projectNo: projectNo
         })
-      }).then(({ data }) => {
-        if (data && data.code === 0) {
-          this.scheduleList = data.list
-        } else {
-          this.scheduleList = []
-        }
-      })
-    },
+      },
 
-    // 获取返修内容列表
-    getBackworkHandle(item) {
-      let projectNo = item.projectNo;
-      this.backDialogVisible = true;
-      this.backTip = "返修内容表（项目编号：" + projectNo + ")";
-      this.$http({
-        url: this.$http.adornUrl(`/project/backwork/list/${projectNo}`),
-        method: 'get',
-        params: this.$http.adornParams({})
-      }).then(({ data }) => {
-        if (data && data.code === 0) {
-          this.backWorkList = data.list;
-        } else {
-          this.backWorkList = [];
-        }
-      });
-    },
-    // 提交进度
-    setScheduleHandle(item) {
-      if (item.isWork === 1) {
-        this.$notify({
-          message: "当前项目已作业完成，无法添加进度！",
-          type: "danger",
-          duration: 1500
-        });
-        return;
-      }
+      // 返修内容（isEdit 为true 可编辑返修）
+      setBackworkHandle (item, isEdit = true) {
+        this.backworkVisible = true
+        this.$nextTick(() => {
+          this.$refs.backworkAddOrUpdate.init(item.projectNo, isEdit)
+        })
+      },
+      // 取消搜索
+      CancelSearch () {
+        this.dataForm.key = ''
+        this.getDataList()
+      },
 
-      // 项目质检已提交，就无法提交进度
-      if (item.isCheck === 1) {
-        this.$notify({
-          message: "当前项目已质检完成，无法添加进度！",
-          type: "danger",
-          duration: 1500
-        });
-        return;
-      }
-      this.projectscheduleVisible = true;
-      this.$nextTick(() => {
-        this.$refs.projectscheduleAddOrUpdate.init(item);
-      });
-    },
-    // 返修内容
-    setBackworkHandle(item) {
-      this.backworkVisible = true;
-      this.$nextTick(() => {
-        this.$refs.backworkAddOrUpdate.init(item.projectNo);
-      });
-    },
-    // 编辑安排
-    editProjectHandle(item) {
-      this.$cookie.set("jxrole", this.roleradio);
-      this.$router.push({
-        path: "/project-editallocation",
-        query: { projectNo: item.projectNo }
-      });
-      this.planProjectPopupShow = false;
-    },
-    // 编辑工作
-    editWorkHandle(item) {
-      this.$cookie.set("jxrole", this.roleradio);
-      if (item.scheduleRate < 90) {
-        this.$notify(
-          "项目未完结，最高进度只可达90%，请添加进度后再进行作业编辑"
-        );
-        return;
-      }
-      this.$router.push({
-        path: "/project-editwork",
-        query: { projectNo: item.projectNo }
-      });
-      this.planProjectPopupShow = false;
-    },
+      // 合同详情按钮点击事件
+      showDetailsDialogEvent (item) {
+        this.planProjectPopupShow = true
+        this.dpiData = item
+      },
 
-    // 编辑质量审核
-    editQualityAuthHandle(item) {
-      this.$cookie.set("jxrole", this.roleradio);
-      this.$router.push({
-        path: "/project-editqualityauth",
-        query: { projectNo: item.projectNo }
-      });
-    },
-
-    // 编辑质量检查
-    editQualityHandle(item) {
-      this.$cookie.set("jxrole", this.roleradio);
-      if (item.isWork !== 1) {
-        this.$dialog
-          .alert({
-            title: "提示",
-            message: "当前项目作业未完成, 是否继续质检?",
-            showCancelButton: true
+      // 获取进度列表
+      getScheduleHandle (item) {
+        let projectNo = item.projectNo
+        this.scheduleDialogVisible = true
+        this.scheduleTip = '项目进度表（编号：' + projectNo + ')'
+        this.$http({
+          url: this.$http.adornUrl('/project/schedule/list'),
+          method: 'get',
+          params: this.$http.adornParams({
+            projectNo: projectNo
           })
-          .then(() => {
-            this.$router.push({
-              path: "/project-editquality",
-              query: { projectNo: item.projectNo }
-            });
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.scheduleList = data.list
+          } else {
+            this.scheduleList = []
+          }
+        })
+      },
+
+      // 获取返修内容列表
+      getBackworkHandle (item) {
+        let projectNo = item.projectNo
+        this.backDialogVisible = true
+        this.backTip = '返修内容表（项目编号：' + projectNo + ')'
+        this.$http({
+          url: this.$http.adornUrl(`/project/backwork/list/${projectNo}`),
+          method: 'get',
+          params: this.$http.adornParams({})
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.backWorkList = data.list
+          } else {
+            this.backWorkList = []
+          }
+        })
+      },
+      // 提交进度
+      setScheduleHandle (item) {
+        if (item.isWork === 1) {
+          this.$notify({
+            message: '当前项目已作业完成，无法添加进度！',
+            type: 'danger',
+            duration: 1500
           })
-          .catch(() => {});
-      } else {
+          return
+        }
+
+        // 项目质检已提交，就无法提交进度
+        if (item.isCheck === 1) {
+          this.$notify({
+            message: '当前项目已质检完成，无法添加进度！',
+            type: 'danger',
+            duration: 1500
+          })
+          return
+        }
+        this.projectscheduleVisible = true
+        this.$nextTick(() => {
+          this.$refs.projectscheduleAddOrUpdate.init(item)
+        })
+      },
+
+      // 编辑安排
+      editProjectHandle (item) {
+        this.$cookie.set('jxrole', this.roleradio)
         this.$router.push({
-          path: "/project-editquality",
-          query: { projectNo: item.projectNo }
-        });
-      }
-    },
-    // 编辑产值核算
-    editOutputHandle(item) {
-      this.$cookie.set("jxrole", this.roleradio);
-      this.$router.push({
-        path: "/project-editoutput",
-        query: { projectNo: item.projectNo }
-      });
-    },
-    // 编辑项目审定
-    editExamineHandle(item) {
-      this.$cookie.set("jxrole", this.roleradio);
-      this.$router.push({
-        path: "/project-editauthorize",
-        query: { projectNo: item.projectNo }
-      });
-    },
-    // 产值统计表
-    outputChartHandle() {
-      this.$router.push({ path: "/project-chartoutput" });
-    },
-    // 产值汇总统计表
-    collectChartHandle() {
-      this.$router.push({ path: "/project-chartcollect" });
-    },
-    // 质量统计表
-    qualityChartHandle() {
-      this.$router.push({ path: "/project-chartquality" });
-    },
-    // 暂停或启动项目
-    stopProjectHandle(item) {
-      this.suspendExcuse = "";
-      if (item.projectStatus === 0) {
-        this.suspendVisible = true;
-        this.selectedItem = item;
-      } else {
-        this.updateStatusHandle(item);
-      }
-    },
-    // 暂停请求事件
-    updateStatusHandle(item) {
-      this.$http({
-        url: this.$http.adornUrl(`/project/work/updateStatus`),
-        method: "post",
-        data: this.$http.adornData({
-          id: item.id,
-          projectNo: item.projectNo,
-          projectStatus: item.projectStatus === 0 ? 1 : 0,
-          suspendExcuse: this.suspendExcuse
+          path: '/project-editallocation',
+          query: {projectNo: item.projectNo}
         })
-      }).then(({ data }) => {
-        if (data && data.code === 0) {
-          this.suspendVisible = false;
-          this.getDataList();
-          this.$toast.success("操作成功");
-          this.$nextTick(() => {
-            this.planProjectPopupShow = false;
-          });
-        } else {
-          this.$toast.fail("操作失败:" + data.msg);
+        this.planProjectPopupShow = false
+      },
+      // 编辑工作
+      editWorkHandle (item) {
+        this.$cookie.set('jxrole', this.roleradio)
+        if (item.scheduleRate < 90) {
+          this.$notify(
+            '项目未完结，最高进度只可达90%，请添加进度后再进行作业编辑'
+          )
+          return
         }
-      });
-    },
+        this.$router.push({
+          path: '/project-editwork',
+          query: {projectNo: item.projectNo}
+        })
+        this.planProjectPopupShow = false
+      },
 
-    // 导出excel
-    exportProjectExcel() {
-      this.dataListLoading = true;
-      let that = this;
-      let sd = new Date(this.dataForm.startDate);
-      let ed = new Date(this.dataForm.endDate);
-      let startDate = moment(
-        new Date(sd.getFullYear(), sd.getMonth(), 1)
-      ).format('YYYY-MM-DD')
-      let endDate = moment(
-        new Date(ed.getFullYear(), ed.getMonth() + 1, 1)
-      ).format('YYYY-MM-DD')
-      this.$http({
-        url: this.$http.adornUrl("/project/manage/exportExcel"),
-        method: 'get',
-        params: this.$http.adornParams({
-          key: this.dataForm.key,
-          sidx: this.dataForm.sidx,
-          order: this.dataForm.order,
-          startDate: startDate,
-          endDate: endDate,
-          dateItemId: this.dataForm.dateItemId
-        }),
-        responseType: "blob"
-      }).then(({ data }) => {
-        var downloadElement = document.createElement("a");
-        var href = window.URL.createObjectURL(data); // 创建下载的链接
-        downloadElement.href = href;
-        downloadElement.download =
-          "项目管理列表（" + startDate + "-" + endDate + "）.xls"; // 下载后文件名
-        document.body.appendChild(downloadElement);
-        downloadElement.click(); // 点击下载
-        document.body.removeChild(downloadElement); // 下载完成移除元素
-        window.URL.revokeObjectURL(href); // 释放掉blob对象
-        this.dataListLoading = false;
-      });
+      // 编辑质量审核
+      editQualityAuthHandle (item) {
+        this.$cookie.set('jxrole', this.roleradio)
+        this.$router.push({
+          path: '/project-editqualityauth',
+          query: {projectNo: item.projectNo}
+        })
+      },
+
+      // 编辑质量检查
+      editQualityHandle (item) {
+        this.$cookie.set('jxrole', this.roleradio)
+        if (item.isWork !== 1) {
+          this.$dialog
+            .alert({
+              title: '提示',
+              message: '当前项目作业未完成, 是否继续质检?',
+              showCancelButton: true
+            })
+            .then(() => {
+              this.$router.push({
+                path: '/project-editquality',
+                query: {projectNo: item.projectNo}
+              })
+            })
+            .catch(() => {
+            })
+        } else {
+          this.$router.push({
+            path: '/project-editquality',
+            query: {projectNo: item.projectNo}
+          })
+        }
+      },
+      // 编辑产值核算
+      editOutputHandle (item) {
+        this.$cookie.set('jxrole', this.roleradio)
+        this.$router.push({
+          path: '/project-editoutput',
+          query: {projectNo: item.projectNo}
+        })
+      },
+
+      // 编辑项目审定
+      editExamineHandle (item) {
+        this.$cookie.set('jxrole', this.roleradio)
+        this.$router.push({
+          path: '/project-editauthorize',
+          query: {projectNo: item.projectNo}
+        })
+      },
+      // 产值统计表
+      outputChartHandle () {
+        this.$router.push({path: '/project-chartoutput'})
+      },
+      // 产值汇总统计表
+      collectChartHandle () {
+        this.$router.push({path: '/project-chartcollect'})
+      },
+      // 质量统计表
+      qualityChartHandle () {
+        this.$router.push({path: '/project-chartquality'})
+      },
+      // 暂停或启动项目
+      stopProjectHandle (item) {
+        this.suspendExcuse = ''
+        if (item.projectStatus === 0) {
+          this.suspendVisible = true
+          this.selectedItem = item
+        } else {
+          this.updateStatusHandle(item)
+        }
+      },
+      // 暂停请求事件
+      updateStatusHandle (item) {
+        this.$http({
+          url: this.$http.adornUrl(`/project/work/updateStatus`),
+          method: 'post',
+          data: this.$http.adornData({
+            id: item.id,
+            projectNo: item.projectNo,
+            projectStatus: item.projectStatus === 0 ? 1 : 0,
+            suspendExcuse: this.suspendExcuse
+          })
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.suspendVisible = false
+            this.getDataList()
+            this.$toast.success('操作成功')
+            this.$nextTick(() => {
+              this.planProjectPopupShow = false
+            })
+          } else {
+            this.$toast.fail('操作失败:' + data.msg)
+          }
+        })
+      },
+
+      // 导出excel
+      exportProjectExcel () {
+        this.dataListLoading = true
+        let sd = new Date(this.dataForm.startDate)
+        let ed = new Date(this.dataForm.endDate)
+        let startDate = moment(
+          new Date(sd.getFullYear(), sd.getMonth(), 1)
+        ).format('YYYY-MM-DD')
+        let endDate = moment(
+          new Date(ed.getFullYear(), ed.getMonth() + 1, 1)
+        ).format('YYYY-MM-DD')
+        this.$http({
+          url: this.$http.adornUrl('/project/manage/exportExcel'),
+          method: 'get',
+          params: this.$http.adornParams({
+            key: this.dataForm.key,
+            sidx: this.dataForm.sidx,
+            order: this.dataForm.order,
+            startDate: startDate,
+            endDate: endDate,
+            dateItemId: this.dataForm.dateItemId
+          }),
+          responseType: 'blob'
+        }).then(({data}) => {
+          var downloadElement = document.createElement('a')
+          var href = window.URL.createObjectURL(data) // 创建下载的链接
+          downloadElement.href = href
+          downloadElement.download =
+            '项目管理列表（' + startDate + '-' + endDate + '）.xls' // 下载后文件名
+          document.body.appendChild(downloadElement)
+          downloadElement.click() // 点击下载
+          document.body.removeChild(downloadElement) // 下载完成移除元素
+          window.URL.revokeObjectURL(href) // 释放掉blob对象
+          this.dataListLoading = false
+        })
+      }
     }
   }
-};
 </script>
 
 <style>
-.roletab .van-tab {
-  font-size: 16px;
-  padding: 0px;
-}
-.roletab .van-tabs__wrap {
-  height: 34px;
-}
+  .roletab .van-tab {
+    font-size: 16px;
+    padding: 0px;
+  }
 
-.van-search {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  padding: 2px 4px;
-  background-color: #fff;
-  border: 1px solid #9b9a9a;
-  border-radius: 14px;
-}
-.van-search__content {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-box-flex: 1;
-  -webkit-flex: 1;
-  flex: 1;
-  background-color: #f7f8fa;
-}
-.searchCon .van-cell {
-  position: relative;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  width: 100%;
-  padding: 4px 1px;
-  overflow: hidden;
-  color: #323233;
-  font-size: 14px;
-  line-height: 24px;
-  background-color: #fff;
-}
-.addcontract .van-button {
-  position: relative;
-  display: inline-block;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  height: 38px;
-  width: 80px;
-  margin: 0;
-  padding: 0;
-  font-size: 13px;
-  line-height: 35px;
-  text-align: center;
-  border-radius: 2px;
-  cursor: pointer;
-  -webkit-transition: opacity 0.2s;
-  transition: opacity 0.2s;
-  /* -webkit-appearance: none; */
-  -webkit-text-size-adjust: 100%;
-  border-radius: 8px;
-}
+  .roletab .van-tabs__wrap {
+    height: 34px;
+  }
 
-.workfooterbtnstyle .van-button--normal {
-  padding: 0 15px;
-  font-size: 15px;
-}
-.dc {
-  text-align: left;
-  padding-left: 10px;
-  font-size: 15px;
-}
-.dt {
-  text-align: right;
-  font-size: 16px;
-}
-.mt8 {
-  margin-top: 8px;
-}
-.chartbtn .van-button--normal {
-  padding: 0 13px;
-  border-radius: 9px;
-}
-.chartbtn .van-button {
-  height: 35px;
-}
-.azt {
-  height: 530px;
-}
-.mb5p40 {
-  margin-bottom: 5px;
-  padding: 4px 0px;
-}
-.lrmr2 {
-  float: right;
-  margin-right: 20px;
-}
-.mb5tac {
-  margin-bottom: 5px;
-  text-align: center;
-}
-.pm5b {
-  padding-top: 10px;
-  padding-bottom: 10px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  background: #faf7f7;
-}
-.tac {
-  text-align: center;
-}
-.prons {
-  height: 100%;
-  width: 100%;
-  white-space: normal;
-  word-break: break-all;
-  overflow: hidden;
-}
-.mr5 {
-  margin-right: 5px;
-}
-.dljcsb {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
-.workfooterbtnstyle .van-button {
-  height: 100%;
-}
+  .van-search {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 2px 4px;
+    background-color: #fff;
+    border: 1px solid #9b9a9a;
+    border-radius: 14px;
+  }
+
+  .van-search__content {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    background-color: #f7f8fa;
+  }
+
+  .searchCon .van-cell {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 4px 1px;
+    overflow: hidden;
+    color: #323233;
+    font-size: 14px;
+    line-height: 24px;
+    background-color: #fff;
+  }
+
+  .addcontract .van-button {
+    position: relative;
+    display: inline-block;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 38px;
+    width: 80px;
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+    line-height: 35px;
+    text-align: center;
+    border-radius: 2px;
+    cursor: pointer;
+    -webkit-transition: opacity 0.2s;
+    transition: opacity 0.2s;
+    /* -webkit-appearance: none; */
+    -webkit-text-size-adjust: 100%;
+    border-radius: 8px;
+  }
+
+  .workfooterbtnstyle .van-button--normal {
+    padding: 0 15px;
+    font-size: 15px;
+  }
+
+  .dc {
+    text-align: left;
+    padding-left: 10px;
+    font-size: 15px;
+  }
+
+  .dt {
+    text-align: right;
+    font-size: 16px;
+  }
+
+  .mt8 {
+    margin-top: 8px;
+  }
+
+  .chartbtn .van-button--normal {
+    padding: 0 13px;
+    border-radius: 9px;
+  }
+
+  .chartbtn .van-button {
+    height: 35px;
+  }
+
+  .azt {
+    height: 530px;
+  }
+
+  .mb5p40 {
+    margin-bottom: 5px;
+    padding: 4px 0px;
+  }
+
+  .lrmr2 {
+    float: right;
+    margin-right: 20px;
+  }
+
+  .mb5tac {
+    margin-bottom: 5px;
+    text-align: center;
+  }
+
+  .pm5b {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background: #faf7f7;
+  }
+
+  .tac {
+    text-align: center;
+  }
+
+  .prons {
+    height: 100%;
+    width: 100%;
+    white-space: normal;
+    word-break: break-all;
+    overflow: hidden;
+  }
+
+  .mr5 {
+    margin-right: 5px;
+  }
+
+  .dljcsb {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .workfooterbtnstyle .van-button {
+    height: 100%;
+  }
+
+  .confirmbtn {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    overflow: visible;
+    text-transform: none;
+    font: inherit;
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    text-align: center;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: opacity .2s;
+    -webkit-appearance: none;
+    color: #323233;
+    background-color: #fff;
+    width: 50%;
+    height: 50px;
+    line-height: 48px;
+    border: 0;
+  }
+  .os {
+    overflow: scroll;
+  }
 </style>

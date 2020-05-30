@@ -1,7 +1,7 @@
 <template>
   <van-dialog
     title="新增进度"
-    width="95%" 
+    width="95%"
     v-model="visible"
     show-cancel-button  @confirm="dataFormSubmit" :style="'max-height: ' + (documentClientHeight - 200).toString() + 'px'">
     <van-cell-group>
@@ -33,7 +33,7 @@
     data () {
       return {
         visible: false,
-        scheduleRatenum:0,
+        scheduleRatenum: 0,
         dataForm: {
           id: 0,
           projectNo: '',
@@ -41,16 +41,16 @@
           scheduleNote: '',
           scheduleRate: '',
           createTime: ''
-        },
+        }
       }
     },
-        computed: {
-    documentClientHeight: {
-      get() {
-        return this.$store.state.common.documentClientHeight;
+    computed: {
+      documentClientHeight: {
+        get () {
+          return this.$store.state.common.documentClientHeight
+        }
       }
-    }
-  },
+    },
     methods: {
       init (item) {
         this.visible = true
@@ -60,29 +60,28 @@
           this.dataForm.projectName = item.projectName
           this.dataForm.scheduleNote = ''
           this.dataForm.scheduleRate = item.scheduleRate !== null ? item.scheduleRate : 0
-          this.scheduleRatenum = parseInt(this.dataForm.scheduleRate,10);
+          this.scheduleRatenum = parseInt(this.dataForm.scheduleRate, 10)
         })
       },
       // 进度改变
       sliderChangeHandle () {
-        if(this.scheduleRatenum > 90){
-          this.$notify({ type: 'danger', message: '作业进度不得超过90%' });
+        if (this.scheduleRatenum > 90) {
+          this.$notify({ type: 'danger', message: '作业进度不得超过90%' })
           this.dataForm.scheduleRate = 90
           this.scheduleRatenum = 90
-        }else{
+        } else {
           this.dataForm.scheduleRate = this.scheduleRatenum.toString()
         }
       },
       // 表单提交
-      dataFormSubmit () {       
+      dataFormSubmit () {
         if (this.scheduleRatenum > 90) {
-            this.$notify({ type: 'danger', message: '作业进度不得超过90%' });
-            this.dataForm.scheduleRate = 90
-            this.scheduleRatenum = 90
-            return
-          }else{
-            this.dataForm.scheduleRate = this.scheduleRatenum.toString()
-                this.$http({
+          this.$notify({ type: 'danger', message: '作业进度不得超过90%' })
+          this.dataForm.scheduleRate = 90
+          this.scheduleRatenum = 90
+        } else {
+          this.dataForm.scheduleRate = this.scheduleRatenum.toString()
+          this.$http({
             url: this.$http.adornUrl(`/project/schedule/save`),
             method: 'post',
             data: this.$http.adornData({
@@ -92,21 +91,20 @@
             })
           }).then(({data}) => {
             if (data && data.code === 0) {
-                this.$notify({
-                  message: '操作成功',
-                  type: 'success',
-                  duration: 1500
-                })
-                this.visible = false
-                this.$emit('refreshDataList')
+              this.$notify({
+                message: '操作成功',
+                type: 'success',
+                duration: 1500
+              })
+              this.visible = false
+              this.$emit('refreshDataList')
             } else {
               this.$message.error(data.msg)
             }
           })
-          }
-      
         }
       }
+    }
   }
 </script>
 
@@ -120,6 +118,6 @@
     letter-spacing:1.4px;
   }
   .mbmt20{
-margin-bottom:20px;margin-top:20px;
-}
+    margin-bottom:20px;margin-top:20px;
+  }
 </style>

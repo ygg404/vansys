@@ -1,5 +1,5 @@
 <template>
-  <div class="mod_card">
+  <div>
     <date-module v-model="dataForm" @change="pageIndex=1,getDataList()"></date-module>
     <van-row type="flex" justify="space-between" align="bottom" style="margin-bottom:5px; padding:4px 0px;">
       <van-col span="1" />
@@ -10,31 +10,39 @@
       <van-col span="8" class="addcontract"></van-col>
     </van-row>
     <!-- 表格内容 -->
-    <van-row class="table_header">
-      <van-col span="6" style="text-align:center;">项目编号</van-col>
-      <van-col span="12" style="text-align:center;">项目名称</van-col>
-      <van-col span="6" style="text-align:center;">操作</van-col>
+    <van-row class="pm5b">
+      <van-col span="6" class="tac">项目编号</van-col>
+      <van-col span="12" class="tac">项目名称</van-col>
+      <van-col span="6" class="tac">操作</van-col>
     </van-row>
-    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 250).toString() + 'px'" class="table_van_div">
-      <table border="1" class="table_van" >
-        <tbody v-loading="dataListLoading" >
-          <tr v-for="(item,index) in dataList">
-            <td class="table_row_tr1">{{item.projectNo}}</td>
-            <td>{{item.projectName}}</td>
-            <td class="table_row_tr3" >
-              <van-button type="info" size="small" @click="showDetailHandle(item)" round>详情</van-button>
-              <van-button type="primary" size="small" @click="restoreHandle(item)" round>恢复项目</van-button>
-              <van-button type="danger" size="small" @click="deleteHandle(item.projectNo)" round>删除</van-button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 300).toString() + 'px'" class="os">
+      <van-row
+        :key="index"
+        v-for="(item,index) in dataList"
+        type="flex"
+        align="center"
+        justify="center"
+        style="margin-bottom:18px;"
+      >
+        <van-col span="7" style="padding:4px;">
+          <div class="mb5tac">{{item.projectNo}}</div>
+        </van-col>
+        <van-col span="10" style="padding:5px;">
+          <div class="prons">{{item.projectName}}</div>
+        </van-col>
+        <van-col span="7">
+          <van-row type="flex" align="center" justify="center">
+            <van-col>
+              <van-button round type="info" size="small" @click="showDetailHandle(item)" round>详情</van-button>
+            </van-col>
+          </van-row>
+        </van-col>
+      </van-row>
     </div>
-    <van-pagination class="table_row_pagin" @change="getDataList()"
-      v-model="pageIndex"
-      :page-count="totalPage"
-      mode="simple"
-    />
+
+    <div style="margin-top:5px;padding-top:5px;border-top:1px solid rgb(213, 226, 239);">
+      <van-pagination v-model="pageIndex" :page-count="totalPage" mode="simple" @change="getDataList()"/>
+    </div>
 
     <!-- 项目详情弹窗-->
     <van-popup v-model="detailShow" closeable round position="bottom" :style="{ height: '50%' }" class="table_detail">
@@ -47,6 +55,10 @@
       <van-row>
         <van-col span="8">项目启动时间:</van-col>
         <van-col span="14" offset="2">{{detailItem.projectStartDateTime != null?detailItem.projectStartDateTime.replace('00:00:00',''):detailItem.projectStartDateTime}}</van-col>
+      </van-row>
+      <van-row>
+        <van-col span="12"><van-button type="primary" size="small" @click="restoreHandle(detailItem)" round>恢复项目</van-button></van-col>
+        <van-col span="12"><van-button type="danger" size="small" @click="deleteHandle(detailItem.projectNo)" round>删除</van-button></van-col>
       </van-row>
     </van-popup>
   </div>
@@ -67,8 +79,8 @@
           key: '',
           sidx: 'id',
           order: 'desc',
-          startDate: moment(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1) ).format('YYYY-MM-DD'),
-          endDate: moment(new Date(new Date().getFullYear(), new Date().getMonth() + 1 , 0)).format('YYYY-MM-DD')
+          startDate: moment(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)).format('YYYY-MM-DD'),
+          endDate: moment(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)).format('YYYY-MM-DD')
         },
         dataList: [],
         pageIndex: 1,
@@ -353,17 +365,15 @@
     line-height: 20px;
   }
 
-  .table_header{
-    font-size: 12pt;
-    font-weight: 700;
-    color: white;
-    background: #1989fa;
-    width:100%;
-    margin-top:2px;
-    padding: 5px;
+  .pm5b {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background: #faf7f7;
   }
   table{border:0;border-collapse:collapse}
-  td{border:1px solid #1989faaf;}
+  td{border-collapse:collapse}
   .table_row_tr1 {
     width: 27%;
   }
@@ -387,5 +397,8 @@
     margin:0 auto;
     border-bottom:1px dashed #000;
     overflow:scroll;
+  }
+  .os {
+    overflow: scroll;
   }
 </style>

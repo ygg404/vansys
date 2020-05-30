@@ -1,36 +1,23 @@
 <template>
-  <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
-    :close-on-click-modal="false"
-    :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="合同编号" prop="contractNo">
-      <el-input v-model="dataForm.contractNo" placeholder="合同编号"></el-input>
-    </el-form-item>
-    <el-form-item label="收支内容" prop="accountNote">
-      <el-input v-model="dataForm.accountNote" placeholder="收支内容"></el-input>
-    </el-form-item>
-    <el-form-item label="收支金额" prop="accountNum">
-      <el-input v-model="dataForm.accountNum" placeholder="收支金额"></el-input>
-    </el-form-item>
-    <el-form-item label="支出类型" prop="accountType">
-      <el-input v-model="dataForm.accountType" placeholder="支出类型"></el-input>
-    </el-form-item>
-    <el-form-item label="支出类型名称" prop="accountTypeName">
-      <el-input v-model="dataForm.accountTypeName" placeholder="支出类型名称"></el-input>
-    </el-form-item>
-    <el-form-item label="账号收支添加时间" prop="accountAddDateTime">
-      <el-input v-model="dataForm.accountAddDateTime" placeholder="账号收支添加时间"></el-input>
-    </el-form-item>
-    <el-form-item label="创建时间" prop="createDateTime">
-      <el-input v-model="dataForm.createDateTime" placeholder="创建时间"></el-input>
-    </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
-    </span>
-  </el-dialog>
+
+  <van-dialog :title="!dataForm.id ? '新增' : '修改'" use-slot show-cancel-button v-model="visible"
+              @cancel="visible = false" @confirm="dataFormSubmit" :beforeClose="beforeClose">
+    <van-form  ref="dataForm">
+      <van-field v-model="dataForm.contractNo" name="contractNo" label="合同编号" placeholder="合同编号" disabled/>
+      <van-field v-model="dataForm.accountNote" name="accountNote" label="收支内容" placeholder="收支内容"
+                 :rules="[{ required: true, message: '请填写收支内容' }]"/>
+      <van-field v-model="dataForm.accountNum" name="accountNum" label="收支金额" placeholder="收支金额"
+                 :rules="[{ required: true, message: '请填写收支金额' }]" type="number"/>
+      <van-field v-model="dataForm.accountType" name="accountType" label="支出类型" placeholder="支出类型"
+                 :rules="[{ required: false, message: '请填写支出类型' }]"/>
+      <van-field v-model="dataForm.accountTypeName" name="accountTypeName" label="支出类型名称" placeholder="支出类型名称"/>
+      <van-field v-model="dataForm.accountAddDateTime" label="项目启动时间" rule="accountAddDateTime" placeholder="项目启动时间" readonly @click="datePickerShow = true"
+                 :rules="[{ required: true, message: '请选择项目启动时间' }]"/>
+      <van-field v-model="dataForm.createDateTime" label="创建时间" rule="createDateTime" placeholder="创建时间" readonly @click="datePickerShow = true"
+                 :rules="[{ required: true, message: '请选择创建时间' }]"/>
+    </van-form>
+  </van-dialog>
+
 </template>
 
 <script>

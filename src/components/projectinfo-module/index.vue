@@ -98,40 +98,40 @@
 
 <script>
 export default {
-  props: ["Info", "infotype"],
-  data() {
+  props: ['Info', 'infotype'],
+  data () {
     return {
       panelShow: []
-    };
+    }
   },
   watch: {
-    Info(val) {
-      console.log(val);
+    Info (val) {
+      console.log(val)
     }
   },
   methods: {
     //
-    panelShowEvent() {
-      if (this.panelShow.length == 1) {
-        this.panelShow = [];
+    panelShowEvent () {
+      if (this.panelShow.length === 1) {
+        this.panelShow = []
       } else {
-        this.panelShow = ["1"];
+        this.panelShow = ['1']
       }
     },
     //
-    closeHandle() {
-      this.$emit("close");
+    closeHandle () {
+      this.$emit('close')
     },
-    confirmHandle() {
-      this.$emit("close");
+    confirmHandle () {
+      this.$emit('close')
     }
   },
-  mounted() {
+  mounted () {
     if (this.Info) {
-      this.panelShow = ["1"];
+      this.panelShow = ['1']
     }
   }
-};
+}
 </script>
 
 <style scoped>

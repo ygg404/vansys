@@ -59,6 +59,6 @@
 
 <style scoped>
   .van-cell__value span{
-    color: #00b7ee;
+    color: #1989fa;
   }
 </style>

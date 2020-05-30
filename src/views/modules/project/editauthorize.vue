@@ -18,14 +18,14 @@
    <div style="margin-top:20px;">
       <van-row type="flex" justify="space-around" align="center">
         <van-col span="10">
-         <div style="text-align:center; width:100%;height:100%;margin:0px; ">     
+         <div style="text-align:center; width:100%;height:100%;margin:0px; ">
          <van-button @click="goBack()" type="warning" >返回</van-button>
-         </div>  
+         </div>
         </van-col>
          <van-col span="10">
-         <div style="text-align:center; width:100%;height:100%;margin:0px; ">     
+         <div style="text-align:center; width:100%;height:100%;margin:0px; ">
          <van-button  @click="dataFormSubmit" type="info">提交</van-button>
-         </div>  
+         </div>
         </van-col>
       </van-row>
     </div>
@@ -33,103 +33,102 @@
 </template>
 
 <script>
-import { closeTab } from "@/utils/tabs";
 import projectInfo from '@/components/projectinfo-module'
 export default {
-  data() {
+  data () {
     return {
-      panelShow: ["1"],
-      projectInfo: "",
+      panelShow: ['1'],
+      projectInfo: '',
       projectNo: this.$route.query.projectNo,
       dataForm: {
-        id: "",
-        projectNo: "",
-        examineNote: ""
+        id: '',
+        projectNo: '',
+        examineNote: ''
       }
-    };
+    }
   },
-  mounted() {
-    this.init();
+  mounted () {
+    this.init()
   },
-  components:{
+  components: {
     projectInfo
   },
   methods: {
-    panelShowEvent() {
-      if (this.panelShow.length == 1) {
-        this.panelShow = [];
+    panelShowEvent () {
+      if (this.panelShow.length === 1) {
+        this.panelShow = []
       } else {
-        this.panelShow = ["1"];
+        this.panelShow = ['1']
       }
     },
-    init() {
-      this.getInfoByProjectNo(this.projectNo);
-      this.getEntityByProjectNo(this.projectNo);
+    init () {
+      this.getInfoByProjectNo(this.projectNo)
+      this.getEntityByProjectNo(this.projectNo)
     },
     // 获取项目基本信息
-    getInfoByProjectNo(projectNo) {
+    getInfoByProjectNo (projectNo) {
       return new Promise((resolve, reject) => {
         this.$http({
           url: this.$http.adornUrl(`/project/projectInfo/info/${projectNo}`),
-          method: "get",
+          method: 'get',
           params: this.$http.adornParams()
         }).then(({ data }) => {
           if (data && data.code === 0) {
-            this.projectInfo = data.projectInfo;
+            this.projectInfo = data.projectInfo
             if (this.projectInfo.qualityScore < 60) {
-              this.projectInfo.qualityLevel = "不合格";
+              this.projectInfo.qualityLevel = '不合格'
             } else if (
               this.projectInfo.qualityScore >= 60 &&
               this.projectInfo.qualityScore <= 50
             ) {
-              this.projectInfo.qualityLevel = "合格";
+              this.projectInfo.qualityLevel = '合格'
             } else if (
               this.projectInfo.qualityScore > 50 &&
               this.projectInfo.qualityScore < 90
             ) {
-              this.projectInfo.qualityLevel = "良";
+              this.projectInfo.qualityLevel = '良'
             } else if (this.projectInfo.qualityScore >= 90) {
-              this.projectInfo.qualityLevel = "优";
+              this.projectInfo.qualityLevel = '优'
             }
-            resolve(data.projectInfo);
+            resolve(data.projectInfo)
           } else {
-            this.$message.error(data.msg);
-            reject(data.msg);
+            this.$message.error(data.msg)
+            reject(data.msg)
           }
-        });
-      });
+        })
+      })
     },
     // 获取项目的实体信息
-    getEntityByProjectNo(projectNo) {
+    getEntityByProjectNo (projectNo) {
       return new Promise((resolve, reject) => {
         this.$http({
           url: this.$http.adornUrl(
             `/project/project/getByProjectNo/${projectNo}`
           ),
-          method: "get",
+          method: 'get',
           params: this.$http.adornParams()
         }).then(({ data }) => {
           if (data && data.code === 0) {
-            this.dataForm.id = data.project.id;
-            this.dataForm.projectNo = data.project.projectNo;
-            this.dataForm.examineNote = data.project.examineNote;
-            resolve(this.examineNote);
+            this.dataForm.id = data.project.id
+            this.dataForm.projectNo = data.project.projectNo
+            this.dataForm.examineNote = data.project.examineNote
+            resolve(this.examineNote)
           } else {
-            this.$message.error(data.msg);
-            reject(data.msg);
+            this.$message.error(data.msg)
+            reject(data.msg)
           }
-        });
-      });
+        })
+      })
     },
     // 提交项目审定
-    saveForm() {
-      if (this.dataForm.id == null || this.dataForm.id === "") {
-        this.$message.error("当前项目不存在，请刷新后重试！");
-        return;
+    saveForm () {
+      if (this.dataForm.id == null || this.dataForm.id === '') {
+        this.$message.error('当前项目不存在，请刷新后重试！')
+        return
       }
       this.$http({
         url: this.$http.adornUrl(`/project/project/authorize`),
-        method: "post",
+        method: 'post',
         data: this.$http.adornData({
           id: this.dataForm.id,
           projectNo: this.dataForm.projectNo,
@@ -138,37 +137,37 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 0) {
           this.$notify({
-            message: "提交成功",
-            type: "success",
+            message: '提交成功',
+            type: 'success',
             duration: 1500
-          });
-          this.goBack();
+          })
+          this.goBack()
         } else {
           this.$notify({
             message: data.msg,
-            type: "danger",
+            type: 'danger',
             duration: 1500
-          });
+          })
         }
-      });
+      })
     },
     // 返回
-    goBack() {
-      this.$router.push({ name: "project-project" });
+    goBack () {
+      this.$router.push({ name: 'project-project' })
     }
   },
   watch: {
-    $route: function(to, from) {
-      this.projectNo = to.query["projectNo"];
+    $route: function (to, from) {
+      this.projectNo = to.query['projectNo']
       // 执行数据更新查询
-      if (to.name === "project-editauthorize") {
-        this.init();
+      if (to.name === 'project-editauthorize') {
+        this.init()
       } else {
-        this.goBack();
+        this.goBack()
       }
     }
   }
-};
+}
 </script>
 
 <style scoped>

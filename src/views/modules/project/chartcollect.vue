@@ -1,6 +1,6 @@
 <template>
   <div class="mod-config" style="width:98%;margin-left:1%;margin-right:1%;">
-    <van-row  type="flex" align="center" justify="space-around" style="margin-bottom:5px;border-bottom: 1px solid #e3d8d8;">  
+    <van-row  type="flex" align="center" justify="space-around" style="margin-bottom:5px;border-bottom: 1px solid #e3d8d8;">
       <van-col span="18" class="wgns">
         <van-cell
           center
@@ -56,81 +56,81 @@
             </van-col>
           </van-row>
         </div>
-      </div> 
+      </div>
   </div>
 </template>
 
 <script>
-import moment from "moment";
+import moment from 'moment'
 export default {
-  data() {
+  data () {
     return {
-      sedShow:false,
+      sedShow: false,
       minDate: new Date(2000, 0, 1),
       maxDate: new Date(2025, 10, 1),
-      defaultDateArray:[],
-      sdateStr:'',
-      edateStr:'',
+      defaultDateArray: [],
+      sdateStr: '',
+      edateStr: '',
       dataForm: {
-        startDate: "",
-        endDate: ""
+        startDate: '',
+        endDate: ''
       },
       totalProjectNum: 0, // 合计项目数
       totalOutPut: 0, // 合计产值
-      dateTitle: "", // 时间标题
+      dateTitle: '', // 时间标题
       dataList: [],
       dataListLoading: false
-    };
+    }
   },
- created() {
-    this.sdateStr =  moment(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)).format("YYYY-MM-DD");
-    this.edateStr = moment(new Date()).format("YYYY-MM-DD");
-    this.defaultDateArray = [new Date(this.sdateStr),new Date()]
-    this.getChartCollectDat();
+  created () {
+    this.sdateStr =  moment (new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)).format('YYYY-MM-DD')
+    this.edateStr = moment(new Date()).format('YYYY-MM-DD')
+    this.defaultDateArray = [new Date(this.sdateStr), new Date()]
+    this.getChartCollectDat()
   },
   methods: {
-    goBack() {
-      this.$router.push({ name: "project-project" });
+    goBack () {
+      this.$router.push({ name: 'project-project' })
     },
-    onConfirm(date) {
-      const [start, end] = date;
-      this.dataForm.startDate = start;
-      this.dataForm.endDate = end;
-       this.sdateStr = moment(this.dataForm.startDate).format('YYYY-MM-DD')
+    onConfirm (date) {
+      const [start, end] = date
+      this.dataForm.startDate = start
+      this.dataForm.endDate = end
+      this.sdateStr = moment(this.dataForm.startDate).format('YYYY-MM-DD')
       this.edateStr = moment(this.dataForm.endDate).format('YYYY-MM-DD')
-      this.sedShow = false;
+      this.sedShow = false
       this.getChartCollectDat()
     },
     // 获取数据列表
-    getChartCollectDat() {
-      this.dateTitle = this.sdateStr + "至" + this.sdateStr;
-      this.dataListLoading = true;
+    getChartCollectDat () {
+      this.dateTitle = this.sdateStr + '至' + this.sdateStr
+      this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl("/project/chartcollect/list"),
-        method: "get",
+        url: this.$http.adornUrl('/project/chartcollect/list'),
+        method: 'get',
         params: this.$http.adornParams({
           startDate: this.sdateStr,
           endDate: this.edateStr
         })
       }).then(({ data }) => {
         if (data && data.code === 0) {
-          this.totalProjectNum = 0;
-          this.totalOutPut = 0;
-          this.dataList = data.list;
+          this.totalProjectNum = 0
+          this.totalOutPut = 0
+          this.dataList = data.list
           data.list.forEach((item, index) => {
-            this.totalProjectNum += item.projectNum;
-            this.totalOutPut += item.output;
-          });
-          this.totalOutPut = this.totalOutPut.toFixed(2);
+            this.totalProjectNum += item.projectNum
+            this.totalOutPut += item.output
+          })
+          this.totalOutPut = this.totalOutPut.toFixed(2)
         } else {
-          this.dataList = [];
+          this.dataList = []
         }
-        this.dataListLoading = false;
-      });
-    },
+        this.dataListLoading = false
+      })
+    }
 
   }
-};
+}
 </script>
 
 <style scoped>

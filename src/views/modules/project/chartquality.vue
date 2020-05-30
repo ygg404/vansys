@@ -123,27 +123,27 @@
 </template>
 
 <script>
-import moment from "moment";
-import Vue from "vue";
-import chartcommonModule from "@/components/chartcommon-module";
+import moment from 'moment'
+import Vue from 'vue'
+import chartcommonModule from '@/components/chartcommon-module'
 export default {
-  data() {
+  data () {
     return {
-      workgroupname: "",
+      workgroupname: '',
 
       sedShow: false,
       minDate: new Date(2000, 0, 1),
       maxDate: new Date(2025, 10, 1),
       defaultDateArray: [],
-      sdateStr: "",
-      edateStr: "",
+      sdateStr: '',
+      edateStr: '',
 
       dataForm: {
-        groupId: "",
-        startDate: "",
-        endDate: ""
+        groupId: '',
+        startDate: '',
+        endDate: ''
       },
-      dateTitle: "", // 时间标题
+      dateTitle: '', // 时间标题
       workGroupList: [],
       totalOutput: 0, // 合计总产值
       totalProjectSum: 0, // 项目合计数
@@ -155,148 +155,137 @@ export default {
   components: {
     chartcommonModule
   },
-  created() {
+  created () {
     this.sdateStr = moment(
       new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
-    ).format("YYYY-MM-DD");
-    this.edateStr = moment(new Date()).format("YYYY-MM-DD");
-    this.defaultDateArray = [new Date(this.sdateStr), new Date()];
-    this.getWorkGroupDataListFromApi();
-    this.getOutputQuality();
+    ).format('YYYY-MM-DD')
+    this.edateStr = moment(new Date()).format('YYYY-MM-DD')
+    this.defaultDateArray = [new Date(this.sdateStr), new Date()]
+    this.getWorkGroupDataListFromApi()
+    this.getOutputQuality()
   },
 
   methods: {
-    onworkGroupConfirm(item) {
-      this.dataForm.groupId = item.id;
-      this.workgroupname = item.name;
-      this.getOutputQuality();
+    onworkGroupConfirm (item) {
+      this.dataForm.groupId = item.id
+      this.workgroupname = item.name
+      this.getOutputQuality()
     },
-    goBack() {
-      this.$router.push({ name: "project-project" });
+    goBack () {
+      this.$router.push({ name: 'project-project' })
     },
     // 从后台获得工作组数据列表内容  填充至选项
-    getWorkGroupDataListFromApi() {
+    getWorkGroupDataListFromApi () {
       return new Promise((resolve, reject) => {
         this.$http({
-          url: this.$http.adornUrl("/set/workgroup/selectworkgroup"),
-          method: "get"
+          url: this.$http.adornUrl('/set/workgroup/selectworkgroup'),
+          method: 'get'
         }).then(({ data }) => {
           if (data && data.code === 0) {
-            this.workGroupList = data.list;
-            resolve(data.list);
+            this.workGroupList = data.list
+            resolve(data.list)
           } else {
-            this.workGroupList = [];
+            this.workGroupList = []
           }
-        });
-      });
+        })
+      })
     },
     // 表格初始化
-    tableDataInit(datalist) {
-      this.dataList = [];
-      let groupName = null;
+    // 表格初始化
+    tableDataInit (datalist) {
+      this.dataList = []
+      let groupName = null
       // 总项目 的 优良及格项
       this.projectSum = {
-        excellentCount: 0,
-        goodCount: 0,
-        passCount: 0,
-        failCount: 0,
-        goodexceSum: 0,
-        goodRate: 0
-      };
-      this.totalProjectSum = 0;
+        'excellentCount': 0,
+        'goodCount': 0,
+        'passCount': 0,
+        'failCount': 0,
+        'goodexceSum': 0,
+        'goodRate': 0
+      }
+      this.totalProjectSum = 0
       datalist.forEach((item, index) => {
-        item.groupShow = false;
-        item.footerShow = false;
-        this.totalProjectSum += 1;
+        item.groupShow = false
+        item.footerShow = false
+        this.totalProjectSum += 1
         if (item.qualityScore < 60) {
-          item.qualityLevel = "不合格";
-          this.projectSum.failCount += 1;
+          item.qualityLevel = '不合格'
+          this.projectSum.failCount += 1
         } else if (item.qualityScore >= 60 && item.qualityScore <= 70) {
-          item.qualityLevel = "合格";
-          this.projectSum.passCount += 1;
+          item.qualityLevel = '合格'
+          this.projectSum.passCount += 1
         } else if (item.qualityScore > 70 && item.qualityScore < 90) {
-          item.qualityLevel = "良";
-          this.projectSum.goodCount += 1;
+          item.qualityLevel = '良'
+          this.projectSum.goodCount += 1
         } else if (item.qualityScore >= 90) {
-          item.qualityLevel = "优";
-          this.projectSum.excellentCount += 1;
+          item.qualityLevel = '优'
+          this.projectSum.excellentCount += 1
         }
-      });
-      this.projectSum.goodexceSum =
-        this.projectSum.excellentCount + this.projectSum.goodCount;
+      })
+      this.projectSum.goodexceSum = this.projectSum.excellentCount + this.projectSum.goodCount
       if (this.totalProjectSum === 0) {
-        this.projectSum.goodRate = 0;
+        this.projectSum.goodRate = 0
       } else {
-        this.projectSum.goodRate = (
-          (this.projectSum.goodexceSum * 100) /
-          this.totalProjectSum
-        ).toFixed(2);
+        this.projectSum.goodRate = (this.projectSum.goodexceSum * 100 / this.totalProjectSum).toFixed(2)
       }
       datalist.forEach((item, index) => {
         if (groupName !== item.groupName) {
-          item.groupShow = true;
-          groupName = item.groupName;
-          let excellentCount = 0; // 优
-          let goodCount = 0; // 良
-          let passCount = 0; // 及格
-          let failCount = 0; // 不及格
-          let projectSum = 0; // 项目数
+          item.groupShow = true
+          groupName = item.groupName
+          let excellentCount = 0    // 优
+          let goodCount = 0         // 良
+          let passCount = 0         // 及格
+          let failCount = 0         // 不及格
+          let projectSum = 0   // 项目数
           for (let i = index; i < datalist.length; i++) {
             if (datalist[i].groupName === groupName) {
               if (datalist[i].qualityScore < 60) {
-                failCount += 1;
-              } else if (
-                datalist[i].qualityScore >= 60 &&
-                datalist[i].qualityScore <= 70
-              ) {
-                passCount += 1;
-              } else if (
-                datalist[i].qualityScore > 70 &&
-                datalist[i].qualityScore < 90
-              ) {
-                goodCount += 1;
+                failCount += 1
+              } else if (datalist[i].qualityScore >= 60 && datalist[i].qualityScore <= 70) {
+                passCount += 1
+              } else if (datalist[i].qualityScore > 70 && datalist[i].qualityScore < 90) {
+                goodCount += 1
               } else if (datalist[i].qualityScore >= 90) {
-                excellentCount += 1;
+                excellentCount += 1
               }
-              projectSum += 1;
-              datalist[i].failCount = failCount;
-              datalist[i].passCount = passCount;
-              datalist[i].goodCount = goodCount;
-              datalist[i].excellentCount = excellentCount;
-              datalist[i].projectSum = projectSum;
-              datalist[i].goodexceSum = excellentCount + goodCount;
-              datalist[i].goodRate = (
-                (datalist[i].goodexceSum * 100) /
-                projectSum
-              ).toFixed(2);
-              if (i >= datalist.length - 1) datalist[i].footerShow = true;
+              projectSum += 1
+              datalist[i].failCount = failCount
+              datalist[i].passCount = passCount
+              datalist[i].goodCount = goodCount
+              datalist[i].excellentCount = excellentCount
+              datalist[i].projectSum = projectSum
+              datalist[i].goodexceSum = excellentCount + goodCount
+              datalist[i].goodRate = (datalist[i].goodexceSum * 100 / projectSum).toFixed(2)
+              if (i >= datalist.length - 1) datalist[i].footerShow = true
             } else {
-              datalist[i - 1].footerShow = true;
-              break;
+              datalist[i - 1].footerShow = true
+              break
             }
           }
           // this.dataList.push(groupdat)
         }
-      });
-      this.dataList = datalist;
-      console.log(this.dataList);
+      })
+      this.dataList = datalist
+      console.log(this.dataList)
     },
-    onConfirm(date) {
-      const [start, end] = date;
-      this.dataForm.startDate = start;
-      this.dataForm.endDate = end;
-      this.sdateStr = moment(this.dataForm.startDate).format("YYYY-MM-DD");
-      this.edateStr = moment(this.dataForm.endDate).format("YYYY-MM-DD");
-      this.sedShow = false;
-      this.getOutputQuality();
+
+    onConfirm (date) {
+      const [start, end] = date
+      this.dataForm.startDate = start
+      this.dataForm.endDate = end
+      this.sdateStr = moment(this.dataForm.startDate).format('YYYY-MM-DD')
+      this.edateStr = moment(this.dataForm.endDate).format('YYYY-MM-DD')
+      this.sedShow = false
+      this.getOutputQuality()
     },
     // 获取数据列表
-    getOutputQuality() {
-      this.dateTitle = this.sdateStr + "至" + this.sdateStr;
-      this.dataListLoading = true;
+    getOutputQuality () {
+      this.dateTitle = this.sdateStr + '至' + this.sdateStr
+      this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl("/project/chartquality/list"),
-        method: "get",
+        url: this.$http.adornUrl('/project/chartquality/list'),
+        method: 'get',
         params: this.$http.adornParams({
           groupId: this.dataForm.groupId,
           startDate: this.sdateStr,
@@ -305,75 +294,75 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 0) {
           // this.dataList = data.list
-          this.tableDataInit(data.list);
+          this.tableDataInit(data.list)
         } else {
-          this.dataList = [];
+          this.dataList = []
         }
-        this.dataListLoading = false;
-      });
+        this.dataListLoading = false
+      })
     },
     // 导出excel表
-    exportChartHandle() {
-      this.dataListLoading = true;
-      let that = this;
+    exportChartHandle () {
+      this.dataListLoading = true
+      let that = this
 
       let startDate =
-        this.dataForm.startDate === null || this.dataForm.startDate === ""
-          ? ""
-          : moment(new Date(this.dataForm.startDate)).format("YYYY-MM-DD");
+        this.dataForm.startDate === null || this.dataForm.startDate === ''
+          ? ''
+          : moment(new Date(this.dataForm.startDate)).format('YYYY-MM-DD')
       let endDate =
-        this.dataForm.endDate === null || this.dataForm.endDate === ""
-          ? ""
-          : moment(new Date(this.dataForm.endDate)).format("YYYY-MM-DD");
-      let downTitle = this.dateTitle;
+        this.dataForm.endDate === null || this.dataForm.endDate === ''
+          ? ''
+          : moment(new Date(this.dataForm.endDate)).format('YYYY-MM-DD')
+      let downTitle = this.dateTitle
       let downurl =
-        window.SITE_CONFIG["baseUrl"] +
-        "/project/chartquality/exportExcel?startDate=" +
+        window.SITE_CONFIG['baseUrl'] +
+        '/project/chartquality/exportExcel?startDate=' +
         startDate +
-        "&endDate=" +
+        '&endDate=' +
         endDate +
-        "&groupId=" +
-        this.dataForm.groupId;
-      let xhr = new XMLHttpRequest();
+        '&groupId=' +
+        this.dataForm.groupId
+      let xhr = new XMLHttpRequest()
       // GET请求,请求路径url,async(是否异步)
-      xhr.open("GET", downurl, true);
+      xhr.open('get', downurl, true)
       // 设置请求头参数的方式,如果没有可忽略此行代码
-      xhr.setRequestHeader("token", Vue.cookie.get("token"));
+      xhr.setRequestHeader('token', Vue.cookie.get('token'))
       // 设置响应类型为 blob
-      xhr.responseType = "blob";
+      xhr.responseType = 'blob'
       // 关键部分
-      xhr.onload = function(e) {
-        that.dataListLoading = false;
+      xhr.onload = function (e) {
+        that.dataListLoading = false
         // 如果请求执行成功
         if (this.status === 200) {
-          let blob = this.response;
-          console.log(e);
-          let filename = downTitle + "  质量统计表.xls";
-          let a = document.createElement("a");
+          let blob = this.response
+          console.log(e)
+          let filename = downTitle + '质量统计表.xls'
+          let a = document.createElement('a')
           // 创键临时url对象
-          var url = URL.createObjectURL(blob);
-          a.href = url;
-          a.download = filename;
-          a.click();
+          var url = URL.createObjectURL(blob)
+          a.href = url
+          a.download = filename
+          a.click()
           // 释放之前创建的URL对象
-          window.URL.revokeObjectURL(url);
+          window.URL.revokeObjectURL(url)
         }
-      };
+      }
       // 发送请求
-      xhr.send();
+      xhr.send()
     },
     // 打印报表
-    printChart() {
-      const print = document.getElementById("chartId").innerHTML;
+    printChart () {
+      const print = document.getElementById('chartId').innerHTML
       // 把当前页面替换成要打印的内容
-      document.body.innerHTML = print;
+      document.body.innerHTML = print
       // 打印
-      window.print();
+      window.print()
       // 刷新页面
-      window.location.reload();
+      window.location.reload()
     }
   }
-};
+}
 </script>
 
 <style scoped>

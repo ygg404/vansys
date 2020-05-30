@@ -1,30 +1,29 @@
 <template>
   <div class="site-main"   :style="{ 'height': documentClientHeight + 'px' }">
-      <div style="height: 100px;"></div>
-      <div class="site-content">
-        <div>
-          <img src="~@/assets/img/hlogo.png"  class="login-main-img">
-          <span class="login-main-span">{{simpleName}}</span>
-        </div>
-<!--        <img width="100%" style="padding: 10px;" src="../../assets/img/logo.png"></img>-->
-        <vantForm ref="dataForm" :rules="dataRule" inputVail="true">
-          <template slot="items">
-            <van-field left-icon="contact" error-message="用户名不为空"  rule="userAccount" label="用户名" placeholder="请输入用户名"  v-model="dataForm.userAccount"/>
-            <van-field left-icon="closed-eye" error-message="密码不为空"  rule="password" type="password" label="密码" placeholder="请输入密码" v-model="dataForm.password" />
-          </template>
-        </vantForm>
-        <van-button :loading="loading" loading-text="登录中..." type="info"  style="width: 100%;" @click="dataFormSubmit()">登录</van-button>
+    <div style="height: 100px;"></div>
+    <div class="site-content">
+      <div>
+        <img src="~@/assets/img/hlogo.png"  class="login-main-img">
+        <span class="login-main-span">{{simpleName}}</span>
       </div>
-      <div class="site-bottom">
-        <div>Copyright © 2020 gdjxch.cn All rights reserved.</div>
-        <div><a href="http://www.beian.miit.gov.cn">粤ICP备19096985号</a></div>
-      </div>
+      <!--        <img width="100%" style="padding: 10px;" src="../../assets/img/logo.png"></img>-->
+      <vantForm ref="dataForm" :rules="dataRule" inputVail="true">
+        <template slot="items">
+          <van-field left-icon="contact" error-message="用户名不为空"  rule="userAccount" label="用户名" placeholder="请输入用户名"  v-model="dataForm.userAccount"/>
+          <van-field left-icon="closed-eye" error-message="密码不为空"  rule="password" type="password" label="密码" placeholder="请输入密码" v-model="dataForm.password" />
+        </template>
+      </vantForm>
+      <van-button :loading="loading" loading-text="登录中..." type="info"  style="width: 100%;" @click="dataFormSubmit()">登录</van-button>
+    </div>
+    <div class="site-bottom">
+      <div>Copyright © 2020 gdjxch.cn All rights reserved.</div>
+      <div><a href="http://www.beian.miit.gov.cn">粤ICP备19096985号</a></div>
+    </div>
   </div>
 </template>
 
 <script>
   import { getUUID,stringIsNull } from '@/utils'
-
   export default {
     data () {
       return {
@@ -45,7 +44,6 @@
         captchaPath: ''
       }
     },
-
     computed: {
       simpleName: {
         get () { return this.$store.state.common.simpleName },
@@ -228,7 +226,6 @@
       padding: 10px;
       border-radius: 6px;
     }
-
     .site-bottom{
       margin-left: 50%;
       transform: translate(-50%,-50%);
@@ -246,7 +243,6 @@
       color: white
     }
   }
-
   .login-main-img{
     width: 110px;
     height: auto;

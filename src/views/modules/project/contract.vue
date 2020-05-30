@@ -1,5 +1,5 @@
 <template>
-  <div class="mod_card">
+  <div >
     <date-module v-model="dataForm" @change="pageIndex=1,getDataList()"></date-module>
     <van-row type="flex" justify="space-between" align="bottom" style="margin-bottom:5px; padding:4px 0px;">
       <van-col span="1" />
@@ -13,13 +13,13 @@
         </div>
       </van-col>
     </van-row>
-    <!-- 表格内容 -->
-    <van-row class="table_header">
-      <van-col span="6" style="text-align:center;">合同编号</van-col>
-      <van-col span="12" style="text-align:center;">合同名称</van-col>
-      <van-col span="6" style="text-align:center;">操作</van-col>
+
+    <van-row class="pm5b">
+      <van-col span="6" class="tac">合同编号</van-col>
+      <van-col span="12" class="tac">合同名称</van-col>
+      <van-col span="6" class="tac">操作</van-col>
     </van-row>
-    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 250).toString() + 'px'" class="table_van_div">
+    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 250).toString() + 'px'" class="os">
       <table border="1" class="table_van"  >
         <tbody v-loading="dataListLoading" >
         <tr class="table_excuse" v-if="dataList.length < 1">暂无数据</tr>
@@ -27,17 +27,19 @@
           <td class="table_row_tr1">{{item.contractNo}}</td>
           <td class="table_row_tr2">{{item.contractName}}</td>
           <td class="table_row_tr3" >
-            <van-button type="warning" size="small" @click="detailContractShow = true,detailContractItem=item" round>详情</van-button>
+            <van-button type="info" size="small" @click="detailContractShow = true,detailContractItem=item" round>详情</van-button>
             <van-button v-if="item.filename" type="primary" size="small" @click="downloadFile(item)" round>下载</van-button>
           </td>
         </tr>
         </tbody>
       </table>
     </div>
+
     <!--分页控件-->
-    <div class="table_page_common">
+    <div style="margin-top:5px;padding-top:5px;border-top:1px solid rgb(213, 226, 239);">
       <van-pagination v-model="pageIndex" :page-count="totalPage" mode="simple" @change="getDataList()" />
     </div>
+
     <!--合同详情弹出层-->
     <van-dialog v-model="detailContractShow" confirm-button-text="返回" @cancel="detailContractShow = false">
       <div class="table_detail_info">
@@ -150,7 +152,7 @@
         addOrUpdateVisible: false,
         projectAddOrUpdateVisible: false,
         detailContractShow: false, // 合同详情展开
-        detailContractItem: '',    // 合同详情
+        detailContractItem: ''    // 合同详情
       }
     },
     computed: {
@@ -255,7 +257,7 @@
         })
       },
       // 删除合同接口
-      deleteContractApi(scop){
+      deleteContractApi (scop) {
         var ids = scop.id ? [scop.id] : this.dataListSelections.map(item => {
           return item.ids
         })
@@ -292,7 +294,8 @@
             data: this.$http.adornData(item.id, false)
           }).then(({data}) => {
             if (data && data.code === 0) {
-              this.$notify( { type: 'success', message: '操作成功'})
+              this.$notify(
+                { type: 'success', message: '操作成功'})
               this.detailContractShow = false
               this.getDataList()
             } else {
@@ -428,17 +431,8 @@
     line-height: 20px;
   }
 
-  .table_header{
-    font-size: 12pt;
-    font-weight: 700;
-    color: white;
-    background: #1989fa;
-    width:100%;
-    margin-top:2px;
-    padding: 5px;
-  }
   table{border:0;border-collapse:collapse}
-  td{border:1px solid #1989faaf;}
+  td{border-collapse:collapse}
   .table_row_tr1 {
     width: 27%;
   }
@@ -463,5 +457,17 @@
     border-bottom:1px dashed #000;
     overflow:scroll;
   }
-
+  .os {
+    overflow: scroll;
+  }
+  .pm5b {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background: #faf7f7;
+  }
+  .tac{
+    text-align:center;
+  }
 </style>

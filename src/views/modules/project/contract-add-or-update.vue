@@ -13,12 +13,8 @@
                    :rules="[{ required: false, message: '请填写合同金额' }]"/>
         <van-field v-model="dataForm.contractType"  name="contractType" label="合同类型" :rules="[{ required: true, message: '请填写合同类型' }]" >
           <template slot="input">
-            <input type="radio"  v-model="dataForm.contractType" id="s1" value="0"  style="zoom:2;"/>合同委托
-            <input type="radio"  v-model="dataForm.contractType" id="s2" value="1"  style="zoom:2;margin-left: 3px;"/>一般合同
-<!--            <van-radio-group v-model="dataForm.contractType" direction="horizontal">-->
-<!--              <van-radio name="0" >合同委托</van-radio>-->
-<!--              <van-radio name="1" >一般委托</van-radio>-->
-<!--            </van-radio-group>-->
+            <input type="radio"  v-model="dataForm.contractType" id="s1" value="0"  style="zoom:2;width:9px;"/>合同委托
+            <input type="radio"  v-model="dataForm.contractType" id="s2" value="1"  style="zoom:2;margin-left: 3px;width:9px;"/>一般合同
           </template>
         </van-field>
 
@@ -294,7 +290,11 @@
         }).then(({data}) => {
           if (data && data.code === 0) {
             this.dataForm.filename = data.fileName
-            this.$notify({ type: 'success' , message: '上传成功！'})
+            this.$notify(
+              {
+                type: 'success' ,
+                message: '上传成功！'
+              })
           } else {
             this.$notify({ type: 'danger' , message: data.msg })
           }

@@ -87,7 +87,7 @@
 <style>
   .main-navbar{
     width: 100%;
-    background-color: #0BB2D4;
+    background-color: #1989fa;
     min-height: 47px;
     display: flex;
     justify-content: space-between;

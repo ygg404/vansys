@@ -59,14 +59,14 @@
    <div style="margin-top:20px;">
       <van-row type="flex" justify="space-around" align="center">
         <van-col span="10">
-         <div style="text-align:center; width:100%;height:100%;margin:0px; ">     
+         <div style="text-align:center; width:100%;height:100%;margin:0px; ">
          <van-button @click="goBack()" type="warning" >返回</van-button>
-         </div>  
+         </div>
         </van-col>
          <van-col span="10">
-         <div style="text-align:center; width:100%;height:100%;margin:0px; ">     
+         <div style="text-align:center; width:100%;height:100%;margin:0px; ">
          <van-button  @click="dataFormSubmit" type="info">提交</van-button>
-         </div>  
+         </div>
         </van-col>
       </van-row>
     </div>
@@ -151,17 +151,17 @@ export default {
     init() {
       this.projectNo = this.$route.query.projectNo;
       this.getInfoByProjectNo(this.projectNo);
-      this.dataLoading = true;
-      this.loadingText = "";
+      this.dataLoading = true
+      this.loadingText = ""
       this.getQualityByProjectNo(this.projectNo).then(data => {
-        this.dataLoading = false;
+        this.dataLoading = false
       });
-      this.getBackworkHandle(this.projectNo);
-      this.getQualityNotelist();
-      this.getRepairNotelist();
+      this.getBackworkHandle(this.projectNo)
+      this.getQualityNotelist()
+      this.getRepairNotelist()
     },
     // 提交数据
-    dataFormSubmit() {
+    dataFormSubmit () {
       this.$refs.dataForm.validateAll().then(
         success => {
            let that = this
@@ -198,9 +198,9 @@ export default {
               })
               }
             })
-          } 
+          }
       );
-      
+
     },
     // 查看质检反馈内容
     checkReportHandle(item) {

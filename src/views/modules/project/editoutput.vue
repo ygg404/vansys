@@ -32,7 +32,7 @@
           </van-popup>
         </div>
 
-        <!-- <div class="xmlxt">项目类型</div> -->
+
         <div class="psts">
           <van-cell is-link @click="pstVisible = true">
             <template solt="title">项目类型</template>
@@ -68,7 +68,7 @@
           </div>
         </div>
 
-        <div style="overflow:scroll; width:100%; height:250px;margin-top:20px;">
+        <div style="overflow:scroll; width:100%; max-height:250px;margin-top:20px;">
           <van-radio-group v-model="groupradio" @change="changegroupradio">
             <div :key="index" v-for="(groupOutput,index) in outPutGroupList">
               <div v-if="groupOutput.checked">
@@ -170,48 +170,48 @@
 </template>
 
 <script>
-import moment from "moment";
-import { Divider } from "vant";
-import store from "@/store";
-import projectInfo from "@/components/projectinfo-module";
+import moment from  'moment'
+import { Divider } from 'vant'
+import store from '@/store'
+import projectInfo from '@/components/projectinfo-module'
 export default {
-  data() {
+  data () {
     return {
-      //折叠面板
-      panelShow: ["1"],
-      projectStarttDatedata: "",
+      // 折叠面板
+      panelShow: ['1'],
+      projectStarttDatedata: '',
       minDate: new Date(2000, 0, 1),
       maxDate: new Date(2025, 10, 1),
       stShow: false,
       pstVisible: false,
       projectStarttDateshow: false,
-      //项目类型相关数据回显
-      selectedTypeName: "",
+      // 项目类型相关数据回显
+      selectedTypeName: '',
       selectedTypeNum: 0,
       loading: true,
       groupradio: 0,
       totalOutPut: 0, // 实际总产值
       leftData: [], // 左侧数据显示
-      projectNo: "",
-      projectInfo: "",
+      projectNo: '',
+      projectInfo: '',
       projectTypelist: [], // 项目类型列表
       ptValue: [],
       workTypelist: [], // 工作类型列表
       outPutGroupList: [],
-      qualityNoteValue: "",
-      cutOffTime: "",
+      qualityNoteValue: '',
+      cutOffTime: '',
       cutOffTimeDate: new Date()
-    };
+    }
   },
-  mounted() {
-    this.init();
+  mounted () {
+    this.init()
   },
   watch: {
-    $route: function(to, from) {
-      this.projectNo = to.query["projectNo"];
+    $route: function (to, from) {
+      this.projectNo = to.query['projectNo']
       // 执行数据更新查询
-      if (to.name === "project-editoutput") {
-        this.init();
+      if (to.name === 'project-editoutput') {
+        this.init()
       } else {
         router.push({ name: mainTabs[mainTabs.length - 1].name });
       }
@@ -219,8 +219,8 @@ export default {
   },
   computed: {
     documentClientHeight: {
-      get() {
-        return this.$store.state.common.documentClientHeight;
+      get () {
+        return this.$store.state.common.documentClientHeight
       }
     }
   },
@@ -228,332 +228,332 @@ export default {
     projectInfo
   },
   methods: {
-    formatter(type, val) {
-      if (type === "year") {
-        return `${val}年`;
-      } else if (type === "month") {
-        return `${val}月`;
+    formatter (type, val) {
+      if (type === 'year') {
+        return `${val}年`
+      } else if (type === 'month') {
+        return `${val}月`
       }
-      return val;
+      return val
     },
-    confirmPicker(val) {
-      this.cutOffTime = `${val.getFullYear()}-${val.getMonth() + 1}`;
+    confirmPicker (val) {
+      this.cutOffTime = `${val.getFullYear()}-${val.getMonth() + 1}`
       this.stShow = false;
     },
-    panelShowEvent() {
-      if (this.panelShow.length == 1) {
-        this.panelShow = [];
+    panelShowEvent () {
+      if (this.panelShow.length === 1) {
+        this.panelShow = []
       } else {
-        this.panelShow = ["1"];
+        this.panelShow = ['1']
       }
     },
-    //Date 转化为 String
-    formatDate(date) {
-      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    // Date 转化为 String
+    formatDate (date) {
+      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
     },
-    //日期控件弹窗
-    cutOffTimeConfirm() {
-      this.projectStarttDateshow = true;
+    // 日期控件弹窗
+    cutOffTimeConfirm () {
+      this.projectStarttDateshow = true
     },
-    //修改组选项
-    changegroupradio(event) {
-      this.groupradio = event;
+    // 修改组选项
+    changegroupradio (event) {
+      this.groupradio = event
     },
-    init() {
-      this.projectNo = this.$route.query.projectNo;
-      this.getCutoffTime();
+    init () {
+      this.projectNo = this.$route.query.projectNo
+      this.getCutoffTime()
       this.getInfoByProjectNo(this.projectNo).then(success => {
         this.getProjectTypelist().then(success => {
           this.getWorkTypelist().then(success => {
-            let ptType = this.projectInfo.projectType.split(",");
+            let ptType = this.projectInfo.projectType.split(',')
             if (ptType.length >= 0) {
-              this.selectedTypeName = ptType[0];
-              this.selectedTypeNum = ptType.length - 1;
+              this.selectedTypeName = ptType[0]
+              this.selectedTypeNum = ptType.length - 1
             }
-            console.log(ptType);
+            console.log(ptType)
             for (let pt of this.projectTypelist) {
               for (let type of ptType) {
                 if (pt.name === type) {
-                  this.ptValue.push(pt.id);
+                  this.ptValue.push(pt.id)
                 }
               }
             }
-            this.workTypeInit();
+            this.workTypeInit()
             this.getOutPutGroupList(this.projectNo).then(success => {
               // 默认选中第一个组
               for (let e of this.outPutGroupList) {
                 if (e.checked) {
-                  this.groupradio = e.groupId;
+                  this.groupradio = e.groupId
                   break;
                 }
               }
-              this.checkOutputVoInit();
-              this.loading = false;
-              this.projectStarttDatedata = this.cutOffTime;
-            });
-          });
-        });
-      });
+              this.checkOutputVoInit()
+              this.loading = false
+              this.projectStarttDatedata = this.cutOffTime
+            })
+          })
+        })
+      })
     },
     // 工作类型可见或不可见
-    workTypeInit() {
+    workTypeInit () {
       for (let workType of this.workTypelist) {
-        workType.isVisible = false;
+        workType.isVisible = false
         // 工作类型 不属于 任意项目则设为 可见
         if (workType.projectTypeIdList.length === 0) {
-          workType.isVisible = true;
+          workType.isVisible = true
         } else {
           for (let ptypeId of workType.projectTypeIdList) {
             for (let ptvalue of this.ptValue) {
-              if (ptvalue === ptypeId) workType.isVisible = true;
+              if (ptvalue === ptypeId) workType.isVisible = true
             }
           }
         }
       }
     },
     // 根据工作类型可见不可见 来显示右侧工作组工作类型数据
-    checkOutputVoInit() {
-      this.leftData = [];
-      this.totalOutPut = 0;
+    checkOutputVoInit () {
+      this.leftData = []
+      this.totalOutPut = 0
       this.outPutGroupList.forEach((e, index) => {
         if (e.checked) {
-          e.projectActuallyOutput = 0;
+          e.projectActuallyOutput = 0
           e.checkOutputVoList.forEach(ele => {
             // 各组工作类型产值
-            ele.typeOutput = 0;
+            ele.typeOutput = 0
             ele.typeOutput = parseFloat(
               (ele.projectRatio * ele.unitOutput * ele.workLoad).toFixed(2)
-            );
+            )
             if (ele.checked)
               e.projectActuallyOutput = parseFloat(
                 (e.projectActuallyOutput + ele.typeOutput).toFixed(2)
-              );
-            ele.isVisible = false;
+              )
+            ele.isVisible = false
             this.workTypelist.forEach((work, index) => {
-              if (work.id === ele.typeId && work.isVisible)
-                ele.isVisible = true;
-            });
-            ele.listIndex = e.groupId;
-          });
-          this.leftData = this.leftData.concat(e.checkOutputVoList);
+              if(work.id === ele.typeId && work.isVisible)
+                ele.isVisible = true
+            })
+            ele.listIndex = e.groupId
+          })
+          this.leftData = this.leftData.concat(e.checkOutputVoList)
           this.totalOutPut = parseFloat(
             (this.totalOutPut + e.projectActuallyOutput).toFixed(2)
-          );
+          )
         }
-      });
-      console.log(this.leftData);
+      })
+      console.log(this.leftData)
     },
     // 获取工作组的产值核算
-    getOutPutGroupList(projectNo) {
+    getOutPutGroupList (projectNo) {
       return new Promise((resolve, reject) => {
         this.$http({
           url: this.$http.adornUrl(
             `/project/checkoutput/getOutPutGroup/${projectNo}`
           ),
-          method: "get",
+          method: 'get',
           params: this.$http.adornParams()
         }).then(({ data }) => {
           if (data && data.code === 0) {
-            this.outPutGroupList = data.list;
-            resolve(data.list);
+            this.outPutGroupList = data.list
+            resolve(data.list)
           } else {
-            this.$message.error(data.msg);
-            reject(data.msg);
+            this.$message.error(data.msg)
+            reject(data.msg)
           }
-        });
-      });
+        })
+      })
     },
     // 获取结算时间
-    getCutoffTime() {
+    getCutoffTime () {
       return new Promise((resolve, reject) => {
         this.$http({
           url: this.$http.adornUrl(`/project/quality/getInfo`),
-          method: "get",
+          method: 'get',
           params: this.$http.adornParams({
             projectNo: this.projectNo
           })
         }).then(({ data }) => {
           if (data && data.code === 0) {
             if (data.checkQuality != null) {
-              this.cutOffTime = data.checkQuality.cutOffTime;
-              this.cutOffTimeDate = new Date(this.cutOffTime);
+              this.cutOffTime = data.checkQuality.cutOffTime
+              this.cutOffTimeDate = new Date(this.cutOffTime)
             }
-            resolve(data.checkQuality);
+            resolve(data.checkQuality)
           } else {
-            this.$message.error(data.msg);
-            reject(data.msg);
+            this.$message.error(data.msg)
+            reject(data.msg)
           }
-        });
-      });
+        })
+      })
     },
     // 获取项目基本信息
-    getInfoByProjectNo(projectNo) {
+    getInfoByProjectNo (projectNo) {
       return new Promise((resolve, reject) => {
         this.$http({
           url: this.$http.adornUrl(`/project/projectInfo/info/${projectNo}`),
-          method: "get",
+          method: 'get',
           params: this.$http.adornParams()
         }).then(({ data }) => {
           if (data && data.code === 0) {
-            this.projectInfo = data.projectInfo;
-            resolve(data.projectInfo);
+            this.projectInfo = data.projectInfo
+            resolve(data.projectInfo)
           } else {
-            this.$message.error(data.msg);
-            reject(data.msg);
+            this.$message.error(data.msg)
+            reject(data.msg)
           }
-        });
-      });
+        })
+      })
     },
     // 获取项目类型列表
-    getProjectTypelist() {
+    getProjectTypelist () {
       return new Promise((resolve, reject) => {
         this.$http({
           url: this.$http.adornUrl(`/set/projecttype/getProjectTypelist`),
-          method: "get",
+          method: 'get',
           params: this.$http.adornParams()
         }).then(({ data }) => {
           if (data && data.code === 0) {
-            this.projectTypelist = [];
-            this.projectTypelist.push({ id: 0, name: "全部" });
-            console.log(this.projectTypelist);
+            this.projectTypelist = []
+            this.projectTypelist.push({ id: 0, name: '全部' })
+            console.log(this.projectTypelist)
             for (let item of data.list) {
-              this.projectTypelist.push({ id: item.id, name: item.name });
+              this.projectTypelist.push({ id: item.id, name: item.name })
             }
-            resolve(data.projectTypelist);
+            resolve(data.projectTypelist)
           } else {
-            this.$message.error(data.msg);
-            reject(data.msg);
+            this.$message.error(data.msg)
+            reject(data.msg)
           }
-        });
-      });
+        })
+      })
     },
     // 获取工作类型列表
-    getWorkTypelist() {
+    getWorkTypelist () {
       return new Promise((resolve, reject) => {
         this.$http({
           url: this.$http.adornUrl(`/set/worktype/getList`),
-          method: "get",
+          method: 'get',
           params: this.$http.adornParams()
         }).then(({ data }) => {
           if (data && data.code === 0) {
-            this.workTypelist = data.list;
-            resolve(data.workTypelist);
+            this.workTypelist = data.list
+            resolve(data.workTypelist)
           } else {
-            this.$message.error(data.msg);
-            reject(data.msg);
+            this.$message.error(data.msg)
+            reject(data.msg)
           }
-        });
-      });
+        })
+      })
     },
     // 提交结算时间
-    postCutoffTimeToApi() {
+    postCutoffTimeToApi () {
       return new Promise((resolve, reject) => {
         this.$http({
           url: this.$http.adornUrl(`/project/quality/cutOffTimesave`),
-          method: "post",
+          method: 'post',
           data: this.$http.adornData({
             projectNo: this.projectNo,
             cutOffTime: this.cutOffTime
           })
         }).then(({ data }) => {
           if (data && data.code === 0) {
-            resolve(data);
+            resolve(data)
           } else {
-            this.$message.error(data.msg);
-            reject(data.msg);
+            this.$message.error(data.msg)
+            reject(data.msg)
           }
-        });
-      });
+        })
+      })
     },
     // 保存产值核算
-    postOutputToApi() {
-      this.loading = true;
+    postOutputToApi () {
+      this.loading = true
       this.$http({
         url: this.$http.adornUrl(`/project/checkoutput/save`),
-        method: "post",
+        method: 'post',
         data: this.$http.adornData({
           projectNo: this.projectNo,
           pgroupList: this.outPutGroupList,
           projectActuallyOutput: this.totalOutPut
         })
       }).then(({ data }) => {
-        this.loading = false;
+        this.loading = false
         if (data && data.code === 0) {
           this.$message({
-            message: "操作成功",
-            type: "success",
+            message: '操作成功',
+            type: 'success',
             duration: 1500
-          });
-          this.visible = false;
-          this.$emit("refreshDataList");
-          this.goBack();
+          })
+          this.visible = false
+          this.$emit('refreshDataList')
+          this.goBack()
         } else {
-          this.$message.error(data.msg);
+          this.$message.error(data.msg)
         }
-      });
+      })
     },
-    saveForm() {
+    saveForm () {
       this.postCutoffTimeToApi().then(success => {
-        this.postOutputToApi();
-      });
+        this.postOutputToApi()
+      })
     },
     // 项目类型改变
-    projectTypeChangeHandler() {
-      console.log(this.ptValue);
-      //取出第一个名称回显
-      if (this.ptValue.length != 0) {
-        this.selectedTypeName = this.projectTypelist[this.ptValue[0]].name;
+    projectTypeChangeHandler () {
+      console.log(this.ptValue)
+      // 取出第一个名称回显
+      if (this.ptValue.length !== 0) {
+        this.selectedTypeName = this.projectTypelist[this.ptValue[0]].name
       }
-      //回显项目类型数量
-      this.selectedTypeNum = this.ptValue.length - 1;
+      // 回显项目类型数量
+      this.selectedTypeNum = this.ptValue.length - 1
       for (let ptvalue of this.ptValue) {
-        //全选情况下
+        // 全选情况下
         if (ptvalue === 0) {
-          this.ptValue = [];
-          this.selectedTypeName = this.projectTypelist[1].name;
-          this.selectedTypeNum = this.projectTypelist.length - 2;
-          for (let pw of this.projectTypelist)
+          this.ptValue = []
+          this.selectedTypeName = this.projectTypelist[1].name
+          this.selectedTypeNum = this.projectTypelist.length - 2
+          for(var pw of this.projectTypelist)
             if (pw.id !== 0) {
-              this.ptValue.push(pw.id);
+              this.ptValue.push(pw.id)
             }
-          break;
+          break
         }
       }
-      this.workTypeInit();
-      this.checkOutputVoInit();
-      this.pstVisible = false;
+      this.workTypeInit()
+      this.checkOutputVoInit()
+      this.pstVisible = false
     },
     // 保留小数点后两位的过滤器，尾数不四舍五入
-    numFilter(value) {
+    numFilter (value) {
       // 截取当前数据到小数点后三位
-      let tempVal = parseFloat(value).toFixed(3);
-      let realVal = tempVal.substring(0, tempVal.length - 1);
-      return realVal;
+      let tempVal = parseFloat(value).toFixed(3)
+      let realVal = tempVal.substring(0, tempVal.length - 1)
+      return realVal
     },
     // 工作类型在表格勾选显示
-    chooseRatio(params) {
+    chooseRatio (params) {
       //  console.log(params)
-      let temp = [];
+      let temp = []
       params.forEach(e => {
         if (e.checked) {
           e.typeOut = this.numFilter(
             e.workLoad * e.projectRatio * e.typeOutput
-          );
+          )
           if (e.projectRatio == null || e.workLoad == null) {
-            e.projectRatio = 1;
-            e.workLoad = 0;
+            e.projectRatio = 1
+            e.workLoad = 0
           }
-          temp.push(e);
+          temp.push(e)
         }
-      });
-      return temp;
+      })
+      return temp
     },
     // 返回
-    goBack() {
-      this.$router.push({ name: "project-project" });
+    goBack () {
+      this.$router.push({ name: 'project-project' })
     }
   }
-};
+}
 </script>
 
 <style>
@@ -565,7 +565,7 @@ export default {
   margin-right: 1px;
   overflow: scroll;
   width: 98%;
-  height: 200px;
+  max-height: 200px;
   padding-bottom: 20px;
   border-bottom: 1px solid rgb(195, 197, 199);
 }
@@ -689,15 +689,7 @@ export default {
   margin-bottom: 5px;
   margin-left: 4px;
 }
-.xmlxt {
-  width: 100%;
-  font-size: 16px;
-  margin-bottom: 4px;
-  margin-top: 4px;
-  border-bottom: 1px dotted rgb(195, 197, 199);
-  padding-bottom: 4px;
-  padding-left: 10px;
-}
+
 .pibd {
   width: 90%;
   margin: 0 auto;
