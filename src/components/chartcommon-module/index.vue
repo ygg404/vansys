@@ -1,28 +1,19 @@
 <template>
-     <van-row style="margin-top:5px;margin-bottom:5px;" >
+     <van-row style="margin-top:5px;margin-bottom:5px;" type="flex" align="center">
       <van-col span="1" />
       <van-col span="10" class="wgns">
-        <van-cell
-          center
-          @click="wgshow = true"
-          style="border:1px solid gb(232, 213, 213);"
-        >作业组:{{wgName}}</van-cell>
+        <van-cell center @click="wgshow = true" style="border:1px solid gb(232, 213, 213);">作业组:{{wgName}}</van-cell>
         <van-popup v-model="wgshow" position="bottom">
           <van-picker
-            show-toolbar
-            title="选择作业组"
-            value-key="name"
-            :columns="wgList"
-            @cancel="wgshow = false"
-            @confirm="onworkGroupConfirm"
-          />
+            show-toolbar title="选择作业组" value-key="name" :columns="wgList"
+            @cancel="wgshow = false" @confirm="onworkGroupConfirm"/>
         </van-popup>
       </van-col>
       <van-col span="8">
-        <van-button type="primary" @click="exportChartHandle">导出Excel</van-button>
+        <van-button type="primary" size="small" @click="exportChartHandle">导出Excel</van-button>
       </van-col>
        <van-col span="4">
-        <van-button type="info" @click="goBack">返回</van-button>
+        <van-button type="info" size="small" @click="goBack">返回</van-button>
       </van-col>
        <van-col span="1" />
     </van-row>

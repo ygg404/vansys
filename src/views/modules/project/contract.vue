@@ -81,7 +81,7 @@
           <van-button type="info" size="small" @click="addOrUpdateHandle(detailContractItem.id)" v-if="isAuth('project:contract:update')" >修改合同</van-button>
           <van-button type="danger" size="small" @click="deleteHandle(detailContractItem)" v-if="isAuth('project:contract:delete')" >删除合同</van-button>
         </div>
-        <van-divider contentPosition="center" style="color:#1989FA;" v-if="detailContractItem.projectList != []">该合同下的项目信息</van-divider>
+        <van-divider contentPosition="center" style="color:#1989FA;">该合同下的项目信息</van-divider>
         <div v-for="item in detailContractItem.projectList">
           <van-row >
             <van-col span="7" class="vancoltinfotitlestyle">项目编号</van-col>
@@ -464,7 +464,6 @@
     padding-top: 10px;
     padding-bottom: 10px;
     margin-top: 10px;
-    margin-bottom: 10px;
     background: #faf7f7;
   }
   .tac{

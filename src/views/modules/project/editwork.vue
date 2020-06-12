@@ -23,68 +23,28 @@
         <van-form ref="dataForm" class="vf">
           <div class="vfs">
             <quickInput title="技术交底快捷输入" @vtrue="tdVisiable = true" />
-            <van-field
-              v-model="dataForm.technicalDisclosureNote"
-              rows="5"
-              autosize
-              type="textarea"
-              maxlength="1000"
-              show-word-limit
-              placeholder="请输入技术交底"
-              :rules="[{ required: true, message: ' ' }]"
-            />
+            <van-field v-model="dataForm.technicalDisclosureNote" rows="5" autosize type="textarea" maxlength="1000" show-word-limit
+              placeholder="请输入技术交底" :rules="[{ required: true, message: ' ' }]"/>
           </div>
           <div class="vfs">
             <quickInput title="过程检查意见快捷输入" @vtrue="piVisiable = true" />
-            <van-field
-              v-model="dataForm.checkSuggestion"
-              rows="5"
-              autosize
-              type="textarea"
-              maxlength="1000"
-              show-word-limit
-              placeholder="请输入过程检查意见"
-              :rules="[{ required: true, message: ' ' }]"
-            />
+            <van-field v-model="dataForm.checkSuggestion" rows="5" autosize type="textarea" maxlength="1000" show-word-limit
+              placeholder="请输入过程检查意见" :rules="[{ required: true, message: ' ' }]"/>
           </div>
           <div class="vfs">
             <quickInput title="上交资料快捷输入快捷输入" @vtrue="siVisiable = true" />
-            <van-field
-              v-model="dataForm.dataName"
-              rows="5"
-              autosize
-              type="textarea"
-              maxlength="1000"
-              show-word-limit
-              placeholder="请输入上交资料快捷输入"
-              :rules="[{ required: true, message: ' ' }]"
-            />
+            <van-field v-model="dataForm.dataName" rows="5" autosize type="textarea" maxlength="1000" show-word-limit
+              placeholder="请输入上交资料快捷输入" :rules="[{ required: true, message: ' ' }]"/>
           </div>
           <div class="vfs">
             <quickInput title="工作小结快捷输入" @vtrue="swVisiable = true" />
-            <van-field
-              v-model="dataForm.briefSummary"
-              rows="5"
-              autosize
-              type="textarea"
-              maxlength="1000"
-              show-word-limit
-              placeholder="请输入工作小结快捷输入"
-              :rules="[{ required: true, message: ' ' }]"
-            />
+            <van-field v-model="dataForm.briefSummary" rows="5" autosize type="textarea" maxlength="1000" show-word-limit
+              placeholder="请输入工作小结快捷输入" :rules="[{ required: true, message: ' ' }]"/>
           </div>
           <div class="vfs">
             <quickInput title="工作量快捷输入" @vtrue="wlVisiable = true" />
-            <van-field
-              v-model="dataForm.workLoad"
-              rows="5"
-              autosize
-              type="textarea"
-              maxlength="1000"
-              show-word-limit
-              placeholder="请输入工作量快捷输入"
-              :rules="[{ required: true, message: ' ' }]"
-            />
+            <van-field v-model="dataForm.workLoad" rows="5" autosize type="textarea" maxlength="1000" show-word-limit
+              placeholder="请输入工作量快捷输入" :rules="[{ required: true, message: ' ' }]"/>
           </div>
         </van-form>
       </div>
@@ -106,49 +66,24 @@
     </div>
 
     <van-popup v-model="tdVisiable" style="width: 85%;">
-      <select-note
-        title="技术交底快捷输入"
-        v-model="dataForm"
-        :dataList="disclosureNotesList"
-        :selectType="4"
-        @close="tdVisiable = false"
-      />
+      <select-note title="技术交底快捷输入" v-model="dataForm" :dataList="disclosureNotesList" :selectType="4"
+        @close="tdVisiable = false"/>
     </van-popup>
     <van-popup v-model="piVisiable" style="width: 85%;">
-      <select-note
-        title="过程检查意见快捷输入"
-        v-model="dataForm"
-        :dataList="checkSuggestionsList"
-        :selectType="5"
-        @close="piVisiable = false"
-      />
+      <select-note title="过程检查意见快捷输入" v-model="dataForm" :dataList="checkSuggestionsList" :selectType="5"
+        @close="piVisiable = false"/>
     </van-popup>
     <van-popup v-model="siVisiable" style="width: 85%;">
-      <select-note
-        title="上交资料快捷输入"
-        v-model="dataForm"
-        :dataList="dataNameList"
-        :selectType="6"
-        @close="siVisiable = false"
-      />
+      <select-note title="上交资料快捷输入" v-model="dataForm" :dataList="dataNameList" :selectType="6"
+        @close="siVisiable = false"/>
     </van-popup>
     <van-popup v-model="swVisiable" style="width: 85%;">
-      <select-note
-        title="上交资料快捷输入"
-        v-model="dataForm"
-        :dataList="briefSummarysList"
-        :selectType="7"
-        @close="swVisiable = false"
-      />
+      <select-note title="上交资料快捷输入" v-model="dataForm" :dataList="briefSummarysList" :selectType="7"
+        @close="swVisiable = false"/>
     </van-popup>
     <van-popup v-model="wlVisiable" style="width: 85%;">
-      <select-note
-        title="工作量快捷输入"
-        v-model="dataForm"
-        :dataList="workLoadList"
-        :selectType="8"
-        @close="wlVisiable = false"
-      />
+      <select-note title="工作量快捷输入" v-model="dataForm" :dataList="workLoadList" :selectType="8"
+        @close="wlVisiable = false"/>
     </van-popup>
   </div>
 </template>
@@ -272,13 +207,11 @@
                 if (data.projectWork != null) {
                   this.dataForm.id = data.projectWork.id;
                   this.dataForm.projectNo = data.projectWork.projectNo;
-                  this.dataForm.technicalDisclosureNote =
-                    data.projectWork.technicalDisclosureNote;
-                  this.dataForm.checkSuggestion =
-                    data.projectWork.checkSuggestion;
-                  this.dataForm.dataName = data.projectWork.dataName;
-                  this.dataForm.briefSummary = data.projectWork.briefSummary;
-                  this.dataForm.workLoad = data.projectWork.workLoad;
+                  this.dataForm.technicalDisclosureNote = data.projectWork.technicalDisclosureNote == null ? '' : data.projectWork.technicalDisclosureNote;
+                  this.dataForm.checkSuggestion = data.projectWork.checkSuggestion == null ? '': data.projectWork.checkSuggestion;
+                  this.dataForm.dataName = data.projectWork.dataName == null ? '': data.projectWork.dataName;
+                  this.dataForm.briefSummary = data.projectWork.briefSummary == null ? '' : data.projectWork.briefSummary;
+                  this.dataForm.workLoad = data.projectWork.workLoad == null ? '' : data.projectWork.workLoad;
                   this.dataForm.finishDateTime = data.projectWork.finishDateTime;
                   this.dataForm.projectStatus = data.projectWork.projectStatus;
                   this.dataForm.workNote = data.projectWork.workNote;

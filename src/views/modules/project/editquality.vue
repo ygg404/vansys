@@ -49,7 +49,7 @@
   </van-collapse>
 
   <!---->
-    <van-form  ref="dataForm">
+    <van-form  ref="dataForm" style="margin-top:10px;">
         <van-row type="flex" align="center" justify="center" class="qsn">
           <van-col span="15">
             <van-field v-model="dataForm.qualityScore"  label="质量分数" type="number"
@@ -58,11 +58,11 @@
         </van-row>
       </van-form>
 
- <van-row style="margin-bottom:20px;">
+ <van-row style="margin-bottom:20px;margin-top:10px;">
    <van-col span="6" class="footerbtngroup"><button style="width:80%;" class="cnbtn btnyellow"  @click="goBack">返回</button></van-col>
-   <van-col span="6" class="footerbtngroup"><button style="width:80%;" class="cnbtn" @click="dataFormSubmit" :disabled="isCheck == 2">提交</button></van-col>
-   <van-col span="6" class="footerbtngroup"><button style="width:80%;" class="cnbtn btnpink" @click="repairNoteSubmit" :disabled="isCheck == 2">退回返修</button></van-col>
-   <van-col span="6" class="footerbtngroup"><button style="width:80%;" class="cnbtn btnLightpink" @click="recallRepairHandle" :disabled="isCheck != 2">撤回返修</button></van-col>
+   <van-col span="6" class="footerbtngroup"><button style="width:80%;" :class="[isCheck != 2? '':'btnLightblue']"  class="cnbtn" @click="dataFormSubmit" :disabled="isCheck == 2">提交</button></van-col>
+   <van-col span="6" class="footerbtngroup"><button style="width:80%;" :class="[isCheck != 2?'btnpink':'btnLightpink']" class="cnbtn" @click="repairNoteSubmit" :disabled="isCheck == 2">退回返修</button></van-col>
+   <van-col span="6" class="footerbtngroup"><button style="width:80%;" :class="[isCheck == 2?'btnpink':'btnLightpink']" class="cnbtn" @click="recallRepairHandle" :disabled="isCheck != 2">撤回返修</button></van-col>
 </van-row>
 
 
@@ -385,10 +385,15 @@
       },
       // 撤回返修
       recallRepairHandle () {
-        this.$confirm('是否确定撤回质检反馈报告？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消'
-        }).then(() => {
+        this.$dialog.alert(
+          {
+            title: '提示',
+            message: '是否确定撤回质检反馈报告？',
+            showCancelButton:true,
+            cancelButtonText:'取消',
+            confirmButtonText:'确定'
+          }
+        ).then(() => {
           this.$refs.reportPreId.innerHTML = ''
           this.$http({
             url: this.$http.adornUrl(`/project/backwork/delete`),
@@ -396,14 +401,18 @@
             data: this.projectNo
           }).then(({data}) => {
             if (data && data.code === 0) {
-              this.$message({
+              this.$notify({
                 message: '撤销返修成功',
                 type: 'success',
                 duration: 1500
               })
               this.init()
             } else {
-              this.$message.error(data.msg)
+              this.$notify({
+                message: data.msg,
+                type: 'danger',
+                duration: 1500
+              })
             }
           })
         })
@@ -475,6 +484,9 @@
   .btnyellow{
     background-color: #E6A23C;border: 1px solid #E6A23C;
   }
+  .btnLightblue{
+    background-color: lightskyblue;border: 1px solid lightskyblue;
+  }
   .btnpink{
     background-color: #F56C6C;border: 1px solid #F56C6C;
   }
@@ -485,13 +497,13 @@
     background-color: #67C23A;border: 1px solid #67C23A;
   }
   .qsn .van-col {
-    margin:10px 10px;
+    /*margin:10px 10px;*/
     border: 1px dashed #d9d2d2;
-  height: 50px;
 }
 .qsn .van-cell{
-     padding: 9px 9px;
+  padding:0px;
   height:100%;
   font-size:16px;
 }
+
 </style>

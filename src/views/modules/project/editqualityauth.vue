@@ -8,15 +8,15 @@
           <van-col span="8" class="tac">返修要求</van-col>
           <van-col span="8" class="tac">修改日期</van-col>
         </van-row>
-        <van-list :key="index" v-for="(item, index) in backWorkList" style="margin-top:5px;">
-          <van-row>
-            <van-col span="8" class="tac">{{item.backCreateTime}}</van-col>
-            <van-col span="8" class="scbtn">
-              <van-button type="info" icon="search" @click="checkReportHandle(item)">查看内容</van-button>
-            </van-col>
-            <van-col span="8" class="tac">{{item.submitCreateTime}}</van-col>
-          </van-row>
-        </van-list>
+         <van-list :key="index" v-for="(item, index) in backWorkList" style="margin-top:5px;" v-if="backWorkList.length !== 0">
+           <van-row>
+             <van-col span="8" class="tac">{{item.backCreateTime}}</van-col>
+             <van-col span="8" class="scbtn">
+               <van-button type="info" icon="search" @click="checkReportHandle(item)">查看内容</van-button>
+             </van-col>
+             <van-col span="8" class="tac">{{item.submitCreateTime}}</van-col>
+           </van-row>
+         </van-list>
       </van-collapse-item>
     </van-collapse>
 

@@ -5,44 +5,44 @@
         <div style="font-size:17px;font-weight:600;">财务操作</div>
       </template>
       <!---->
-      <van-collapse :value="panelShow" @change="panelShowEvent" style="width:95%;margin:0 auto;">
+      <van-collapse :value="panelShow" @change="panelShowEvent" class="coll" style="width:95%;margin:0 auto;">
         <van-collapse-item  name="1" class="Infocollapse">
           <template slot="title">
             <div style="font-size:16px;font-weight:600;">合同基本信息</div>
           </template>
-          <van-row class="mt5">
+          <van-row class="mt4">
             <van-col span="7" class="tac">合同编码:</van-col>
             <van-col span="17" class="talpl10">{{ContractInfo.contractNo}}</van-col>
           </van-row>
-          <van-row class="mt5">
+          <van-row class="mt4">
             <van-col span="7" class="tac">合同名称:</van-col>
             <van-col span="17" class="talpl10">{{ContractInfo.contractName}}</van-col>
           </van-row>
-          <van-row class="mt5">
+          <van-row class="mt4">
             <van-col span="7" class="tac">合同金额:</van-col>
             <van-col span="17" class="talpl10">{{ContractInfo.contractMoney}}</van-col>
           </van-row>
-          <van-row class="mt5">
+          <van-row class="mt4">
             <van-col span="7" class="tac">合同类型:</van-col>
             <van-col span="17" class="talpl10">{{contracttypeName}}</van-col>
           </van-row>
-          <van-row class="mt5">
+          <van-row class="mt4">
             <van-col span="7" class="tac">合同委托单位:</van-col>
             <van-col span="17" class="talpl10">{{ContractInfo.contractAuthorize}}</van-col>
           </van-row>
-          <van-row class="mt5">
+          <van-row class="mt4">
             <van-col span="7" class="tac">业务负责人:</van-col>
             <van-col span="17" class="talpl10">{{ContractInfo.contractBusiness}}</van-col>
           </van-row>
-          <van-row class="mt5">
+          <van-row class="mt4">
             <van-col span="7" class="tac">联系人:</van-col>
             <van-col span="17" class="talpl10">{{ContractInfo.userName}}</van-col>
           </van-row>
-          <van-row class="mt5">
+          <van-row class="mt4">
             <van-col span="7" class="tac">联系电话:</van-col>
             <van-col span="17" class="talpl10">{{ContractInfo.userPhone}}</van-col>
           </van-row>
-          <van-row class="mt5">
+          <van-row class="mt4">
             <van-col span="7" class="tac">合同签订时间:</van-col>
             <van-col span="17" class="talpl10">{{ContractInfo.contractAddTime}}</van-col>
           </van-row>
@@ -50,7 +50,7 @@
       </van-collapse>
 
       <!---->
-      <van-collapse :value="paneEIShow" @change="paneEIShowEvent" style="width:95%;margin:0 auto;">
+      <van-collapse :value="paneEIShow" @change="paneEIShowEvent" style="width:95%;margin:0 auto;" class="coll">
         <van-collapse-item  name="1" class="InfoTitle">
           <template slot="title">
             <div style="font-size:16px;font-weight:600;">收支信息</div>
@@ -69,10 +69,9 @@
           </van-row>
         </van-collapse-item>
       </van-collapse>
-      <!---->
 
       <!---->
-      <van-row>
+      <van-row style="padding-top:5px;padding-bottom:5px;">
         <van-col span="5" class="tac">日期</van-col>
         <van-col span="3" class="tac">收支</van-col>
         <van-col span="7" class="tac">金额</van-col>
@@ -81,15 +80,19 @@
       </van-row>
 
       <!---->
-      <div :key="item + index" v-for="(item,index) in AccountList">
-        <van-row type="flex" align="center" style="margin-bottom:5px;">
-          <van-col span="5" class="tac eifs">{{item.accountAddDateTime}}</van-col>
-          <van-col span="3" class="tac eifs">{{item.accountTypeName}}</van-col>
-          <van-col span="7" class="tac eifs">{{item.accountNum}}</van-col>
-          <van-col span="5" class="tac eifs">{{item.accountNote}}</van-col>
-          <van-col span="4" class="tac"><button @click="DeleteOneAccount(item.id)" class="btn">操作</button></van-col>
-        </van-row>
+      <div class="os" style="max-height:170px;">
+        <div :key="item + index" v-for="(item,index) in AccountList">
+          <van-row type="flex" align="center" style="margin-bottom:5px;">
+            <van-col span="5" class="tac eifs">{{item.accountAddDateTime}}</van-col>
+            <van-col span="3" class="tac eifs">{{item.accountTypeName}}</van-col>
+            <van-col span="7" class="tac eifs">{{item.accountNum}}</van-col>
+            <van-col span="5" class="tac eifs">{{item.accountNote}}</van-col>
+            <van-col span="4" class="tac"><button @click="DeleteOneAccount(item.id)" class="btn">删除</button></van-col>
+          </van-row>
+        </div>
       </div>
+
+      <!---->
       <button class="confirmbtn" style="float:right;" @click="AddAcountInfoHandle">新增</button>
     </van-dialog>
 
@@ -441,8 +444,8 @@
   .talpl10{
     text-align:left;padding-left:10px;
   }
-  .mt5{
-    margin-top:5px;
+  .mt4{
+    margin-top:4px;
   }
   .eifs{
     font-size:14px;
@@ -494,7 +497,19 @@
     line-height: 48px;
     border: 0;
   }
+  .os {
+    overflow: scroll;
+  }
+  .coll .van-collapse-item__content{
+    padding:2px 10px;
+  }
+  .van-dialog__header{
+    padding-top:20px;
+  }
 
+  .coll .van-cell{
+    padding: 3px 16px;
+  }
 
 </style>
 

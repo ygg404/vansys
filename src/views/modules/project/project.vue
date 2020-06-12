@@ -41,7 +41,7 @@
       <van-col span="6" class="tac">操作</van-col>
     </van-row>
 
-    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 350).toString() + 'px'" class="os">
+    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 360).toString() + 'px'" class="os">
       <van-row
         :key="index"
         v-for="(item,index) in dataList"
@@ -835,11 +835,6 @@
     font-size: 16px;
     padding: 0px;
   }
-
-  .roletab .van-tabs__wrap {
-    height: 34px;
-  }
-
   .van-search {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -954,7 +949,6 @@
     padding-top: 10px;
     padding-bottom: 10px;
     margin-top: 10px;
-    margin-bottom: 10px;
     background: #faf7f7;
   }
 

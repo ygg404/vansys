@@ -8,7 +8,7 @@
           <el-date-picker style="float:left;width:45%;" v-model="dataForm.endDate" type="date"  placeholder="结束日期"  :picker-options="pickerOptionsEnd" @change="changeStart"></el-date-picker>
         </el-form-item>
       </div>
-      <div style="width:90%;margin:0 auto;">
+      <div style="width:95%;margin:0 auto;">
         <el-form-item>
           <el-select v-model="dataForm.projectType" placeholder="类型选择" clearable style="width: 150px;"
                      @change="getFinance">
@@ -16,7 +16,7 @@
           </el-select>
         </el-form-item>
         <el-form-item style="width:120px;">
-          <el-input v-model="dataForm.contractname" placeholder="合同关键字搜索" clearable></el-input>
+          <el-input v-model="dataForm.contractname" placeholder="合同关键字" clearable></el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="getFinance()">查询</el-button>
@@ -31,7 +31,7 @@
 
     <!--列表数据-->
     <div :style="'max-height: ' + (documentClientHeight - 300).toString() + 'px'" class="os">
-      <div :key="item + index" v-for="(item,index) in dataList" style="width:98%;margin:0 auto;border-top:1px solid rgb(195, 197, 199);padding-top:3px;padding-bottom:3px;">
+      <div :key="item + index" v-for="(item,index) in dataList" class="ls">
         <van-row style="padding-bottom:3px;">
           <van-col span="5" class="tac">{{item.contractNo}}</van-col>
           <van-col span="10">{{item.contractName}}</van-col>
@@ -51,7 +51,7 @@
       </div>
     </div>
     <!--分页控件-->
-    <div style="padding-top:10px;">
+    <div style="margin-top:5px;padding-top:5px;border-top:1px solid rgb(213, 226, 239);">
       <van-pagination v-model="pageIndex" :total-items="totalPage" items-per-page="25" mode="simple" @change="getFinance"/>
     </div>
 
@@ -294,9 +294,14 @@
     border: 1px solid #ebedf0;
     padding:0 10px;
     font-size:12px;
+    color:#1989fa;
+    border-color: #1989fa;
   }
   .os {
     overflow: scroll;
+  }
+  .ls{
+    width:98%;margin:0 auto;border-top:1px dotted rgb(195, 197, 199);padding-top:3px;padding-bottom:3px;
   }
 </style>
 

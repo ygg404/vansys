@@ -1,6 +1,9 @@
 <template>
   <van-collapse :value="panelShow" @change="panelShowEvent" style="width:95%;margin:0 auto;">
-    <van-collapse-item title="项目基本信息" name="1" class="Infocollapse">
+    <van-collapse-item  name="1" class="Infocollapse">
+      <template slot="title">
+        <div style="font-size:15px;">项目基本信息</div>
+      </template>
       <van-row style="margin-top:5px;" v-if="infotype == 1 || infotype == 6">
         <van-col span="7" style="text-align:center;">项目编号:</van-col>
         <van-col span="17" style="text-align:left;padding-left:10px;">{{Info.projectNo}}</van-col>
@@ -33,10 +36,6 @@
       >
         <van-col span="7" style="text-align:center;">业务负责人:</van-col>
         <van-col span="17" style="text-align:left;padding-left:10px;">{{Info.contractBusiness}}</van-col>
-      </van-row>
-      <van-row style="margin-top:5px;" if="infotype == 1">
-        <van-col span="7" style="text-align:center;">项目立项人:</van-col>
-        <van-col span="17" style="text-align:left;padding-left:10px;">{{Info.createUserName}}</van-col>
       </van-row>
       <van-row style="margin-top:5px;" v-if="infotype == 1">
         <van-col span="7" style="text-align:center;;">项目立项人:</van-col>
@@ -134,12 +133,12 @@ export default {
 }
 </script>
 
-<style scoped>
+<style >
 .Infocollapse .van-cell__title:nth-child(1) {
   font-size: 16px;
 }
-.Infocollapse .van-collapse-item__content {
+ .van-collapse-item__content {
   color: #1a1b1c;
-  padding: 0 10px;
+  padding: 0 5px;
 }
 </style>

@@ -39,53 +39,27 @@
               <van-row>
                 <div style="width:100%;height:25px; display:flex;align-items:center;">
                   <div style="width:25%;float:left;">
-                    <div
-                      style="margin-left:10%;width:80%;"
-                      :class=" item.checked == true ? 'numinputstyle' : 'disabledstyle'"
-                    >
-                      <van-field
-                        v-model="item.outputRate"
-                        @change="addRate(item)"
-                        type="number"
-                        :disabled="!item.checked"
-                      />
+                    <div style="margin-left:10%;width:80%;" :class=" item.checked == true ? 'numinputstyle' : 'disabledstyle'">
+                      <van-field v-model="item.outputRate" @change="addRate(item)"
+                        type="number" :disabled="!item.checked"/>
                     </div>
                   </div>
                   <div style="width:25%;float:left;">
-                    <div
-                      style="margin-left:10%;width:80%;"
-                      :class=" item.checked == true ? 'numinputstyle' : 'disabledstyle'"
-                    >
-                      <van-field
-                        v-model="item.projectOutput"
-                        @change="addOutPut(item)"
-                        type="number"
-                        :disabled="!item.checked"
-                      />
+                    <div style="margin-left:10%;width:80%;" :class=" item.checked == true ? 'numinputstyle' : 'disabledstyle'">
+                      <van-field v-model="item.projectOutput" @change="addOutPut(item)"
+                        type="number" :disabled="!item.checked"/>
                     </div>
                   </div>
                   <div style="width:25%;float:left;">
-                    <div
-                      style="margin-left:10%;width:80%;"
-                      :class=" item.checked == true ? 'numinputstyle' : 'disabledstyle'"
-                    >
-                      <van-field
-                        v-model="item.shortDateTime"
-                        type="number"
-                        :disabled="!item.checked"
-                      />
+                    <div style="margin-left:10%;width:80%;" :class=" item.checked == true ? 'numinputstyle' : 'disabledstyle'">
+                      <van-field v-model="item.shortDateTime"
+                        type="number" :disabled="!item.checked"/>
                     </div>
                   </div>
                   <div style="width:25%;float:left;">
-                    <div
-                      style="margin-left:10%;width:80%;"
-                      :class=" item.checked == true ? 'numinputstyle' : 'disabledstyle'"
-                    >
-                      <van-field
-                        v-model="item.lastDateTime"
-                        type="number"
-                        :disabled="!item.checked"
-                      />
+                    <div style="margin-left:10%;width:80%;" :class=" item.checked == true ? 'numinputstyle' : 'disabledstyle'">
+                      <van-field v-model="item.lastDateTime"
+                        type="number" :disabled="!item.checked"/>
                     </div>
                   </div>
                 </div>
@@ -102,262 +76,276 @@
         <span :class="(tRate > 100.01 || tRate < 99.99)? 'span_error':'span_ok'">占比{{tRate}}%</span>
       </div>
       <van-cell-group class="hns">
-        <van-cell title="项目负责人" :value="headname" @click="esVisible = true" v-if="headname != ''" />
-        <van-cell title="请选择项目负责人" @click="esVisible = true" v-else />
+        <van-cell title="项目负责人" :value="headname" @click="esVisible = true" v-if="headname != ''" is-link/>
+        <van-cell title="请选择项目负责人" @click="esVisible = true" v-else is-link/>
       </van-cell-group>
     </van-dialog>
 
     <van-popup v-model="esVisible" position="bottom">
-      <van-picker
-        show-toolbar
-        title="选择项目负责人"
-        value-key="username"
-        :columns="headManList"
-        @cancel="esVisible = false"
-        @confirm="onProjectLeaderConfirm"
-      />
+      <van-picker show-toolbar title="选择项目负责人"
+        value-key="username" :columns="headManList"
+        @cancel="esVisible = false" @confirm="onProjectLeaderConfirm"/>
     </van-popup>
   </div>
 </template>
 
 <script>
-export default {
-  data () {
-    return {
-      visible: false,
-      loading: true,
-      esVisible: false,
-      totalOutPut: 0,
-      tOutPut: 0, // 计算中的产值和占比
-      tRate: 0,
-      projectNo: '',
-      headname: '',
-      dataForm: {
-        id: 0,
+  import {stringIsNull} from '../../../utils'
+
+  export default {
+    data () {
+      return {
+        esVisible: false,
+        headname: '',
+        visible: false,
+        loading: true,
+        totalOutPut: 0,
+        tOutPut: 0,  // 计算中的产值和占比
+        tRate: 0,
         projectNo: '',
-        groupId: '',
-        outputRate: '',
-        shortDateTime: '',
-        lastDateTime: '',
-        projectOutput: '',
-        projectActuallyOutput: ''
+        dataForm: {
+          id: 0,
+          projectNo: '',
+          groupId: '',
+          outputRate: '',
+          shortDateTime: '',
+          lastDateTime: '',
+          projectOutput: '',
+          projectActuallyOutput: ''
+        },
+        groupList: [],
+        projectworkList: [],
+        headManList: [],  // 项目负责人列表
+        headId: '',
+        groupName: ''
+      }
+    },
+    mounted () {
+    },
+    methods: {
+      onProjectLeaderConfirm (item) {
+        this.headId = item.userId
+        this.headname = item.username
+        this.esVisible = false
       },
-      groupList: [],
-      projectworkList: [],
-      headManList: [], // 项目负责人列表
-      headId: ''
-    }
-  },
-  methods: {
-    onProjectLeaderConfirm (item) {
-      this.headId = item.userId
-      this.headname = item.username
-      this.esVisible = false
-    },
-    init (projectNo, totalOutPut = 0) {
-      this.projectNo = projectNo
-      this.totalOutPut = totalOutPut
-      this.getProjectWorkList(projectNo).then(grouplist => {
-        this.groupList = grouplist
-        this.loading = false
-        this.getProjectChargeList().then(data => {
-          this.headManList = data
-          this.headMenListEvent()
+      init (projectNo, totalOutPut = 0) {
+        this.projectNo = projectNo
+        this.totalOutPut = totalOutPut
+        this.getProjectByNo(projectNo).then(project => {
+          this.getProjectWorkList(project).then(grouplist => {
+            this.getWorkGroupById(project.produceGroupId)
+            this.groupList = grouplist
+            this.loading = false
+            this.getProjectChargeList().then(data => {
+              this.headManList = data
+              this.headMenListEvent()
+            })
+            // 获取项目负责人列表
+            this.getProjectCharge(projectNo).then(projectPlan => {
+              for (let headman of this.headManList) {
+                if (headman.username === projectPlan.projectCharge) {
+                  this.headId = headman.userId
+                  this.headname = headman.username
+                }
+              }
+            })
+          })
         })
-        // 获取项目负责人列表
-        this.getProjectCharge(projectNo).then(projectPlan => {
-          for (let headman of this.headManList) {
-            if (headman.username === projectPlan.projectCharge) {
-              this.headId = headman.userId
-              this.headname = headman.username
-              console.log('headid' + this.headId)
-            }
+        this.visible = true
+      },
+      // 表单提交
+      dataFormSubmit () {
+        if (this.tRate > 100.01 || this.tRate < 99.99) {
+          this.$message.error('总百分比不能超过100或者小于100')
+          return
+        } else if (this.totalOutPut > this.tOutPut + 1 || this.totalOutPut < this.tOutPut - 1) {
+          this.$message.error('总计产值不能超过或者小于总预计产值')
+          return
+        }
+
+        this.$http({
+          url: this.$http.adornUrl(`/project/group/saveList`),
+          method: 'post',
+          data: this.$http.adornData({
+            'pgroupList': this.groupList,
+            'projectNo': this.projectNo,
+            'headId': this.headId
+          })
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500
+            })
+            this.visible = false
+            this.$emit('refreshDataList', this.projectNo)
+          } else {
+            this.$message.error(data.msg)
           }
         })
-      })
-      this.visible = true
-    },
-    // 表单提交
-    dataFormSubmit () {
-      if (this.tRate > 100.01 || this.tRate < 99.99) {
-        this.$notify({
-          type: 'danger',
-          message: '总百分比不能超过100或者小于100'
-        })
-        return
-      } else if (
-        this.totalOutPut > this.tOutPut + 1 ||
-        this.totalOutPut < this.tOutPut - 1
-      ) {
-        this.$notify({
-          type: 'danger',
-          message: '总计产值不能超过或者小于总预计产值'
-        })
-        return
-      }
+      },
+      // 作业队长列表
+      headMenListEvent () {
+        // this.headManList = []
+        for (let group of this.groupList) {
+          if (group.checked) {
+            this.headId = group.headId
+          }
+        }
+        this.getSum()
+      },
+      addRate (item) {
+        console.log(item)
+        item.projectOutput = parseFloat(item.outputRate * this.totalOutPut / 100).toFixed(2)
+        var shortNum = item.projectOutput * 0.7 / 2400 - parseInt(item.projectOutput * 0.7 / 2400)
 
-      this.$http({
-        url: this.$http.adornUrl(`/project/group/saveList`),
-        method: 'post',
-        data: this.$http.adornData({
-          pgroupList: this.groupList,
-          projectNo: this.projectNo,
-          headId: this.headId
-        })
-      }).then(({ data }) => {
-        if (data && data.code === 0) {
-          this.$message({
-            message: '操作成功',
-            type: 'success',
-            duration: 1500
-          })
-          this.visible = false
-          this.$emit('refreshDataList')
+        if (shortNum === 0) {
+          item.shortDateTime = Math.round(item.projectOutput * 0.7 / 2400)
+        } else if (shortNum < 0.5) {
+          item.shortDateTime = parseInt(item.projectOutput * 0.7 / 2400) + 0.5
         } else {
-          this.$message({
-            message: data.msg,
-            type: 'danger',
-            duration: 1500
+          item.shortDateTime = Math.round(item.projectOutput * 0.7 / 2400)
+        }
+
+        var lastNum = item.projectOutput * 1.3 / 2400 - parseInt(item.projectOutput * 1.3 / 2400)
+        if (lastNum === 0) {
+          item.lastDateTime = Math.round(item.projectOutput * 1.3 / 2400)
+        }
+        if (lastNum < 0.5) {
+          item.lastDateTime = parseInt(item.projectOutput * 1.3 / 2400) + 0.5
+        } else {
+          item.lastDateTime = Math.round(item.projectOutput * 1.3 / 2400)
+        }
+        item.projectOutput = parseFloat(item.projectOutput)
+        this.getSum()
+      },
+      addOutPut (item) {
+        // console.log(this.project_output)
+        item.outputRate = parseFloat(item.projectOutput * 100 / this.totalOutPut).toFixed(2)
+        var shortNum = Math.round(item.projectOutput * 0.7 / 2400 - parseInt(item.projectOutput * 0.7 / 2400))
+        console.log('short:' + shortNum)
+        if (0 < shortNum < 0.5) {
+          item.shortDateTime = parseInt(item.projectOutput * 0.7 / 2400) + 0.5
+        } else {
+          item.shortDateTime = Math.round(item.projectOutput * 0.7 / 2400)
+        }
+        var lastNum = Math.round(item.projectOutput * 1.3 / 2400 - parseInt(item.projectOutput * 1.3 / 2400))
+        console.log('lastNum:' + lastNum)
+        if (0 < lastNum < 0.5) {
+          item.lastDateTime = parseInt(item.projectOutput / 2400 * 1.3) + 0.5
+        } else {
+          item.lastDateTime = Math.round(item.projectOutput / 2400 * 1.3)
+        }
+        item.outputRate = parseFloat(item.outputRate)
+        this.getSum()
+      },
+      // 运算总和
+      getSum () {
+        this.tRate = 0
+        this.tOutPut = 0
+        for (let group of this.groupList) {
+          if (group.checked) {
+            this.tOutPut += parseFloat(group.projectOutput == null ? 0 : group.projectOutput)
+            this.tRate += parseFloat(group.outputRate == null ? 0 : group.outputRate)
+          }
+        }
+        this.tRate = parseFloat( this.tRate).toFixed(2)
+        this.tOutPut = parseFloat(this.tOutPut).toFixed(2)
+      },
+      // 获取项目负责人列表
+      getProjectChargeList () {
+        return new Promise((resolve, reject) => {
+          this.$http({
+            url: this.$http.adornUrl(`/project/group/getChargeList`),
+            method: 'get',
+            params: this.$http.adornParams()
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              resolve(data.list)
+            } else {
+              this.$message.error(data.msg)
+              reject(data.msg)
+            }
           })
-        }
-      })
-    },
-    // 作业队长列表
-    headMenListEvent () {
-      // this.headManList = []
-      for (let group of this.groupList) {
-        if (group.checked) {
-          this.headId = group.headId
-        }
-      }
-      this.getSum()
-    },
-    addRate (item) {
-      console.log(item)
-      item.projectOutput = parseFloat(
-        (item.outputRate * this.totalOutPut) / 100
-      ).toFixed(2)
-      var shortNum =
-        (item.projectOutput * 0.7) / 2400 -
-        parseInt((item.projectOutput * 0.7) / 2400)
-
-      if (shortNum === 0) {
-        item.shortDateTime = Math.round((item.projectOutput * 0.7) / 2400)
-      } else if (shortNum < 0.5) {
-        item.shortDateTime = parseInt((item.projectOutput * 0.7) / 2400) + 0.5
-      } else {
-        item.shortDateTime = Math.round((item.projectOutput * 0.7) / 2400)
-      }
-
-      var lastNum =
-        (item.projectOutput * 1.3) / 2400 -
-        parseInt((item.projectOutput * 1.3) / 2400)
-      if (lastNum === 0) {
-        item.lastDateTime = Math.round((item.projectOutput * 1.3) / 2400)
-      }
-      if (lastNum < 0.5) {
-        item.lastDateTime = parseInt((item.projectOutput * 1.3) / 2400) + 0.5
-      } else {
-        item.lastDateTime = Math.round((item.projectOutput * 1.3) / 2400)
-      }
-      item.projectOutput = parseFloat(item.projectOutput)
-      this.getSum()
-    },
-    addOutPut (item) {
-      // console.log(this.project_output)
-      item.outputRate = parseFloat(
-        (item.projectOutput * 100) / this.totalOutPut
-      ).toFixed(2)
-      var shortNum = Math.round(
-        (item.projectOutput * 0.7) / 2400 -
-          parseInt((item.projectOutput * 0.7) / 2400)
-      )
-      console.log('short:' + shortNum)
-      if (shortNum > 0 < 0.5) {
-        item.shortDateTime = parseInt((item.projectOutput * 0.7) / 2400) + 0.5
-      } else {
-        item.shortDateTime = Math.round((item.projectOutput * 0.7) / 2400)
-      }
-      var lastNum = Math.round(
-        (item.projectOutput * 1.3) / 2400 -
-          parseInt((item.projectOutput * 1.3) / 2400)
-      )
-      console.log('lastNum:' + lastNum)
-      if (lastNum > 0 < 0.5) {
-        item.lastDateTime = parseInt((item.projectOutput / 2400) * 1.3) + 0.5
-      } else {
-        item.lastDateTime = Math.round((item.projectOutput / 2400) * 1.3)
-      }
-      item.outputRate = parseFloat(item.outputRate)
-      this.getSum()
-    },
-    // 运算总和
-    getSum () {
-      this.tRate = 0
-      this.tOutPut = 0
-      for (let group of this.groupList) {
-        if (group.checked) {
-          this.tOutPut += parseFloat(group.projectOutput)
-          this.tRate += Math.round(group.outputRate, 2)
-        }
-      }
-      this.tOutPut = parseFloat(this.tOutPut.toFixed(2))
-    },
-    // 获取项目负责人列表
-    getProjectChargeList () {
-      return new Promise((resolve, reject) => {
-        this.$http({
-          url: this.$http.adornUrl(`/project/group/getChargeList`),
-          method: 'get',
-          params: this.$http.adornParams()
-        }).then(({ data }) => {
-          if (data && data.code === 0) {
-            resolve(data.list)
-          } else {
-            this.$message.error(data.msg)
-            reject(data.msg)
-          }
         })
-      })
-    },
-    // 获取项目负责人
-    getProjectCharge (projectNo) {
-      return new Promise((resolve, reject) => {
-        this.$http({
-          url: this.$http.adornUrl(`/project/plan/info/${projectNo}`),
-          method: 'get',
-          params: this.$http.adornParams()
-        }).then(({ data }) => {
-          if (data && data.code === 0) {
-            resolve(data.projectPlan)
-          } else {
-            this.$message.error(data.msg)
-            reject(data.msg)
-          }
+      },
+      // 获取项目负责人
+      getProjectCharge (projectNo) {
+        return new Promise((resolve, reject) => {
+          this.$http({
+            url: this.$http.adornUrl(`/project/plan/info/${projectNo}`),
+            method: 'get',
+            params: this.$http.adornParams()
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              resolve(data.projectPlan)
+            } else {
+              this.$message.error(data.msg)
+              reject(data.msg)
+            }
+          })
         })
-      })
-    },
-    // 获取作业分组数据
-    getProjectWorkList (projectNo) {
-      return new Promise((resolve, reject) => {
-        this.$http({
-          url: this.$http.adornUrl(
-            `/project/group/getListByProjectNo/${projectNo}`
-          ),
-          method: 'get',
-          params: this.$http.adornParams()
-        }).then(({ data }) => {
-          if (data && data.code === 0) {
-            resolve(data.list)
-          } else {
-            this.$message.error(data.msg)
-            reject(data.msg)
-          }
+      },
+      // 获取作业分组数据
+      getProjectWorkList (project) {
+        return new Promise((resolve, reject) => {
+          this.$http({
+            url: this.$http.adornUrl(`/project/group/getListByProjectNo`),
+            method: 'get',
+            params: this.$http.adornParams({
+              projectNo: project.projectNo,
+              pid: project.produceGroupId
+            })
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              resolve(data.list)
+            } else {
+              this.$message.error(data.msg)
+              reject(data.msg)
+            }
+          })
         })
-      })
+      },
+      // 项目分组信息
+      getProjectByNo (projectNo) {
+        return new Promise((resolve, reject) => {
+          this.$http({
+            url: this.$http.adornUrl(`/project/project/getByProjectNo/${projectNo}`),
+            method: 'get',
+            params: this.$http.adornParams()
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              resolve(data.project)
+            } else {
+              this.$message.error(data.msg)
+              reject(data.msg)
+            }
+          })
+        })
+      },
+      // 获取工作组跟标题
+      getWorkGroupById (id) {
+        if (stringIsNull(id)) {
+          return
+        }
+        return new Promise((resolve, reject) => {
+          this.$http({
+            url: this.$http.adornUrl(`/set/workgroup/info/${id}`),
+            method: 'get',
+            params: this.$http.adornParams()
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              this.groupName = data.workGroup.name
+            } else {
+              this.$message.error(data.msg)
+              reject(data.msg)
+            }
+          })
+        })
+      }
     }
   }
-}
 </script>
 
      <style>

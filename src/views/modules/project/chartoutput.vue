@@ -5,15 +5,9 @@
         <van-cell center title="结算时间" @click="sdshow = true">{{sDateStr}}</van-cell>
         <van-popup v-model="sdshow" position="bottom">
           <van-datetime-picker
-            v-model="dataForm.startDate"
-            type="year-month"
-            title="选择时间"
-            :min-date="minDate"
-            :max-date="maxDate"
-            :formatter="formatter"
-            @cancel="sdshow = false"
-            @confirm="sdPicker"
-          />
+            v-model="dataForm.startDate" type="year-month" title="选择时间"
+            :min-date="minDate" :max-date="maxDate" :formatter="formatter"
+            @cancel="sdshow = false" @confirm="sdPicker"/>
         </van-popup>
       </van-col>
       <van-col span="2">
@@ -23,15 +17,9 @@
         <van-cell center @click="edshow = true">{{eDateStr}}</van-cell>
         <van-popup v-model="edshow" position="bottom">
           <van-datetime-picker
-            v-model="dataForm.endDate"
-            type="year-month"
-            title="选择时间"
-            :min-date="minDate"
-            :max-date="maxDate"
-            :formatter="formatter"
-            @cancel="edshow = false"
-            @confirm="edPicker"
-          />
+            v-model="dataForm.endDate" type="year-month" title="选择时间"
+            :min-date="minDate" :max-date="maxDate" :formatter="formatter"
+            @cancel="edshow = false" @confirm="edPicker"/>
         </van-popup>
       </van-col>
     </van-row>
@@ -79,22 +67,14 @@
 
         <!---->
         <div v-for="(data, index) in dataList">
-          <van-row
-            v-if="data.groupShow"
-            class="table_row"
-            style="padding-top:3px;padding-bottom:3px;"
-          >
+          <van-row v-if="data.groupShow" class="table_row" style="padding-top:3px;padding-bottom:3px;">
             <van-col :span="1"></van-col>
             <van-col :span="12">
               <div class="group-header">{{data.groupName}}</div>
             </van-col>
             <van-col :span="11"></van-col>
           </van-row>
-          <van-row
-            v-if="data.groupName != null"
-            class="item_row"
-            style="padding-top:3px;padding-bottom:3px;"
-          >
+          <van-row v-if="data.groupName != null" class="item_row" style="padding-top:3px;padding-bottom:3px;">
             <van-row style="margin-top:3px;margin-bottom:3px;">
               <van-col :span="1" />
               <van-col :span="15">
@@ -119,11 +99,7 @@
               <div>{{data.projectActuallyOutput}}</div>
             </van-col>
           </van-row>
-          <van-row
-            v-if="data.groupName != null && data.footerShow"
-            class="table_row"
-            style="padding-top:3px;padding-bottom:3px;"
-          >
+          <van-row v-if="data.groupName != null && data.footerShow" class="table_row" style="padding-top:3px;padding-bottom:3px;">
             <van-col :span="1"></van-col>
             <van-col :span="15">
               <div class="group-header">{{data.groupName}}:合计{{data.projectSum}}个项目</div>
@@ -183,11 +159,7 @@ export default {
   },
   created () {
     let datenow = new Date()
-    this.dataForm.startDate = this.dataForm.endDate = new Date(
-      datenow.getFullYear(),
-      datenow.getMonth() - 1,
-      1
-    )
+    this.dataForm.startDate = this.dataForm.endDate = new Date(datenow.getFullYear(), datenow.getMonth() - 1, 1)
     this.getWorkGroupDataListFromApi()
     this.getOutputChart()
   },
@@ -227,40 +199,30 @@ export default {
     goBack () {
       this.$router.push({ name: 'project-project' })
     },
+    // 获取所有子部门
+    getBranchChildList (branchlist) {
+      let childList = []
+      for (let branch of branchlist) {
+        if (branch.children !== undefined) {
+          childList = childList.concat(this.getBranchChildList(branch.children))
+        } else {
+          childList.push(branch)
+        }
+      }
+      return childList
+    },
     // 获取数据列表
     getOutputChart () {
       // 月份标题
       if (this.dataForm.startDate === this.dataForm.endDate) {
-        this.monthTitle =
-          this.dataForm.startDate.getFullYear() +
-          '年' +
-          (this.dataForm.startDate.getMonth() + 1) +
-          '月'
+        this.monthTitle = this.dataForm.startDate.getFullYear() + '年' + (this.dataForm.startDate.getMonth() + 1) + '月'
       } else {
-        this.monthTitle =
-          this.dataForm.startDate.getFullYear() +
-          '年' +
-          (this.dataForm.startDate.getMonth() + 1) +
-          '月至' +
-          this.dataForm.endDate.getFullYear() +
-          '年' +
-          (this.dataForm.endDate.getMonth() + 1) +
-          '月'
+        this.monthTitle = this.dataForm.startDate.getFullYear() + '年' + (this.dataForm.startDate.getMonth() + 1) + '月至' +
+          this.dataForm.endDate.getFullYear() + '年' + (this.dataForm.endDate.getMonth() + 1) + '月'
       }
-      this.sDateStr = moment(
-        new Date(
-          this.dataForm.startDate.getFullYear(),
-          this.dataForm.startDate.getMonth(),
-          1
-        )
-      ).format('YYYY-MM')
-      this.eDateStr = moment(
-        new Date(
-          this.dataForm.endDate.getFullYear(),
-          this.dataForm.endDate.getMonth(),
-          1
-        )
-      ).format('YYYY-MM')
+      this.sDateStr = moment(new Date(this.dataForm.startDate.getFullYear(), this.dataForm.startDate.getMonth(), 1)).format('YYYY-MM')
+      this.eDateStr = moment(new Date(this.dataForm.endDate.getFullYear(), this.dataForm.endDate.getMonth(), 1)).format('YYYY-MM')
+      let passeDateStr = moment(new Date(this.dataForm.endDate.getFullYear(), this.dataForm.endDate.getMonth() + 1, 1)).format('YYYY-MM-DD')
       this.dataListLoading = true
       this.$http({
         url: this.$http.adornUrl('/project/chartoutput/list'),
@@ -268,7 +230,7 @@ export default {
         params: this.$http.adornParams({
           groupId: this.dataForm.groupId,
           startDate: this.sDateStr,
-          endDate: this.eDateStr
+          endDate: passeDateStr
         })
       }).then(({ data }) => {
         if (data && data.code === 0) {
@@ -329,11 +291,12 @@ export default {
     getWorkGroupDataListFromApi () {
       return new Promise((resolve, reject) => {
         this.$http({
-          url: this.$http.adornUrl('/set/workgroup/selectworkgroup'),
+          url: this.$http.adornUrl('/set/workgroup/list'),
           method: 'get'
-        }).then(({ data }) => {
+        }).then(({data}) => {
           if (data && data.code === 0) {
-            this.workGroupList = data.list
+            this.workGroupList = this.getBranchChildList(treeDataTranslate(data.list, 'id', 'pid'))
+            console.log(this.workGroupList)
             resolve(data.list)
           } else {
             this.workGroupList = []

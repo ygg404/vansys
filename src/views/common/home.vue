@@ -1,6 +1,6 @@
 <template>
-  <div class="mod_card">
-    <div class="mod_content" style="text-align: center">
+  <div>
+    <div  style="text-align: center">
       <img src="~@/assets/img/avatar.png"  style="height:150px;"/>
       <van-row class="span_row">
         <van-col span="10" class="span_row_attr">账号：</van-col>

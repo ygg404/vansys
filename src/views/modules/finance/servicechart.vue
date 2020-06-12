@@ -11,54 +11,75 @@
         </el-form-item>
       </div>
       <div style="width:95%;margin:0 auto;">
-        <el-form-item>
-          <el-select v-model="dataForm.business" placeholder="业务负责人(全部)" clearable  style="width:80%" @change=" getServiceChart">
+        <el-form-item style="width:44%;">
+          <el-select v-model="dataForm.business" placeholder="业务负责人(全部)" clearable  @change=" getServiceChart">
             <el-option v-for="item in contractBusinessList" :key="item" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
       </div>
     </el-form>
+    <!---->
     <div id="serviceId">
-      <div class="chart_title">
+      <div class="scchart_title">
         <div>业务员统计表</div>
-        <div class="date_title">{{monthTitle}}</div>
+        <div class="scdate_title">{{monthTitle}}</div>
       </div>
-      <div  style="width:95%;margin:0 auto;" v-loading="dataListLoading">
-        <div class="table_class" v-loading="dataListLoading">
-          <van-row class="table_row">
-            <van-col :span="12"><div ><span><el-dropdown-item  @click.native="changeOrder()" class="el-icon-top">业务员</el-dropdown-item></span></div></van-col>
-            <van-col :span="4"><div ><span class="ServiceChartTitlecentershow">应收</span></div></van-col>
-            <van-col :span="4"><div ><span class="ServiceChartTitlecentershow">实收</span></div></van-col>
-            <van-col :span="4"><div ><span class="ServiceChartTitlecentershow">未收</span></div></van-col>
-          </van-row>
+      <!---->
+      <van-row class="table_row scl" type="flex" align="center">
+        <van-col :span="12"><div ><van-button @click.native="changeOrder()" icon="arrow-up" type="info" plain>业务员</van-button></div></van-col>
+        <van-col :span="4" class="tac f15">应收</van-col>
+        <van-col :span="4" class="tac f15">实收</van-col>
+        <van-col :span="4" class="tac f15">未收</van-col>
+      </van-row>
+      <!---->
+      <div style="width:95%;margin:0 auto;overflow: scroll;" :style="'max-height: ' + (documentClientHeight - 310).toString() + 'px'">
+        <div class="sctable_class" v-loading="dataListLoading">
           <div v-for="(data, index) in dataList">
-            <van-row v-if="data.BusinessShow" class="table_row">
+            <van-row v-if="data.BusinessShow" class="table_row f15">
               <van-col :span="12"><div >负责人:{{data.contractBusiness}}</div></van-col>
               <van-col :span="12"></van-col>
             </van-row>
             <van-row  v-if="data.contractBusiness != null" class="item_row">
               <van-col :span="12"><div>{{data.contractName}}</div></van-col>
-              <van-col :span="4"><div ><span >{{data.contractMoney}}</span></div></van-col>
-              <van-col :span="4"><div ><span >{{data.projectActuallyReceipts}}</span></div></van-col>
-              <van-col :span="4"><div ><span >{{data.projectNotReceipts}}</span></div></van-col>
-
+              <van-col :span="4"><div class="tac">{{data.contractMoney}}</div></van-col>
+              <van-col :span="4"><div class="tac">{{data.projectActuallyReceipts}}</div></van-col>
+              <van-col :span="4"><div class="tac">{{data.projectNotReceipts}}</div></van-col>
             </van-row>
-            <van-row  v-if="data.contractBusiness != null && data.footerShow" class="table_row">
-              <van-col :span="12"><div >合计{{data.projectSum}}个项目</div></van-col>
-              <van-col :span="4"><div ><span >{{data.projectShould}}</span></div></van-col>
-              <van-col :span="4"><div ><span >{{data.projectAct}}</span></div></van-col>
-              <van-col :span="4"><div ><span >{{data.projectNot}}</span></div></van-col>
+            <!---->
+            <van-row  type="flex" align="center" v-if="data.contractBusiness != null && data.footerShow" class="table_row">
+              <van-col :span="8" class="f15"><div >合计{{data.projectSum}}个项目</div></van-col>
+              <van-col :span="16">
+                <van-row>
+                  <van-col :span="8" class="tac f15">应收</van-col>
+                  <van-col :span="8" class="tac f15">实收</van-col>
+                  <van-col :span="8" class="tac f15">未收</van-col>
+                </van-row>
+                <van-row>
+                  <van-col :span="8" class="tac f14">{{data.projectShould}}</van-col>
+                  <van-col :span="8" class="tac f14">{{data.projectAct}}</van-col>
+                  <van-col :span="8" class="tac f14">{{data.projectNot}}</van-col>
+                </van-row>
+              </van-col>
             </van-row>
           </div>
-          <van-row>
-            <van-col :span="12"><div >总共合计{{totalProjectSum}}个项目</div></van-col>
-            <van-col :span="4"><div >应收:{{totalProjectShould}}</div></van-col>
-            <van-col :span="4"><div >实收:{{totalProjectAct}}</div></van-col>
-            <van-col :span="4"><div >未收:{{totalProjectNot}}</div></van-col>
-          </van-row>
         </div>
       </div>
-
+      <!---->
+      <van-row type="flex" align="center" class="sclall">
+        <van-col :span="10" class="f15"><div >总共合计<span style="color:#1989fa;">{{totalProjectSum}}</span>个项目</div></van-col>
+        <van-col :span="14">
+          <van-row>
+            <van-col :span="8" class="tac f15">应收</van-col>
+            <van-col :span="8" class="tac f15">实收</van-col>
+            <van-col :span="8" class="tac f15">未收</van-col>
+          </van-row>
+          <van-row>
+            <van-col :span="8" class="tac" style="color:#1989fa;">{{totalProjectShould}}</van-col>
+            <van-col :span="8" class="tac" style="color:#1989fa;">{{totalProjectAct}}</van-col>
+            <van-col :span="8" class="tac" style="color:#1989fa;">{{totalProjectNot}}</van-col>
+          </van-row>
+        </van-col>
+      </van-row>
     </div>
   </div>
 </template>
@@ -96,8 +117,14 @@
       this.getContractBusinessDataListFromApi()
       this.getServiceChart()
     },
+    computed: {
+      documentClientHeight: {
+        get () {
+          return this.$store.state.common.documentClientHeight
+        }
+      }
+    },
     methods: {
-
       changeOrder () {
         if (this.dataForm.order === 'asc') {
           this.dataForm.order = 'desc'
@@ -158,7 +185,6 @@
           // 选择业务负责人的时候
           item.BusinessShow = false
           item.footerShow = false
-          this.totalProjectSum += 1
           let outputtemp = parseFloat((item.projectActuallyOutput == null ? 0 : item.projectActuallyOutput).toFixed(2))
         })
 
@@ -204,6 +230,7 @@
         })
 
         this.dataList = datalist
+        this.totalProjectSum = this.dataList.length
         console.log(this.datalist)
       },
 
@@ -264,39 +291,52 @@
   .month_type{
     width: 150px;
   }
-  .chart_title {
+  .scchart_title {
     width: 100%;
     text-align: center;
-    margin-top: 10px;
-    font-size: 18px;
+    margin-top: 5px;
+    font-size: 17px;
     font-weight: 600;
   }
-  .chart_title .date_title{
+  .scchart_title .scdate_title{
     margin-top: 4px;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 500;
   }
-  .table_class{
-    margin-top: 10px;
+  .sctable_class{
+    margin-top: 5px;
   }
-  .table_class .table_row{
+  .sctable_class .table_row{
+    padding-top:5px;
+    padding-bottom:5px;
     border-bottom: 1px solid #6f7180;
   }
-  .table_class .item_row{
-    border-bottom: 1px solid #6f7180;
+  .f15{
+    font-size:15px;
+    font-weight: 600;
   }
-  .table_class .item_row:hover{
+  .f14{
+    font-size:14px;
+    font-weight: 600;
+  }
+  .sctable_class .item_row{
+    padding-top:5px;
+    padding-bottom:5px;
+    border-bottom: 1px dotted #6f7180;
+  }
+  .sctable_class .item_row:hover{
     cursor: pointer;
-    background: rgba(0,0,0,0.3);
-    opacity:0.5;
+    color:black;
+    background:#1989fa;
+    opacity:0.7;
 
   }
-  .table_class .table_row .grid-header{
+  .sctable_class .table_row .grid-header{
     font-weight: 700;
     font-size: 16px;
     color: rgba(15, 17, 23, 0.78);
   }
-  .table_class .table_row .group-header{
+  .sctable_class .table_row .group-header{
     font-weight: 700;
     font-size: 15px;
   }
@@ -309,11 +349,41 @@
     margin-left:12px;
     text-align: center;
   }
-  .table_class .item_footer{
+  .sctable_class .item_footer{
     color: #00b7ee;
   }
   .el-form-item{
     margin-bottom: 2px;
+  }
+  .tac{
+    text-align: center;
+  }
+  /*.sctable_class .el-dropdown-menu__item{*/
+    /*line-hright:0px;*/
+  /*}*/
+
+  .scl .van-button {
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    height: 24px;
+    margin: 0;
+    padding: 0px 20px 10px 5px;
+    font-size: 13px;
+    line-height: 24px;
+    text-align: center;
+    border-radius: 2px;
+    cursor: pointer;
+    -webkit-transition: opacity .2s;
+    transition: opacity .2s;
+    -webkit-appearance: none;
+    -webkit-text-size-adjust: 100%;
+  }
+  .scl{
+    width:95%;margin:0 auto;border-bottom:1px dotted black;padding-bottom:10px;padding-top:5px;
+  }
+  .sclall{
+    border-top:1px dotted black;margin-top:10px;padding-top:10px;
   }
 </style>
 

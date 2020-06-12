@@ -59,12 +59,7 @@
             v-for="(workType, index) in leftData"
             style="margin-top:3px;margin-bottom:3px;"
           >
-            <van-checkbox
-              v-if="workType.isVisible && workType.listIndex == groupradio"
-              v-model="workType.checked"
-              @change="checkOutputVoInit"
-              shape="square"
-            >{{workType.typeName}}</van-checkbox>
+            <van-checkbox v-if="workType.isVisible && workType.listIndex == groupradio" v-model="workType.checked" @change="checkOutputVoInit" shape="square">{{workType.typeName}}</van-checkbox>
           </div>
         </div>
 
@@ -75,10 +70,7 @@
                 <van-radio :name="groupOutput.groupId">
                   <span class="group_card">{{groupOutput.groupName}}</span>
                   <span>(队长：{{groupOutput.headMan}})</span>
-                  <span
-                    v-if="groupOutput.headMan == projectInfo.projectCharge"
-                    style="color: red"
-                  >(项目负责人)</span>
+                  <span v-if="groupOutput.headMan == projectInfo.projectCharge" style="color: red">(项目负责人)</span>
                 </van-radio>
                 <van-row class="mbb">
                   <van-col span="6" class="tac">产值单位</van-col>
@@ -87,28 +79,13 @@
                   <van-col span="6" class="tac">产值</van-col>
                 </van-row>
                 <div>
-                  <van-list
-                    :key="index"
-                    class="projectgroupliststyle"
-                    v-for="(item,index) in chooseRatio(groupOutput.checkOutputVoList)"
-                    style="padding-left:5%;padding-right:5%;"
-                  >
+                  <van-list :key="index" class="projectgroupliststyle" v-for="(item,index) in chooseRatio(groupOutput.checkOutputVoList)" style="padding-left:5%;padding-right:5%;">
                     <div style="border-bottom: 1px solid rgb(195, 197, 199);">
-                      <van-row
-                        type="flex"
-                        align="center"
-                        justify="center"
-                        style="margin-top:2px;margin-bottom:5px;"
-                      >
+                      <van-row type="flex" align="center" justify="center" style="margin-top:2px;margin-bottom:5px;">
                         <van-col span="12" class="tac">{{item.typeName}}</van-col>
                         <van-col span="12" class="tac">{{item.unit}}</van-col>
                       </van-row>
-                      <van-row
-                        type="flex"
-                        align="center"
-                        justify="center"
-                        style="margin-bottom:5px;"
-                      >
+                      <van-row type="flex" align="center" justify="center" style="margin-bottom:5px;">
                         <van-col span="6" class="tac">{{item.unitOutput}}</van-col>
                         <van-col span="6">
                           <div class="numinputstyle" style="width:80%;">
@@ -347,12 +324,12 @@ export default {
     getOutPutGroupList (projectNo) {
       return new Promise((resolve, reject) => {
         this.$http({
-          url: this.$http.adornUrl(
-            `/project/checkoutput/getOutPutGroup/${projectNo}`
-          ),
+          url: this.$http.adornUrl(`/project/checkoutput/getOutPutGroup`),
           method: 'get',
-          params: this.$http.adornParams()
-        }).then(({ data }) => {
+          params: this.$http.adornParams({
+            projectNo: projectNo
+          })
+        }).then(({data}) => {
           if (data && data.code === 0) {
             this.outPutGroupList = data.list
             resolve(data.list)
@@ -557,6 +534,32 @@ export default {
 </script>
 
 <style>
+  .header {
+    padding-top:10px;
+    font-size: 17px;
+    font-weight: 700;
+    text-align: center;
+    line-height:17px;
+    width: 100%;
+  }
+  .check_group {
+    max-height: 500px;
+    margin-top: 4px;
+    overflow-y: visible;
+    overflow-x: hidden;
+    width: 100%;
+    text-align: left;
+    padding: 2px;
+    border-top: 1px solid #3b97d7;
+  }
+  .btn_bottom {
+    border-top: 1px solid #3b97d7;
+    display: flex;
+    font-size: 14pt;
+  }
+  .btn_bottom button {
+    width: 50%;
+  }
 .projectstartrow .van-cell {
   padding: 0;
 }

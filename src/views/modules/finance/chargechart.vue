@@ -1,69 +1,85 @@
 <!--收费统计表-->
 <template>
-  <div>
-    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <div style="width:95%;margin:0 auto;">
-        <el-form-item style="margin-bottom:5px;margin-top:10px;">
-          <el-date-picker style="float:left;width:45%;" v-model="dataForm.startDate" type="date"  placeholder="开始日期"  :picker-options="pickerOptionsStart" @change="changeEnd"></el-date-picker>
-          <div style="float:left;width:10%;text-align: center;">至</div>
-          <el-date-picker style="float:left;width:45%;" v-model="dataForm.endDate" type="date"  placeholder="结束日期"  :picker-options="pickerOptionsEnd" @change="changeStart"></el-date-picker>
-        </el-form-item>
-      </div>
-      <div style="width:95%;margin:0 auto;">
-        <el-form-item>
-          <el-select v-model="dataForm.business" placeholder="业务负责人(全部)" clearable  style="width:80%" @change=" getServiceChart">
-            <el-option v-for="item in ContractBusinessList" :key="item" :label="item" :value="item"></el-option>
-          </el-select>
-        </el-form-item>
-      </div>
-    </el-form>
+ <div >
+   <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+     <div style="width:95%;margin:0 auto;">
+       <el-form-item style="margin-bottom:5px;margin-top:10px;">
+         <el-date-picker style="float:left;width:45%;" v-model="dataForm.startDate" type="date"  placeholder="开始日期"  :picker-options="pickerOptionsStart" @change="changeEnd"></el-date-picker>
+         <div style="float:left;width:10%;text-align: center;">至</div>
+         <el-date-picker style="float:left;width:45%;" v-model="dataForm.endDate" type="date"  placeholder="结束日期"  :picker-options="pickerOptionsEnd" @change="changeStart"></el-date-picker>
+       </el-form-item>
+     </div>
+     <div style="width:95%;margin:0 auto;">
+       <el-form-item style="width:44%;">
+         <el-select v-model="dataForm.business" placeholder="业务负责人(全部)" clearable  @change="getChargeChart">
+           <el-option v-for="item in ContractBusinessList" :key="item" :label="item" :value="item"></el-option>
+         </el-select>
+       </el-form-item>
+     </div>
+   </el-form>
+   <!---->
+   <div id="chartId">
+     <div class="ccchart_title">
+       <div>收费统计表</div>
+       <div class="ccdate_title">{{dateTitle}}</div>
+     </div>
+   </div>
+   <!---->
+   <div style="margin-top:5px;">
+     <div :style="'max-height: ' + (documentClientHeight - 300).toString() + 'px'" style="width:100%;overflow: scroll;">
+       <table class="cctable">
+         <thead>
+         <tr>
+           <td class="tac" style="font-weight: 600;font-size:15px;">项目名称</td>
+           <td class="tac" style="font-weight: 600;font-size:15px;">委托单位</td>
+           <td class="tac" style="font-weight: 600;font-size:15px;">联系人</td>
+           <td class="tac" style="font-weight: 600;font-size:15px;">联系电话</td>
+           <td class="tac" style="font-weight: 600;font-size:15px;">应收</td>
+           <td class="tac" style="font-weight: 600;font-size:15px;">实收</td>
+           <td class="tac" style="font-weight: 600;font-size:15px;">未收</td>
+           <td class="tac" style="font-weight: 600;font-size:15px;">业务负责人</td>
+         </tr>
+         </thead>
+         <tbody v-for="(data, index) in dataList">
+         <tr v-if="data.contractBusiness != null">
+           <td class="tac" style="min-width:200px;">{{data.contractName}}</td>
+           <td class="tac" style="min-width:136px;">{{data.contractAuthorize}}</td>
+           <td class="tac" style="min-width:64px;">{{data.username}}</td>
+           <td class="tac" style="min-width:88px;">{{data.userphone}}</td>
+           <td class="tac" style="min-width:80px;">{{data.contractMoney}}</td>
+           <td class="tac" style="min-width:80px;">{{data.projectActuallyReceipts}}</td>
+           <td class="tac" style="min-width:80px;">{{data.projectNotReceipts}}</td>
+           <td class="tac" style="min-width:80px;">{{data.contractBusiness}}</td>
+         </tr>
+         </tbody>
+       </table>
+     </div>
 
-      <div id="chartId">
-        <div class="chart_title">
-          <div>收费统计表</div>
-          <div class="date_title">{{dateTitle}}</div>
-        </div>
-        <div class="table_class" v-loading="dataListLoading">
-          <el-row class="table_row">
-            <el-col :span="7"><div class="grid-header">项目名称</div></el-col>
-            <el-col :span="4"><div class="grid-header"><span class="ChargeChartTitleSpan">委托单位</span></div></el-col>
-            <el-col :span="2"><div class="grid-header">联系人</div></el-col>
-            <el-col :span="3"><div class="grid-header">联系电话</div></el-col>
-            <el-col :span="2"><div class="grid-header">应收</div></el-col>
-            <el-col :span="2"><div class="grid-header">实收</div></el-col>
-            <el-col :span="2"><div class="grid-header">未收</div></el-col>
-            <el-col :span="2"><div class="grid-header">业务负责人</div></el-col>
-          </el-row>
-          <div v-for="(data, index) in dataList">
 
-            <el-row  v-if="data.contractBusiness != null" class="item_row">
-              <el-col :span="7"><div style="min-height:1px;"><span class="ContractNameSpan">{{data.contractName}}</span></div></el-col>
-              <el-col :span="4"><div style="min-height:1px;"><span class="ContractNameSpan">{{data.contractAuthorize}}</span></div></el-col>
-              <el-col :span="2"><div style="min-height:1px;">{{data.username}}</div></el-col>
-              <el-col :span="3"><div style="min-height:1px;">{{data.userphone}}</div></el-col>
-              <el-col :span="2"><div style="min-height:1px;"><span class="ContractCountSpan">{{data.contractMoney}}</span></div></el-col>
-              <el-col :span="2"><div style="min-height:1px;"><span class="ContractCountSpan">{{data.projectActuallyReceipts}}</span></div></el-col>
-              <el-col :span="2"><div style="min-height:1px;"><span class="ContractCountSpan">{{data.projectNotReceipts}}</span></div></el-col>
-              <el-col :span="2"><div style="min-height:1px;"><span class="ContractBusinessSpan">{{data.contractBusiness}}</span></div></el-col>
-            </el-row>
 
-          </div>
-          <el-row  class="table_row item_footer">
-            <el-col :span="16"><div class="group-header">总共合计{{totalProjectSum}}个项目</div></el-col>
-            <el-col :span="2"><div class="group-header"><span class="ContractCountSpan">{{totalProjectShould}}</span></div></el-col>
-            <el-col :span="2"><div class="group-header"><span class="ContractCountSpan">{{totalProjectAct}}</span></div></el-col>
-            <el-col :span="2"><div class="group-header"><span class="ContractCountSpan">{{totalProjectNot}}</span></div></el-col>
-          </el-row>
-        </div>
-      </div>
+     <!---->
+     <van-row type="flex" align="center" class="sclall">
+       <van-col :span="10" class="f15"><div >总共合计<span style="color:#1989fa;">{{totalProjectSum}}</span>个项目</div></van-col>
+       <van-col :span="14">
+         <van-row>
+           <van-col :span="8" class="tac f15">应收</van-col>
+           <van-col :span="8" class="tac f15">实收</van-col>
+           <van-col :span="8" class="tac f15">未收</van-col>
+         </van-row>
+         <van-row>
+           <van-col :span="8" class="tac" style="color:#1989fa;">{{totalProjectShould}}</van-col>
+           <van-col :span="8" class="tac" style="color:#1989fa;">{{totalProjectAct}}</van-col>
+           <van-col :span="8" class="tac" style="color:#1989fa;">{{totalProjectNot}}</van-col>
+         </van-row>
+       </van-col>
+     </van-row>
 
-  </div>
+   </div>
+ </div>
 </template>
 
 <script>
   import moment from 'moment'
-  import index from '../../../icons'
-
   export default {
     data () {
       return {
@@ -89,6 +105,13 @@
         totalProjectNot: 0, // 统计未收
         dataListLoading: false,
         dataList: ''
+      }
+    },
+    computed: {
+      documentClientHeight: {
+        get () {
+          return this.$store.state.common.documentClientHeight
+        }
       }
     },
     created () {
@@ -241,63 +264,37 @@
 </script>
 
 <style scoped>
+  .tac {
+    text-align: center;
+  }
   .month_type{
     width: 150px;
   }
-  .chart_title{
+  .ccchart_title{
     width: 100%;
     text-align: center;
-    margin-top: 20px;
-    font-size: 27px;
+    margin-top: 5px;
+    font-size: 17px;
     font-weight: 700;
   }
-  .chart_title .date_title{
+  .ccchart_title .ccdate_title{
     margin-top: 4px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
   }
-  .table_class{
-    margin-top: 10px;
+  .el-form-item{
+    margin-bottom: 2px;
   }
-  .table_class .table_row{
-    border-bottom: 1px solid #6f7180;
+  .f15{
+    font-size:15px;
+    font-weight: 600;
   }
-  .table_class .item_row{
-    border-bottom: 1px solid #6f7180;
+  .sclall{
+    border-top:1px dotted black;margin-top:10px;padding-top:10px;
   }
-  .table_class .item_row:hover{
-    cursor: pointer;
-    background-color: rgba(0, 183, 238, 0.59);
-  }
-  .table_class .table_row .grid-header{
-    font-weight: 700;
-    font-size: 16px;
-    color: rgba(15, 17, 23, 0.78);
-  }
-  .table_class .table_row .group-header{
-    font-weight: 700;
-    font-size: 15px;
-  }
+  table{border:0;border-collapse:collapse}
+  .cctable td{padding-bottom:5px;padding-top:5px;border-bottom:1px solid black;border-collapse:collapse}
 
-  .ContractNameSpan{
-    float:left;
-    margin-right:15px;
-  }
-  .ContractBusinessSpan{
-    float:left;
-    margin-left:15px;
-  }
-  .ChargeChartTitleSpan{
-    float:left;
-    margin-left:15px;
-  }
-  .ContractCountSpan{
-    float:left;
-    margin-left:10px;
-  }
-  .table_class .item_footer{
-    color: #00b7ee;
-  }
 </style>
 
 

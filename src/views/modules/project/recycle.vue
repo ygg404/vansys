@@ -44,23 +44,24 @@
       <van-pagination v-model="pageIndex" :page-count="totalPage" mode="simple" @change="getDataList()"/>
     </div>
 
-    <!-- 项目详情弹窗-->
-    <van-popup v-model="detailShow" closeable round position="bottom" :style="{ height: '50%' }" class="table_detail">
-      <van-row class="header_span"><span>项目详情</span></van-row>
-      <van-row><van-col span="8">项目编号:</van-col><van-col span="14" offset="2"></van-col>{{detailItem.projectNo}}</van-row>
-      <van-row><van-col span="8">项目名称:</van-col><van-col span="14" offset="2"></van-col>{{detailItem.projectName}}</van-row>
-      <van-row><van-col span="8">所属合同的编号:</van-col><van-col span="14" offset="2"></van-col>{{detailItem.contractNo}}</van-row>
-      <van-row><van-col span="8">项目负责人:</van-col><van-col span="14" offset="2"></van-col>{{detailItem.projectCharge}}</van-row>
-      <van-row><van-col span="8">委托单位:</van-col><van-col span="14" offset="2"></van-col>{{detailItem.contractAuthorize}}</van-row>
-      <van-row>
-        <van-col span="8">项目启动时间:</van-col>
-        <van-col span="14" offset="2">{{detailItem.projectStartDateTime != null?detailItem.projectStartDateTime.replace('00:00:00',''):detailItem.projectStartDateTime}}</van-col>
-      </van-row>
-      <van-row>
-        <van-col span="12"><van-button type="primary" size="small" @click="restoreHandle(detailItem)" round>恢复项目</van-button></van-col>
-        <van-col span="12"><van-button type="danger" size="small" @click="deleteHandle(detailItem.projectNo)" round>删除</van-button></van-col>
-      </van-row>
-    </van-popup>
+    <van-dialog v-model="detailShow" title="项目详情">
+      <div style="width:90%;margin:0 auto;">
+        <van-row style="padding-bottom:5px;"><van-col span="20">项目编号:{{detailItem.projectNo}}</van-col></van-row>
+        <van-row style="padding-bottom:5px;"><van-col span="24">项目名称:{{detailItem.projectName}}</van-col></van-row>
+        <van-row style="padding-bottom:5px;"><van-col span="20">所属合同的编号:{{detailItem.contractNo}}</van-col></van-row>
+        <van-row style="padding-bottom:5px;"><van-col span="20">项目负责人:{{detailItem.projectCharge}}</van-col></van-row>
+        <van-row style="padding-bottom:5px;"><van-col span="20">委托单位:{{detailItem.contractAuthorize}}</van-col></van-row>
+        <van-row style="padding-bottom:5px;">
+          <van-col span="20">项目启动时间:{{detailItem.projectStartDateTime != null?detailItem.projectStartDateTime.replace('00:00:00',''):detailItem.projectStartDateTime}}</van-col>
+        </van-row>
+        <van-row>
+          <van-col span="12" class="footerbtngroup"><van-button type="info" size="small" @click="restoreHandle(detailItem)">恢复项目</van-button></van-col>
+          <van-col span="12" class="footerbtngroup"><van-button type="danger" size="small" @click="deleteHandle(detailItem.projectNo)">删除</van-button></van-col>
+        </van-row>
+      </div>
+
+
+    </van-dialog>
   </div>
 </template>
 
@@ -204,6 +205,7 @@
             } else {
               this.$notify({ type: 'danger', message: data.msg })
             }
+            this.detailShow = false
           })
         }).catch(() => {})
       },
@@ -230,6 +232,7 @@
             } else {
               this.$notify({type: 'danger', message: data.msg})
             }
+            this.detailShow = false
           })
         })
       },
@@ -400,5 +403,28 @@
   }
   .os {
     overflow: scroll;
+  }
+  .tac{
+    text-align:center;
+  }
+  .rcbtn{
+    color: #fff;
+    background-color: #1989fa;
+    border: 1px solid #1989fa;
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    height: 100%;
+    margin: 0;
+    padding-right: 8px;
+    padding-left:8px;
+    font-size: 14px;
+    line-height: 26px;
+    text-align: center;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .footerbtngroup{
+    display: flex;align-items: center;justify-content: center;
   }
 </style>

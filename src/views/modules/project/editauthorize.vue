@@ -17,15 +17,14 @@
 
    <div style="margin-top:20px;">
       <van-row type="flex" justify="space-around" align="center">
-        <van-col span="10">
-         <div style="text-align:center; width:100%;height:100%;margin:0px; ">
-         <van-button @click="goBack()" type="warning" >返回</van-button>
-         </div>
+        <van-col span="4" class="footerbtngroup">
+         <button class="cnbtn btnyellow" @click="goBack()">返回</button>
         </van-col>
-         <van-col span="10">
-         <div style="text-align:center; width:100%;height:100%;margin:0px; ">
-         <van-button  @click="dataFormSubmit" type="info">提交</van-button>
-         </div>
+         <van-col span="4" class="footerbtngroup">
+         <button  class="cnbtn" @click="saveForm()">提交</button>
+        </van-col>
+        <van-col span="6" class="footerbtngroup">
+          <button class="cnbtn btnpink" @click="deleteAuthorizeFromApi">撤销审定</button>
         </van-col>
       </van-row>
     </div>
@@ -151,6 +150,20 @@ export default {
         }
       })
     },
+    deleteAuthorizeFromApi () {
+      this.$dialog.alert({
+        title: '提示',
+        message: '当前项目是否撤销审定？',
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.dataForm.examineNote = ''
+        this.saveForm()
+      })
+
+    },
     // 返回
     goBack () {
       this.$router.push({ name: 'project-project' })
@@ -184,5 +197,31 @@ export default {
 }
 .fontspac {
   letter-spacing: 1.4px;
+}
+.cnbtn{
+  color: #fff;
+  background-color: #1989fa;
+  border: 1px solid #1989fa;
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  height: 100%;
+  margin: 0;
+  padding-right: 8px;
+  padding-left:8px;
+  font-size: 14px;
+  line-height: 30px;
+  text-align: center;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.btnyellow{
+  background-color: #E6A23C;border: 1px solid #E6A23C;
+}
+.footerbtngroup{
+  display: flex;align-items: center;justify-content: center;
+}
+.btnpink{
+  background-color: #F56C6C;border: 1px solid #F56C6C;
 }
 </style>

@@ -171,9 +171,11 @@ export default {
 
 <style scoped>
 .header {
-  font-size: 13pt;
+  padding-top:10px;
+  font-size: 17px;
   font-weight: 700;
   text-align: center;
+  line-height:17px;
   width: 100%;
 }
 .check_group {
