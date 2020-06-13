@@ -7,11 +7,11 @@
                    :rules="[{ required: true, message: '请填写合同编号' }]" />
         <van-field v-model="dataForm.contractName" name="contractName" label="合同名称"
                    :rules="[{ required: true, message: '请填写合同名称' }]" />
-        <van-field v-model="dataForm.projectType" name="projectType" label="项目类型" readonly @click="typePickerShow = true"
+        <van-field v-model="dataForm.projectType" name="projectType" label="项目类型" readonly @click="typePickerShow = true" autosize type="textarea"
                    :rules="[{ required: true, message: '请填写项目类型' }]" />
         <van-field v-model="dataForm.contractMoney" name="contractMoney" type="number" label="合同金额"
                    :rules="[{ required: false, message: '请填写合同金额' }]"/>
-        <van-field v-model="dataForm.contractType">
+        <van-field v-model="dataForm.contractType" label="合同类型">
           <template slot="input">
             <input type="radio"  v-model="dataForm.contractType" id="s1" value="0"  style="zoom:2;width:9px;"/>合同委托
             <input type="radio"  v-model="dataForm.contractType" id="s2" value="1"  style="zoom:2;margin-left: 3px;width:9px;"/>一般合同
