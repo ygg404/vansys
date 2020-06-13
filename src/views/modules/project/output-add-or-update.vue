@@ -27,16 +27,18 @@
         <div class="mbmt5">
           <span class="fsml">预计总产值：{{totalOutPut}}</span>
         </div>
-        <van-row type="flex" justify="space-around" class="f13">
-          <van-col span="10" class="tac">作业类型</van-col>
-          <van-col span="10" class="tac">量单位</van-col>
-        </van-row>
-        <van-row class="ptsdv">
-          <van-col span="6" class="tac">产值单位</van-col>
-          <van-col span="6" class="tac">难度系数</van-col>
-          <van-col span="6" class="tac">工作量</van-col>
-          <van-col span="6" class="tac">产值</van-col>
-        </van-row>
+        <div>
+          <van-row type="flex" justify="space-around" class="f13">
+            <van-col span="10" class="tac">作业类型</van-col>
+            <van-col span="10" class="tac">量单位</van-col>
+          </van-row>
+          <van-row class="ptsdv">
+            <van-col span="6" class="tac">产值单位</van-col>
+            <van-col span="6" class="tac">难度系数</van-col>
+            <van-col span="6" class="tac">工作量</van-col>
+            <van-col span="6" class="tac">产值</van-col>
+          </van-row>
+        </div>
         <div class="os" style="max-height:200px;">
           <div v-if="chooseRatio(workTypelist) !== null">
             <van-list :key="item.id + index" v-for="(item,index) in chooseRatio(workTypelist)">
@@ -118,14 +120,13 @@
                   }
                 }
               }
-              let yy = this.projectTypelist[this.ptValue[0]]
-              this.selectedTypeName = yy.name
-              this.selectedTypeNum = this.ptValue.length - 1
               if (this.ptValue === undefined) this.ptValue = [0]
               this.projectTypeChangeHandler()
             })
           })
         })
+        let a = this.ptValue
+        let b = this.projectTypelist
       },
       // 获取统计方法
       getSummaryMethod (param) {
@@ -212,6 +213,18 @@
           }
         }
       },
+      showprojectTypeNameAndNum () {
+        if(this.ptValue.length !== 0){
+          for(let item of this.projectTypelist){
+            if(item.id === this.ptValue[0]){
+              this.selectedTypeName = item.name
+            }
+          }
+        }
+        if(this.ptValue.length >= 2){
+          this.selectedTypeNum = this.ptValue - 1
+        }
+      },
       // 项目类型改变
       projectTypeChangeHandler () {
         for (let ptvalue of this.ptValue) {
@@ -219,8 +232,6 @@
           if (ptvalue === 0) {
             this.$refs.pcGroup.toggleAll(true)
             this.ptValue = []
-            this.selectedTypeName = this.projectTypelist[1].name
-            this.selectedTypeNum = this.projectTypelist.length - 2
             for (let pw of this.projectTypelist)
               if (pw.id !== 0) {
                 this.ptValue.push(pw.id)
@@ -228,23 +239,11 @@
             break
           }
         }
-        // 取出第一个名称回显
-        if (this.ptValue.length !== 0) {
-          this.selectedTypeName = this.projectTypelist[this.ptValue[0]].name
-        }
-        //  回显项目类型数量
-        this.selectedTypeNum = this.ptValue.length - 1
+        console.log(this.projectTypelist)
         console.log(this.ptValue)
-        for (let ptvalue of this.ptValue) {
-          // 选择全部项目时
-          if (ptvalue === 0) {
-            this.ptValue = []
-            for (let pw of this.projectTypelist) if (pw.id !== 0) this.ptValue.push(pw.id)
-            break
-          }
-        }
         this.workTypeInit()
         this.checkOutputVoInit()
+        this.showprojectTypeNameAndNum()
       },
       // 提交 预算产值明细
       putProjectOutputToApiHandle () {
@@ -369,7 +368,7 @@
     padding: 5px 17px 3px 9px;
   }
   .bztx{
-    border-top:1px solid rgb(195, 197, 199); padding-left:10%;margin-bottom:10px;margin-top:5px;padding-top:5px;
+    padding-left:10%;margin-bottom:10px;margin-top:5px;padding-top:5px;
   }
   .pts {
     width: 100%;
@@ -405,9 +404,6 @@
   }
   .ptpd5{
     padding-top:5px; padding-bottom:5px;
-  }
-  .bztx{
-    border-top:1px solid rgb(195, 197, 199); padding-left:10%;margin-bottom:10px;margin-top:5px;padding-top:5px;
   }
   .tas{
     width: 80%;
