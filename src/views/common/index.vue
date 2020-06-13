@@ -6,7 +6,7 @@
         <img v-lazy="image"/>
       </van-swipe-item>
     </van-swipe>
-
+    <div style="padding: 5px;">
       <van-grid :column-num="2" :gutter="10">
         <van-grid-item @click="gotoUrl('https://m.gdjxch.cn')" class="item_url">
           <img src="~@/assets/img/project.png" style="width: 30%"/>
@@ -17,7 +17,7 @@
           <div>人事管理</div>
         </van-grid-item>
       </van-grid>
-
+    </div>
   </div>
 </template>
 
@@ -60,8 +60,8 @@
     object-fit:cover;
   }
   .item_url {
-    border: 1px solid #6f7180af;
     text-align: center;
+    color: #3b97d7;
   }
   .item_url :active{
     color: white;
