@@ -222,7 +222,7 @@
           }
         }
         if(this.ptValue.length >= 2){
-          this.selectedTypeNum = this.ptValue - 1
+          this.selectedTypeNum = this.ptValue.length - 1
         }
       },
       // 项目类型改变
