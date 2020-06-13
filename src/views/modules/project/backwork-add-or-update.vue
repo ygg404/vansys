@@ -7,18 +7,18 @@
         <tr>
           <td class="tac">返修日期</td>
           <td class="tac">返修要求</td>
-          <td class="tac">修改日期</td>
-          <td class="tac">修改说明</td>
           <td class="tac">操作</td>
+          <td class="tac">修改说明</td>
+          <td class="tac">修改日期</td>
         </tr>
         </thead>
         <tbody v-for="(item, index) in dataList">
         <tr>
            <td class="tac">{{item.backCreateTime | dataStr}}</td>
            <td class="tac"><van-button type="info" size="small" @click="checkReportHandle(item)">查看内容</van-button></td>
+          <td class="tac"><van-button type="primary" size="small"  @click="addNoteHandle(item)" v-if="item.submitNote == null">编辑</van-button></td>
+          <td class="tac">{{item.submitNote}}</td>
            <td class="tac">{{item.submitCreateTime | dataStr}}</td>
-           <td class="tac">{{item.submitNote}}</td>
-           <td class="tac"><van-button type="primary" size="small"  @click="addNoteHandle(item)" v-if="item.submitNote == null">编辑</van-button></td>
         </tr>
         </tbody>
       </table>

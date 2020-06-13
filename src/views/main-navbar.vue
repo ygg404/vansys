@@ -28,6 +28,18 @@
       MainIframe
     },
     computed: {
+      simpleName: {
+        get () { return this.$store.state.common.simpleName },
+        set (val) { this.$store.commit('common/updateSimpleName', val) }
+      },
+      sysName: {
+        get () { return this.$store.state.common.sysName },
+        set (val) { this.$store.commit('common/updateSysName', val) }
+      },
+      sysFlag: {
+        get () { return this.$store.state.common.sysFlag },
+        set (val) { this.$store.commit('common/updateSysFlag', val) }
+      },
       navbarLayoutType: {
         get () { return this.$store.state.common.navbarLayoutType }
       },
@@ -39,15 +51,57 @@
         get () { return this.$store.state.common.mainTabs },
         set (val) { this.$store.commit('common/updateMainTabs', val) }
       },
+      userId: {
+        get () { return this.$store.state.user.id },
+        set (val) { this.$store.commit('user/updateId', val) }
+      },
       userName: {
         get () { return this.$store.state.user.name }
+      },
+      userDetail: {
+        get () { return this.$store.state.user.userDetail },
+        set (val) { this.$store.commit('user/updateUserDetail', val) }
       },
       menuName: {
         get () { return this.$store.state.navtab.menuName === '' ? localStorage.getItem('menuName') : this.$store.state.navtab.menuName },
         set (val) { this.$store.commit('navtab/updateMenuName', val) }
       }
     },
+    created () {
+      this.getSysconfigFromApi().then(success => {
+        if (this.sysFlag === 'ren') this.getUserDetailFromApi()
+      })
+    },
     methods: {
+      // 获取参数列表
+      getSysconfigFromApi () {
+        return new Promise((resolve, reject) => {
+          this.$http({
+            url: this.$http.adornUrl('/sys/config/list'),
+            method: 'get',
+            params: this.$http.adornParams({})
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              for (let dat of data.list) {
+                switch (dat.paramKey) {
+                  case 'sysName':
+                    this.sysName = dat.paramValue
+                    break
+                  case 'sysFlag':
+                    this.sysFlag = dat.paramValue
+                    break
+                  case 'simpleName':
+                    this.simpleName = dat.paramValue
+                    break
+                  default:
+                    break
+                }
+              }
+            }
+            resolve(data)
+          })
+        })
+      },
       // 打开菜单
       openMenuHandle () {
         this.menushow = true
@@ -60,6 +114,19 @@
         this.updatePassowrdVisible = true
         this.$nextTick(() => {
           this.$refs.updatePassowrd.init()
+        })
+      },
+      getUserDetailFromApi () {
+        this.$http({
+          url: this.$http.adornUrl(`/ren/recordtemp/info/${this.userId}`),
+          method: 'get',
+          params: this.$http.adornParams()
+        }).then(({ data }) => {
+          if (data && data.code === 0) {
+            this.userDetail = data.renRecordVo
+          } else {
+            this.$message.error(data.msg)
+          }
         })
       },
       // 退出

@@ -2,13 +2,14 @@
   <div>
     <div style="margin-bottom: 10px;">
       <span class="el-dropdown-link">
-        <img src="~@/assets/img/avatar.png" class="head_image" :alt="userName">
+        <img :src="userDetail.headImg" class="head_image"  v-if="userDetail.headImg != null" />
+        <img src="~@/assets/img/avatar.png" :alt="userName" class="head_image"  v-if="userDetail.headImg == null">
         <span class="head_span">{{ userName }} </span>
       </span>
     </div>
     <!--菜单内容列表内容-->
     <div class="cell_border">
-      <van-cell key="home" @click="routeHandle({routerName: 'home', routerId: 0,routerTitle: '个人中心'})"
+      <van-cell key="home" @click="homeHandle"
                 :class="menuSelectId == 0? 'cell_item_select' : 'cell_item'">
         <template slot="title">
           <icon-svg name="shouye" class="site-sidebar__menu-icon" ></icon-svg>
@@ -49,6 +50,10 @@
       SubMenu
     },
     computed: {
+      sysFlag: {
+        get () { return this.$store.state.common.sysFlag },
+        set (val) { this.$store.commit('common/updateSysFlag', val) }
+      },
       userName: {
         get () { return this.$store.state.user.name }
       },
@@ -69,9 +74,23 @@
       menuSelectId: {
         get () { return this.$store.state.navtab.menuSelectId === '' ? localStorage.getItem('menuSelectId') : this.$store.state.navtab.menuSelectId },
         set (val) { this.$store.commit('navtab/updateMenuSelectId', val) }
+      },
+      userDetail: {
+        get () { return this.$store.state.user.userDetail },
+        set (val) { this.$store.commit('user/updateUserDetail', val) }
       }
     },
     methods: {
+      homeHandle () {
+        if (this.sysFlag === 'ren') {
+          this.$router.push({ name: 'home2' })
+        } else {
+          this.$router.push({ name: 'home' })
+        }
+        this.menuSelectId = 0
+        this.menuName = '个人中心'
+        this.$emit('refreshRoute')
+      },
       // 路由跳转
       routeHandle (routerArg) {
         this.menuSelectId = routerArg.routerId
@@ -82,6 +101,10 @@
       // 回退 前进按钮触发的路由改变
       routeClickHandle (path) {
         if (path === '/home') {
+          this.menuName = '个人中心'
+          this.menuSelectId = 0
+          return
+        } else if (path === '/home2') {
           this.menuName = '个人中心'
           this.menuSelectId = 0
           return
@@ -102,6 +125,7 @@
   .head_image {
     width: 35%;
     padding: 10px;
+    border-radius: 45%;
   }
   .head_span {
     color: whitesmoke;

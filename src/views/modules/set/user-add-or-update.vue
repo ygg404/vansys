@@ -17,22 +17,34 @@
       <el-form-item label="确认密码" prop="comfirmPassword" :class="{ 'is-required': !dataForm.id }">
         <el-input v-model="dataForm.comfirmPassword" type="password" placeholder="确认密码"></el-input>
       </el-form-item>
-      <el-form-item label="角色" size="mini" prop="roleIdList">
-        <el-checkbox-group v-model="dataForm.roleIdList">
-          <el-checkbox v-for="role in roleList" :key="role.roleId" :label="role.roleId">{{ role.roleName }}
-          </el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="工作组" prop="workGroupID">
-        <el-select v-model="dataForm.workGroupID" placeholder="请选择工作组" clearable  style="width: 50%;">
-          <el-option
-            v-for="item in WorkGroupDataList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </el-form-item>
+      <!--人事角色的处理-->
+      <div v-if="sysFlag == 'ren'">
+        <el-form-item label="岗位" size="mini" prop="roleIdList">
+          <el-radio-group v-model="dataForm.roleIdList[0]">
+            <el-radio v-for="role in roleList" :key="role.roleId" :label="role.roleId">{{role.roleName }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </div>
+      <!--项目的角色的处理-->
+      <div v-else>
+        <el-form-item label="角色" size="mini" prop="roleIdList">
+          <el-checkbox-group v-model="dataForm.roleIdList">
+            <el-checkbox v-for="role in roleList" :key="role.roleId" :label="role.roleId">{{ role.roleName }}
+            </el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+        <el-form-item label="工作组" prop="workGroupID">
+          <el-select v-model="dataForm.workGroupID" placeholder="请选择工作组" clearable  style="width: 50%;">
+            <el-option
+              v-for="item in WorkGroupDataList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </div>
+
       <el-form-item label="状态" size="mini" prop="status">
         <el-radio-group v-model="dataForm.status">
           <el-radio :label="0">禁用</el-radio>
@@ -48,7 +60,8 @@
 </template>
 
 <script>
-  // import { isEmail, isMobile } from '@/utils/validate'
+  import {treeDataTranslate} from '@/utils'
+
   export default {
     data () {
       var validatePassword = (rule, value, callback) => {
@@ -102,6 +115,12 @@
         WorkGroupDataList: []
       }
     },
+    computed: {
+      sysFlag: {
+        get () { return this.$store.state.common.sysFlag },
+        set (val) { this.$store.commit('common/updateSysFlag', val) }
+      }
+    },
     methods: {
       init (id) {
         this.dataForm.id = id || 0
@@ -117,7 +136,9 @@
             this.$refs['dataForm'].resetFields()
           })
         }).then(() => {
-          this.getWorkGroupDataListFromApi()
+          this.getWorkGroupDataListFromApi().then( grouplist => {
+            this.WorkGroupDataList = this.getBranchChildList(treeDataTranslate(grouplist, 'id', 'pid') )
+          })
           if (this.dataForm.id) {
             this.$http({
               url: this.$http.adornUrl(`/sys/user/info/${this.dataForm.id}`),
@@ -142,11 +163,10 @@
       getWorkGroupDataListFromApi () {
         return new Promise((resolve, reject) => {
           this.$http({
-            url: this.$http.adornUrl('/set/workgroup/selectworkgroup'),
-            method: 'get'
+            url: this.$http.adornUrl('/set/workgroup/list'),
+            method: 'get',
           }).then(({data}) => {
             if (data && data.code === 0) {
-              this.WorkGroupDataList = data.list
               resolve(data.list)
             } else {
               // this.dataList = []
@@ -154,7 +174,18 @@
           })
         })
       },
-
+      // 获取所有子部门
+      getBranchChildList (branchlist) {
+        let childList = []
+        for (let branch of branchlist) {
+          if (branch.children !== undefined) {
+            childList = childList.concat(this.getBranchChildList(branch.children))
+          } else {
+            childList.push(branch)
+          }
+        }
+        return childList
+      },
       // 表单提交
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {

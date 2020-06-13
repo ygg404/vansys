@@ -10,7 +10,7 @@
         <el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
-    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 250).toString() + 'px'" class="table_van_div">
+    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 220).toString() + 'px'" class="table_van_div">
       <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
         <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
         <el-table-column prop="userId" header-align="center" align="center" width="80" label="ID"></el-table-column>
@@ -23,7 +23,8 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="workGroupName" header-align="center" align="center" label="工作组" width="170"></el-table-column>
+        <!-- 人事管理无工作组-->
+        <el-table-column prop="workGroupName" header-align="center" align="center" label="工作组" width="170" v-if="sysFlag != 'ren'"></el-table-column>
         <el-table-column prop="status" header-align="center" align="center" label="状态" width="80">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.status === 0" size="small" type="danger">禁用</el-tag>
@@ -55,7 +56,7 @@
       :page-sizes="[25, 50, 100]"
       :page-size="pageSize"
       :total="totalPage"
-      layout="total, sizes, prev, pager, next, jumper">
+      layout="total, sizes, prev, pager, next">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
@@ -83,6 +84,15 @@
         WorkGroupDataList: []
       }
     },
+    computed: {
+      sysFlag: {
+        get () { return this.$store.state.common.sysFlag },
+        set (val) { this.$store.commit('common/updateSysFlag', val) }
+      },
+      documentClientHeight: {
+        get () { return this.$store.state.common.documentClientHeight }
+      }
+    },
     components: {
       AddOrUpdate
     },
@@ -92,11 +102,6 @@
           this.getDataList()
         })
       })
-    },
-    computed: {
-      documentClientHeight: {
-        get () { return this.$store.state.common.documentClientHeight }
-      }
     },
     methods: {
       // 获取数据列表
@@ -159,8 +164,9 @@
       getWorkGroupDataListFromApi () {
         return new Promise((resolve, reject) => {
           this.$http({
-            url: this.$http.adornUrl('/set/workgroup/selectworkgroup'),
-            method: 'get'
+            url: this.$http.adornUrl('/set/workgroup/list'),
+            method: 'get',
+            params: this.$http.adornParams({})
           }).then(({data}) => {
             if (data && data.code === 0) {
               this.WorkGroupDataList = data.list
@@ -171,7 +177,6 @@
           })
         })
       },
-
       // 同步获取 角色组列表数据
       getSysRoleList () {
         return new Promise((resolve, reject) => {
@@ -236,6 +241,7 @@
                 type: 'success',
                 duration: 1500
               })
+              this.pageIndex = 1
               this.getDataList()
             } else {
               this.$message.error(data.msg)

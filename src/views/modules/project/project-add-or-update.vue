@@ -132,28 +132,38 @@
         this.producePickerShow = false
       },
       onGroupConfirm (item) {
-        this.dataForm.produceGroupId = item.id
-        this.produceGroupName = item.name
-        for (let group of this.groupList) {
-          if (group.id === this.dataForm.produceGroupId) {
-            this.produceList = []
-            if (!stringIsNull(group.headId)) {
-              this.produceList.push({
-                userId: group.headId,
-                username: group.headMan
-              })
-            }
-            if (!stringIsNull(group.deputyId)) {
-              this.produceList.push({
-                userId: group.deputyId,
-                username: group.deputyLeader
-              })
+        if(item.id !== this.dataForm.produceGroupId){
+          this.dataForm.produceGroupId = item.id
+          this.produceGroupName = item.name
+          for (let group of this.groupList) {
+            if (group.id === this.dataForm.produceGroupId) {
+              this.produceList = []
+              if (!stringIsNull(group.headId)) {
+                this.produceList.push({
+                  userId: group.headId,
+                  username: group.headMan
+                })
+              }
+              if (!stringIsNull(group.deputyId)) {
+                this.produceList.push({
+                  userId: group.deputyId,
+                  username: group.deputyLeader
+                })
+              }
             }
           }
+          let flag = 0
+          for(let produce of this.produceList){
+            if(produce.userId === this.dataForm.projectProduceId){
+              flag++;
+            }
+          }
+          if(flag === this.produceList.length - 1){
+            this.dataForm.projectProduceId = ''
+            this.projectProduceName = ''
+          }
+          console.log(this.produceList)
         }
-        console.log(this.produceList)
-        this.dataForm.projectProduceId = ''
-        // this.projectProduceName = ''
         this.groupPickerShow = false
       },
       init (id, item) {
@@ -356,7 +366,7 @@
             if (data && data.code === 0) {
               resolve(data.list)
             } else {
-              this.$message.error(data.msg)
+              this.$notify({message: data.msg, type: 'danger',duration: 3000})
               reject(data.msg)
             }
           })

@@ -2,11 +2,10 @@
   <div class="site-main"   :style="{ 'height': documentClientHeight + 'px' }">
     <div style="height: 100px;"></div>
     <div class="site-content">
-      <div>
+      <div style="float:left">
         <img src="~@/assets/img/hlogo.png"  class="login-main-img">
         <span class="login-main-span">{{simpleName}}</span>
       </div>
-      <!--        <img width="100%" style="padding: 10px;" src="../../assets/img/logo.png"></img>-->
       <vantForm ref="dataForm" :rules="dataRule" inputVail="true">
         <template slot="items">
           <van-field left-icon="contact" error-message="用户名不为空"  rule="userAccount" label="用户名" placeholder="请输入用户名"  v-model="dataForm.userAccount"/>
@@ -14,6 +13,9 @@
         </template>
       </vantForm>
       <van-button :loading="loading" loading-text="登录中..." type="info"  style="width: 100%;" @click="dataFormSubmit()">登录</van-button>
+      <div class="site-index">
+        <a></a><a href="#/index">《《返回首页</a>
+      </div>
     </div>
     <div class="site-bottom">
       <div>Copyright © 2020 gdjxch.cn All rights reserved.</div>
@@ -244,16 +246,23 @@
     }
   }
   .login-main-img{
-    width: 110px;
+    width: 100px;
     height: auto;
   }
   .login-main-span{
-    font-size: 38pt;
-    font-weight: 300;
+    font-size: 32pt;
+    font-weight: 700;
     vertical-align: middle;
     font-family:华文琥珀,arial,微软雅黑;
   }
-  .login-title {
-    font-size: 16px;
+  .site-index {
+    display: flex;
+    justify-content:space-between;
+    padding: 6px;
+    width: 100%;
+    margin-top: 10px;
+  }
+  .site-index a{
+    font-size: 11pt;
   }
 </style>

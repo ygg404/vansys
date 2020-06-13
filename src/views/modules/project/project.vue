@@ -277,18 +277,17 @@
             </van-col>
           </van-row>
 
-          <van-row v-if="(isAuth('project:work:update')) && roleradio == 1" type="flex" justify="space-around"
-                   class="workfooterbtnstyle">
-            <!--<van-col span="8" class="dt"></van-col>-->
-            <van-col span="10">
-              <van-button
-                :style="{color:dpiData.projectStatus === 0?'red':'#1989fa',border:dpiData.projectStatus === 0?'1px solid red':'1px solid #1989fa'}"
-                @click="stopProjectHandle(dpiData)"
-              >{{dpiData.projectStatus === 0? '暂停项目' : '启动项目'}}
-              </van-button>
+          <van-row v-if="(isAuth('project:work:update')) && roleradio == 1" type="flex" justify="space-around" class="workfooterbtnstyle">
+            <van-col span="10" style="text-align:center;">
+                 <van-button type="small" style="background-color: white"
+                             :style="{color:dpiData.projectStatus === 0?'red':'#1989fa',border:dpiData.projectStatus === 0?'1px solid red':'1px solid #1989fa'}"
+                             @click="stopProjectHandle(dpiData)">
+                   {{dpiData.projectStatus === 0? '暂停项目' : '启动项目'}}
+                 </van-button>
+
             </van-col>
-            <van-col span="10">
-              <van-button style="color:orangered;border:1px solid orangered"
+            <van-col span="10" style="text-align:center;">
+              <van-button type="small" style="background-color: white;color:orangered;border:1px solid orangered"
                           v-if="dpiData.submitNote == null && dpiData.backId != null & dpiData.isCharge === 1"
                           @click="setBackworkHandle(dpiData,true)">查看返修
               </van-button>
@@ -900,6 +899,10 @@
   .workfooterbtnstyle .van-button--normal {
     padding: 0 15px;
     font-size: 15px;
+  }
+  .workfooterbtnstyle{
+    padding-botoom:10px;
+    margin-top:5px;
   }
 
   .dc {
