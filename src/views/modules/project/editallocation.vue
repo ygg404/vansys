@@ -844,6 +844,18 @@
           }
         }
       },
+      showprojectTypeNameAndNum () {
+        if(this.ptValue.length !== 0){
+          for(let item of this.projectTypelist){
+            if(item.id === this.ptValue[0]){
+              this.selectedTypeName = item.name
+            }
+          }
+        }
+        if(this.ptValue.length >= 2){
+          this.selectedTypeNum = this.ptValue.length - 1
+        }
+      },
       //  项目类型改变
       projectTypeChangeHandler () {
         for (let ptvalue of this.ptValue) {
@@ -851,8 +863,6 @@
           if (ptvalue === 0) {
             this.$refs.pcGroup.toggleAll(true)
             this.ptValue = []
-            this.selectedTypeName = this.projectTypelist[1].name
-            this.selectedTypeNum = this.projectTypelist.length - 2
             for (let pw of this.projectTypelist)
               if (pw.id !== 0) {
                 this.ptValue.push(pw.id)
@@ -860,23 +870,9 @@
             break
           }
         }
-        // 取出第一个名称回显
-        if (this.ptValue.length !== 0) {
-          this.selectedTypeName = this.projectTypelist[this.ptValue[0]].name
-        }
-        //  回显项目类型数量
-        this.selectedTypeNum = this.ptValue.length - 1
-        console.log(this.ptValue)
-        for (let ptvalue of this.ptValue) {
-          // 选择全部项目时
-          if (ptvalue === 0) {
-            this.ptValue = []
-            for (let pw of this.projectTypelist) if (pw.id !== 0) this.ptValue.push(pw.id)
-            break
-          }
-        }
         this.workTypeInit()
         this.checkOutputVoInit()
+        this.showprojectTypeNameAndNum()
       },
       //  产值明细计算
       setProjectOutputHandle () {
@@ -885,11 +881,6 @@
         this.getProjectTypelist().then(success => {
           this.getWorkTypelist(this.projectNo).then(success => {
             let ptType = this.projectInfo.projectType.split(',')
-            if (ptType.length >= 0) {
-              this.selectedTypeName = ptType[0]
-              this.selectedTypeNum = ptType.length - 1
-            }
-            // this.selectedTypeName = ptType;
             console.log(ptType)
             for (let pt of this.projectTypelist) {
               for (let type of ptType) {
@@ -900,6 +891,7 @@
             }
             this.workTypeInit()
             this.checkOutputVoInit()
+            this.showprojectTypeNameAndNum()
           })
         })
         this.outputCalVisible = true
