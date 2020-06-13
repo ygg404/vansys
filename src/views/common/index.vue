@@ -1,25 +1,27 @@
 <template>
-  <div :style="'height: ' + (documentClientHeight).toString() + 'px'" class="all">
+  <div :style="{ 'min-height': documentClientHeight + 'px' }" class="all">
     <div class="header_span">广东杰信测绘科技有限公司</div>
     <van-swipe :autoplay="5000" class="swipe_img">
       <van-swipe-item v-for="(image, index) in images" :key="index">
         <img v-lazy="image"/>
       </van-swipe-item>
     </van-swipe>
-    <div style="padding: 2px;">
-      <van-grid :column-num="2" :gutter="2">
-        <van-grid-item @click="gotoUrl('https://m.gdjxch.cn')" class="item_url">
-          <img src="~@/assets/img/project.png" :style="'height: ' + (documentClientHeight / 12).toString() + 'px'"/>
+    <div  class="about">
+      <div class="header">功能</div>
+      <van-grid :column-num="2" :gutter="15" style="padding: 12px;">
+        <van-grid-item @click="gotoUrl('https://m.gdjxch.cn/#/login')" class="item_url">
+          <img src="~@/assets/img/project.png" :style="'height: ' + (documentClientHeight / 14).toString() + 'px'"/>
           <div>项目管理</div>
         </van-grid-item>
-        <van-grid-item @click="gotoUrl('https://mren.gdjxch.cn')" class="item_url">
+        <van-grid-item @click="gotoUrl('https://mren.gdjxch.cn/#/login')" class="item_url">
           <img src="~@/assets/img/ren.png" :style="'height: ' + (documentClientHeight / 12).toString() + 'px'"/>
           <div>人事管理</div>
         </van-grid-item>
       </van-grid>
     </div>
-    <div :style="'height: ' + (documentClientHeight - 320).toString() + 'px'"  style="font-family: initial;line-height:20px;width:95%;margin:0 auto;">
-      <div style="margin-top:10%;border-top:1px dotted black;">
+    <div class="about">
+      <div class="header">关于杰信</div>
+      <div>
         <p>公司于2012年06月21日在汕头市工商行政管理局注册成立 现办公地点位于杰思信息大厦902</p>
         <p>主要经营测绘技术、计算机系统的研究、开发;仪器仪表、测绘产品及软件、计算机软硬件、电子产品、数码产品的研发、销售、维修及维护；货物进出口、技术进出口。
           我们有好的产品和专业的销售和技术团队 始终为客户提供好的产品和技术支持、健全的售后服务</p>
@@ -74,7 +76,7 @@
   }
   .swipe_img{
     border: 1px solid #e6e9eb;
-    height: 28%;
+    height: 200px;
     width: 100%;
   }
   .swipe_img img{
@@ -83,6 +85,8 @@
     object-fit:cover;
   }
   .item_url {
+    width: 30%;
+    max-width: 220px;
     text-align: center;
     color: #3b97d7;
   }
@@ -103,10 +107,29 @@
     position: relative;
   }
   .site-bottom{
+    position: fixed;
     width:100%;
-    transform: translate(0%,-50%);
-    position: absolute;
-    bottom: 30px;
+    bottom: 0px;
     z-index: 0;
+    background-color: #a9b7bb;
+    color: whitesmoke;
+    padding: 1px;
+  }
+  .site-bottom a{
+    color: whitesmoke;
+  }
+  .about {
+    font-family: initial;
+    width:95%;
+    margin-top: 10px;
+    margin-left: 2.5%;
+  }
+  .about p{
+    color: #6f7180;
+  }
+  .about .header{
+    font-size: 14pt;
+    font-weight: 700;
+    border-bottom: 1px solid #6f7180;
   }
 </style>
