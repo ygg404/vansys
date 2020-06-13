@@ -18,7 +18,7 @@
         </van-grid-item>
       </van-grid>
     </div>
-    <div :style="'height: ' + (documentClientHeight - 320).toString() + 'px'"  style="font-family: initial;line-height:20px;width:95%;margin:0 auto;">
+    <div   style="font-family: initial;line-height:20px;width:95%;margin:0 auto;">
       <div style="margin-top:10%;border-top:1px dotted black;">
         <p>公司于2012年06月21日在汕头市工商行政管理局注册成立 现办公地点位于杰思信息大厦902</p>
         <p>主要经营测绘技术、计算机系统的研究、开发;仪器仪表、测绘产品及软件、计算机软硬件、电子产品、数码产品的研发、销售、维修及维护；货物进出口、技术进出口。
