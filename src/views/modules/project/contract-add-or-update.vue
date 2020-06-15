@@ -43,7 +43,7 @@
     <!-- 日历控件-->
     <van-calendar v-model="datePickerShow" :default-date="dataForm.contractAddTime == ''?new Date(): new Date(dataForm.contractAddTime)"
                   :min-date="new Date(2010,0,1)" :max-date="new Date(2050,11,31)"
-                  @confirm="onDateConfirm" color="#07c160" />
+                  @confirm="onDateConfirm" color="#1989fa" />
     <!-- 业务员选择 -->
     <van-popup ref="businessId" v-model="busPickerShow" position="bottom" >
       <van-picker show-toolbar title="选择业务负责人" value-key="username" :columns="businessList" @cancel="busPickerShow = false" @confirm="onBusinessConfirm"/>
