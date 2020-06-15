@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-dialog width="95%" v-model="visible" show-cancel-button cancelButtonText="返回" :show-confirm-button="noshowconfirmbtnflag">
+    <van-dialog width="95%" v-model="visible" show-cancel-button cancelButtonText="返回" cancelButtonColor="red" :show-confirm-button="noshowconfirmbtnflag">
       <template slot="title">
         <div style="font-size:17px;font-weight:600;">财务操作</div>
       </template>
@@ -490,7 +490,7 @@
     cursor: pointer;
     transition: opacity .2s;
     -webkit-appearance: none;
-    color: #323233;
+    color: #1989fa;
     background-color: #fff;
     width: 50%;
     height: 50px;
