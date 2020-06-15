@@ -40,8 +40,6 @@
     },
     beforeMount(){
       this.wgDataList = this.wgList
-      var allStr = {id:'',name:'全部'}
-      this.wgDataList.unshift(allStr)
     },
     methods: {
       onworkGroupConfirm (item) {
