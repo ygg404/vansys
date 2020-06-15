@@ -137,12 +137,7 @@
       <van-pagination v-model="pageIndex" :page-count="totalPage" mode="simple" @change="getDataList()"/>
     </div>
 
-    <van-dialog
-      ref="pd"
-      v-model="planProjectPopupShow"
-      :showConfirmButton="confirmShow"
-      showCancelButton
-    >
+    <van-dialog ref="pd" v-model="planProjectPopupShow" :showConfirmButton="confirmShow" showCancelButton cancelButtonColor="red">
       <div slot="title" style="font-size:18px;font-weight:700;">项目详情</div>
       <div style="width:100%;">
         <div style="width:99%;margin:0 auto;">
@@ -999,7 +994,7 @@
     cursor: pointer;
     transition: opacity .2s;
     -webkit-appearance: none;
-    color: #323233;
+    color: #1989fa;
     background-color: #fff;
     width: 50%;
     height: 50px;
