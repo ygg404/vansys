@@ -1,0 +1,631 @@
+<template>
+  <div >
+
+    <el-form :inline="true" :model="dataForm" style="display:flex;justify-content: space-between;">
+      <div class="w95">
+        <el-form-item>
+          <span style="font-size:15px;">考核时间:</span>
+          <el-date-picker v-model="dataForm.curYear" type="year" placeholder="选择年" style="width: 35%;margin-right:10px;" @change="init"></el-date-picker>
+          <el-select v-model="dataForm.updown" placeholder="时间类型" style="width: 35%;" @change="init">
+            <el-option v-for="item in yearItemList" :label="item.yearItem" :key="item.id" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </div>
+    </el-form>
+
+    <!--<van-row style="width:95%;margin:0 auto;">-->
+      <!--<van-col span="12">-->
+        <!--<button>参选情况</button>-->
+      <!--</van-col>-->
+    <!--</van-row>-->
+
+    <div style="width: 95%;margin: 5px auto 10px;">
+      <van-row type="flex" align="center" style="padding-bottom:5px;border-bottom:1px dotted black;">
+        <van-col span="6">
+          <button class="qkbtn" @click="showduEvent">参选情况</button>
+        </van-col>
+        <van-col span="18">
+          <div class="f17dt">
+            {{dataForm.curYear.getFullYear() + '年' + (dataForm.updown == 0 ? '上半年':'下半年') + '效能考核明细'}}
+          </div>
+        </van-col>
+      </van-row>
+      <!---->
+      <div :style="'max-height: ' + (documentClientHeight - 200).toString() + 'px'" class="os">
+        <div v-for="(checkUser,indexA) in checkUserList">
+          <van-collapse :value="saList[indexA].sollapseactive"  @change="grisEvent(indexA)" class="detailcoll">
+            <van-collapse-item name="1">
+              <template slot="title">
+                <van-row>
+                  <van-col span="8">{{checkUser.checkUserName}}</van-col>
+                  <van-col span="8">{{checkUser.kbiAllScore}}</van-col>
+                  <van-col span="8">{{checkUser.finalExtra}}</van-col>
+                </van-row>
+              </template>
+              <van-collapse :value="saListA[indexA].sollapseactive"  @change="grisEventA(indexA)" class="detailcoll">
+                <van-collapse-item name="1">
+                  <template slot="title">
+                    <div class="coll_title">效能评分表</div>
+                  </template>
+                  <div style="overflow-x: auto; max-height:300px;">
+                    <table class="bs">
+                      <thead>
+                      <tr>
+                        <td class="tac detail_td_style" style="min-width:60px;">评分人</td>
+                        <td v-for="(kbiItem,indexB) in checkUser.kbiItemList" v-if="kbiItem.kbiRatio != 0" class="tac detail_td_style" style="min-width:150px;">
+                          {{kbiItem.kbiName}}/{{kbiItem.kbiRatio}}%
+                        </td>
+                        <td style="min-width:90px;" class="detail_td_style">是否其领导</td>
+                        <td style="min-width:110px;" class="detail_td_style">是否为同一部门</td>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr v-for="(kbi,indexB) in checkUser.kbiList">
+                        <td class="tac f14cb">{{kbi.userName}}</td>
+                        <td v-for="(kbiItem,indexB) in checkUser.kbiItemList" v-if="kbiItem.kbiRatio != 0">
+                          <table-solt :List="kbi" :num="kbiItem.kbiId">
+                            <template slot-scope="slotProps">
+                              <div class="tac f14cb">
+                                {{slotProps.itemValue}}
+                              </div>
+                            </template>
+                          </table-solt>
+                        </td>
+                        <td class="tac">
+                          <van-tag type="primary" v-if="kbi.isGuider">是</van-tag>
+                          <van-tag  v-else>否</van-tag>
+                        </td>
+                        <td class="tac">
+                          <van-tag type="primary" v-if="kbi.isSameBranch">是</van-tag>
+                          <van-tag v-else>否</van-tag>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </van-collapse-item>
+              </van-collapse>
+              <van-collapse :value="saListB[indexA].sollapseactive"  @change="grisEventB(indexA)" class="detailcoll">
+                <van-collapse-item name="1">
+                  <template slot="title">
+                    <div class="coll_title">加减分评分表</div>
+                  </template>
+                  <div style="overflow-x: auto;max-height:300px;">
+                    <table class="bs" cellspacing="10px">
+                      <thead>
+                      <tr>
+                        <td class="tac detail_td_style" style="min-width:70px;">类型</td>
+                        <td class="tac detail_td_style" style="min-width:250px;">加减分项</td>
+                        <td class="tac detail_td_style" style="min-width:150px;">计分标准</td>
+                        <td class="tac detail_td_style" style="min-width:90px;">分数</td>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr v-for="(score,indexB) in checkUser.scoreList">
+                        <td class="tac">
+                          <div v-if="score.extraType == 0"class="f14cb">加分项</div>
+                          <div v-if="score.extraType == 1" class="f14cb">减分项</div>
+                        </td>
+                        <td class="f14cb">{{score.extraItem}}</td>
+                        <td class="f14cb">{{score.standard}}</td>
+                        <td class="tac f14cb">{{score.extraNum}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </van-collapse-item>
+              </van-collapse>
+            </van-collapse-item>
+          </van-collapse>
+        </div>
+      </div>
+    </div>
+
+    <detailUser ref="detailUser"></detailUser>
+  </div>
+</template>
+
+<script>
+  import {getYearItem,getRateItem} from '@/utils/selectedItem'
+  import { treeDataTranslate } from '@/utils'
+  import {stringIsNull} from '../../../utils'
+  import detailUser from './detail-user'
+  import tableSolt from '@/components/table-solt'
+  export default {
+    data () {
+      return {
+        saList: [],
+        saListA:[],
+        saListB:[],
+        dataForm: {
+          curYear: new Date(2020 , 1 ,1),   // 当前年份
+          updown: 0 // 上下半年
+        },
+        yearItemList: getYearItem(),
+        checkUserList: [],
+        attendNum: 0,
+        branchList: [],   // 部门列表
+        branchTree: [],    // 部门树表
+        uScoreList: [],    // 评分列表
+        branchChildList: []
+      }
+    },
+    computed: {
+      documentClientHeight: {
+        get () {
+          return this.$store.state.common.documentClientHeight
+        }
+      }
+    },
+    created() {
+      this.dataForm.curYear = new Date(new Date().getFullYear() , new Date().getMonth() - 3, 1)
+      this.dataForm.updown = this.dataForm.curYear.getMonth() <= 6 ? 0 : 1
+      this.init()
+    },
+    components: {
+      detailUser,
+      tableSolt
+    },
+    methods: {
+      grisEvent (val) {
+        if (this.saList[val].sollapseactive.length === 1) {
+          this.saList[val].sollapseactive = []
+        } else {
+          this.saList[val].sollapseactive = ['1']
+        }
+      },
+      grisEventA (val) {
+        if (this.saListA[val].sollapseactive.length === 1) {
+          this.saListA[val].sollapseactive = []
+        } else {
+          this.saListA[val].sollapseactive = ['1']
+        }
+      },
+      grisEventB (val) {
+        if (this.saListB[val].sollapseactive.length === 1) {
+          this.saListB[val].sollapseactive = []
+        } else {
+          this.saListB[val].sollapseactive = ['1']
+        }
+      },
+      objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+        if (columnIndex === 0) {
+          if (row.isFirst || rowIndex === 0) {
+            return {
+              rowspan: row.size,
+              colspan: 1
+            }
+          } else {
+            return {
+              rowspan: 0,
+              colspan: 0
+            }
+          }
+        }
+      },
+      init () {
+        // 获取部门列表
+        this.getBranchList().then(branchList => {
+          this.branchList = branchList
+          this.getAccessList().then(list => {
+            this.getExtralist().then(extraList => {
+              this.getExtraScorelist().then(scoreList => {
+                let checkUserList = this.acceessListInit(list)
+                checkUserList.forEach(item => {
+                  this.saList.push({sollapseactive: []})
+                  this.saListA.push({sollapseactive: []})
+                  this.saListB.push({sollapseactive: []})
+                })
+                console.log(this.saList)
+                for (let checkUser of checkUserList) {
+                  checkUser.scoreList = this.extraScoreInit(checkUser, extraList, scoreList)
+                  // 计算每个人的总加减分
+                  let allScore = 0
+                  for (let score of checkUser.scoreList) {
+                    allScore += score.extraNum
+                  }
+                  checkUser.allScore = allScore
+                }
+
+                // 设置每成员的部门 并获取部门的最高分
+                checkUserList = this.setBranchScoreFun(checkUserList,branchList)
+                this.checkUserList = this.setKbiScore(checkUserList)
+                this.checkUserList.forEach(item => {
+                  this.saList.push({sollapseactive: []})
+                })
+                // kbiList
+
+                console.log(checkUserList)
+              })
+            })
+          })
+        })
+        // this.$nextTick(() => {
+        //   this.$refs.detailUser.init(this.dataForm)
+        // })
+      },
+      renderheader (h, { column, $index }) {
+        return h('span', {}, [
+          h('span', {}, column.label.split('/')[0]),
+          h('br'),
+          h('span', {}, column.label.split('/')[1])
+        ])
+      },
+      //展示参选人数情况
+      showduEvent(){
+        this.$nextTick(() => {
+          this.$refs.detailUser.init(this.dataForm)
+        })
+      },
+      // 获取部门列表
+      getBranchList () {
+        return new Promise((resolve, reject) => {
+          this.$http({
+            url: this.$http.adornUrl(`/set/branch/list`),
+            method: 'get',
+            params: this.$http.adornParams({})
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              resolve(data.list)
+            } else {
+              this.$message.error(data.msg)
+              reject(data.msg)
+            }
+          })
+        })
+      },
+      // 获取评分列表
+      getAccessList () {
+        return new Promise((resolve, reject) => {
+          this.$http({
+            url: this.$http.adornUrl(`/perf/access/list`),
+            method: 'get',
+            params: this.$http.adornParams({
+              year: this.dataForm.curYear.getFullYear(),
+              updown: this.dataForm.updown
+            })
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              resolve(data.list)
+            } else {
+              this.$message.error(data.msg)
+              reject(data.msg)
+            }
+          })
+        })
+      },
+      // 评分表初始化
+      acceessListInit (accessList) {
+        let checkUserId = 0
+        let kbiId = 0
+        let userId = 0
+        let checkUserList = []
+        for (let access of accessList) {
+          if (access.checkUserId !== checkUserId) {
+            let checkItem = {
+              checkUserId: access.checkUserId,
+              checkUserName: access.checkUserName,
+              kbiAllScore: 0,
+              extraScore: 0,
+              kbiItemList: [], // 考核项
+              kbiList: []
+            }
+            checkUserList.push(checkItem)
+            checkUserId = access.checkUserId
+            userId = 0
+            kbiId = 0
+          }
+          // 获取每个人的考核评分项
+          if (access.kbiId > kbiId) {
+            checkUserList[checkUserList.length - 1].kbiItemList.push({
+              kbiId: access.kbiId,
+              kbiName: access.kbiName,
+              kbiRatio: access.kbiRatio
+            })
+            kbiId = access.kbiId
+          }
+          // 评分人明细
+          if (access.userId !== userId) {
+            let kbiItem = {
+              userId: access.userId,
+              userName: access.userName,
+              isGuider: this.isGuiderHandle(access.userId,access.checkUserId),
+              isSameBranch: this.isSameBranch(access.userId,access.checkUserId)
+            }
+            userId = access.userId
+            checkUserList[checkUserList.length - 1].kbiList.push(kbiItem)
+          }
+          checkUserList[checkUserList.length - 1].kbiList[checkUserList[checkUserList.length - 1].kbiList.length - 1]['kbiId' + access.kbiId] = access.kbiScore
+        }
+        this.attendNum = checkUserList[checkUserList.length - 1] === undefined ? 0 : checkUserList[checkUserList.length - 1].kbiList.length
+        return checkUserList
+      },
+      // 是否为部门领导
+      isGuiderHandle (userId,checkUserId) {
+        let isGuider = false
+        // 被考核人所在的所有部门
+        let inBranchList = []
+        this.branchList.map(branch => {
+          branch.recordVoList.map(record => {
+            if (record.userId === checkUserId) inBranchList.push(branch.id)
+          })
+        })
+        // 获取被考核人所有的父类部门
+        let parentList = []
+        for (let branchId of inBranchList) {
+          parentList.push(branchId)
+          this.getParentBranchList(parentList, branchId)
+        }
+        // 判断考核人是否为被考核人的领导
+        for (let branchId of parentList) {
+          let branchItem = this.branchList.find(branch => branch.id === branchId)
+          if (branchItem.mdeputyId === userId || branchItem.sdeputyId === userId) isGuider = true
+        }
+        return isGuider
+      },
+      // 获取部门的父部门
+      getParentBranchList (parentList = [] , branchId) {
+        this.branchList.map( branch => {
+          if (branch.id === branchId && branch.parentId !== 0) {
+            parentList.push(branch.parentId)
+            this.getParentBranchList(parentList,branch.parentId)
+          }
+        })
+      },
+      // 判断 考核人与被考核人 是否为同一个部门
+      isSameBranch (userId,checkUserId) {
+        let isSame = false
+        let userBranchId = []     // 考核人的部门
+        let checkBranchId = []    // 被考核人的部门
+        this.branchList.map(branch => {
+          for (let userItem of branch.recordVoList) {
+            if (userId === userItem.userId) userBranchId.push(branch.id)
+            if (checkUserId === userItem.userId) checkBranchId.push(branch.id)
+          }
+        })
+        for (let uBranchId of userBranchId) {
+          for (let cBranchId of checkBranchId) {
+            if (uBranchId === cBranchId) isSame = true
+          }
+        }
+        return isSame
+      },
+      // 获取加减分项列表
+      getExtralist () {
+        return new Promise((resolve, reject) => {
+          this.$http({
+            url: this.$http.adornUrl('/perf/extra/list'),
+            method: 'get',
+            params: this.$http.adornParams({})
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              resolve(data.list)
+            } else {
+              this.$message.error(data.msg)
+              reject(data)
+            }
+          })
+        })
+      },
+      // 获取加减分项列表
+      getExtraScorelist () {
+        return new Promise((resolve, reject) => {
+          this.$http({
+            url: this.$http.adornUrl('/perf/extrascoring/list'),
+            method: 'get',
+            params: this.$http.adornParams({
+              year: this.dataForm.curYear.getFullYear(),
+              updown: this.dataForm.updown
+            })
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              resolve(data.list)
+            } else {
+              this.$message.error(data.msg)
+              reject(data)
+            }
+          })
+        })
+      },
+      // 评分列表初始化
+      extraScoreInit (checkUser,extraList,scoreList) {
+        let uScoreList = []
+        for (let scoreItem of scoreList) {
+          if (scoreItem.checkUserId === checkUser.checkUserId) {
+            uScoreList.push(scoreItem)
+          }
+        }
+        let sizeList = []
+        let extrascoreList = []
+        let type = -1
+        let size = 0
+        // 先计算加分项
+        for (let extra of extraList) {
+          let extraPart = {
+            extraId: extra.id,
+            extraItem: extra.extraItem,
+            standard: extra.standard,
+            remark: extra.remark,
+            extraType: extra.extraType,
+            isFirst: false
+          }
+          if (extra.extraType !== type) {
+            type = extra.extraType
+            sizeList.push(size)
+            size = 0
+            extraPart.isFirst = true
+          }
+          size += 1
+          let score = uScoreList.find(scoeItem => scoeItem.extraId === extra.id)
+          if (!stringIsNull(score)) {
+            extraPart.extraNum = score.extraNum
+          } else {
+            extraPart.extraNum = 0
+          }
+          extrascoreList.push(extraPart)
+        }
+        if (size > 0) sizeList.push(size)
+        let index = 0
+        for (let extrascore of extrascoreList) {
+          if (extrascore.isFirst) extrascore.size = sizeList[++index]
+        }
+        return extrascoreList
+      },
+      // 计算最终的加减得分
+      setBranchScoreFun (checkUserList, branchList) {
+        let branchChildList = this.getBranchChildList(treeDataTranslate(branchList))
+        for (let checkUser of checkUserList) {
+          for (let branch of branchChildList) {
+            if (branch.recordVoList.find(record => record.userId === checkUser.checkUserId) !== undefined) {
+              checkUser.branchId = branch.id
+              checkUser.branchName = branch.branchName
+              break
+            }
+          }
+        }
+        // 统计每个部门的最高分
+        let branchMaxScoreList = []
+        for (let checkUser of checkUserList ) {
+          let branch = branchMaxScoreList.find(branch => branch.brandId === checkUser.branchId)
+          let branchScore = {
+            branchId: checkUser.branchId,
+            maxScore: checkUser.allScore
+          }
+          if (branch !== undefined && branch.maxScore < branchScore.maxScore) {
+            branch.maxScore = branchScore.maxScore
+          } else if (branch === undefined) {
+            branchMaxScoreList.push(branchScore)
+          }
+        }
+        // 计算加减分最终的结果
+        for (let checkUser of checkUserList ) {
+          let branch = branchMaxScoreList.find(branch => branch.branchId === checkUser.branchId)
+          if ( branch === undefined ) {
+            checkUser.maxScore = 0
+          } else {
+            checkUser.maxScore = branch.maxScore
+          }
+          checkUser.finalExtra = parseFloat((checkUser.allScore + 10) * 9 / (checkUser.maxScore + 10)).toFixed(2)
+        }
+        console.log(branchMaxScoreList)
+        return checkUserList
+      },
+      // 计算每用户的效能评价得分
+      setKbiScore (checkUserList) {
+        for (let checkUser of checkUserList) {
+          let scoreItemList = []
+          for (let scoreItem of checkUser.kbiList) {
+            let score = 0
+            for (var prop in scoreItem) {
+              if (prop.indexOf('kbiId') >= 0) {
+                let propItem = checkUser.kbiItemList.find(kbi => kbi.kbiId === parseInt(prop.replace('kbiId','')))
+                if (propItem !== undefined && (!stringIsNull(scoreItem[prop]))) {
+                  score += parseFloat(propItem.kbiRatio * scoreItem[prop] / 100)
+                }
+              }
+            }
+            let sItem = {
+              score: score,
+              ratio: 0.2
+            }
+            if (scoreItem.isGuider || scoreItem.isSameBranch) {
+              sItem.ratio = 0.4
+            }
+            scoreItemList.push(sItem)
+          }
+          checkUser.scoreItemList = scoreItemList
+          let kbiScore02 = 0
+          let kbiScore2Num = 0
+          let kbiScore04 = 0
+          let kbiScore4Num = 0
+          for (let scoreItem of checkUser.scoreItemList) {
+            if (scoreItem.ratio === 0.2) {
+              kbiScore02 += parseFloat(scoreItem.score * scoreItem.ratio)
+              kbiScore2Num += 1
+            } else {
+              kbiScore04 += parseFloat(scoreItem.score * scoreItem.ratio)
+              kbiScore4Num += 1
+            }
+          }
+          checkUser.kbiAllScore = parseFloat(kbiScore02 / (kbiScore2Num === 0 ? 1 : kbiScore2Num)
+            + kbiScore04 / (kbiScore4Num === 0 ? 1 : kbiScore4Num)).toFixed(2)
+        }
+        return checkUserList
+      },
+      // 获取所有子部门
+      getBranchChildList (branchlist) {
+        let childList = []
+        for (let branch of branchlist) {
+          if (branch.children !== undefined) {
+            childList = childList.concat(this.getBranchChildList(branch.children))
+          } else {
+            childList.push(branch)
+          }
+        }
+        return childList
+      },
+    }
+  }
+</script>
+
+<style>
+  .extra_item_title{
+    width: 99%;
+    padding: 5px;
+    font-size: 11pt;
+    font-weight: 700;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    cursor: pointer;
+  }
+  .extra_item_title:hover {
+    color: #0BB2D4;
+  }
+  .el-table__expanded-cell{
+    padding:0px;
+  }
+  .van-collapse-item__content{
+    padding:0px;
+  }
+  .el-form-item{
+    margin-bottom: 2px;
+  }
+  .f17dt{
+    font-size: 17px;
+    font-weight: 700;
+  }
+  .tac{
+    text-align: center;
+  }
+  .w95{
+    width:95%;margin: 10px auto 0;
+  }
+  .os {
+    overflow: scroll;
+  }
+  .van-collapse-item__content{
+    line-height:1;
+  }
+  .coll_title{
+    width:100px;font-size:15px;color:#0c0c0d;padding-top:5px;
+  }
+  .bs{
+    border-top:1px dotted black;border-bottom:1px dotted black;
+  }
+  .detail_td_style
+  {
+    overflow:hidden;font-size:14px;color:black;
+  }
+  .f14cb{
+    font-size:14px;color:#666262;
+  }
+  .qkbtn {
+    display: inline-block;
+    border: 1px solid #DCDFE6;
+    color: #FFF;
+    font-size: 14px;
+    background-color: #409EFF;
+  }
+</style>
