@@ -10,14 +10,8 @@
       <van-col span="8">
         <van-cell center @click="sedShow = true">{{edateStr}}</van-cell>
       </van-col>
-      <van-calendar
-        v-model="sedShow"
-        type="range"
-        :default-date="defaultDateArray"
-        :min-date="minDate"
-        :max-date="maxDate"
-        @confirm="onConfirm"
-      />
+      <van-calendar v-model="sedShow" type="range"
+        :default-date="defaultDateArray" :min-date="minDate" :max-date="maxDate" @confirm="onConfirm"/>
     </van-row>
 
     <chartcommonModule :wgName="workgroupname" :wgList="workGroupList" @wgc="onworkGroupConfirm" @ech="exportChartHandle" @gb="goBack"/>
@@ -123,8 +117,7 @@ import {treeDataTranslate} from '@/utils'
 export default {
   data () {
     return {
-      workgroupname: '',
-
+      workgroupname: '全部',
       sedShow: false,
       minDate: new Date(2000, 0, 1),
       maxDate: new Date(2025, 10, 1),
@@ -155,6 +148,8 @@ export default {
     this.defaultDateArray = [new Date(this.sdateStr), new Date()]
     this.getWorkGroupDataListFromApi().then(list => {
       this.workGroupList = this.getBranchChildList(treeDataTranslate(list, 'id', 'pid'))
+      var allStr = {id:'',name:'全部'}
+      this.workGroupList.unshift(allStr)
     })
     this.getOutputQuality()
   },

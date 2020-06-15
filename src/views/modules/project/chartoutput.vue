@@ -23,13 +23,7 @@
         </van-popup>
       </van-col>
     </van-row>
-    <chartcommonModule
-      :wgName="workgroupname"
-      :wgList="workGroupList"
-      @wgc="onworkGroupConfirm"
-      @ech="exportChartHandle"
-      @gb="goBack"
-    ></chartcommonModule>
+    <chartcommonModule :wgName="workgroupname" :wgList="workGroupList" @wgc="onworkGroupConfirm" @ech="exportChartHandle" @gb="goBack"/>
 
     <div id="chartId">
       <div class="chart_title">
@@ -141,7 +135,7 @@ export default {
       maxDate: new Date(2025, 10, 1),
       sDateStr: '',
       eDateStr: '',
-      workgroupname: '',
+      workgroupname: '全部',
       dataForm: {
         groupId: '',
         startDate: '',
@@ -297,7 +291,10 @@ export default {
         }).then(({data}) => {
           if (data && data.code === 0) {
             this.workGroupList = this.getBranchChildList(treeDataTranslate(data.list, 'id', 'pid'))
+            var allStr = {id:'',name:'全部'}
+            this.workGroupList.unshift(allStr)
             console.log(this.workGroupList)
+            let yy = this.workGroupList
             resolve(data.list)
           } else {
             this.workGroupList = []
