@@ -44,17 +44,33 @@
       <van-pagination v-model="pageIndex" :page-count="totalPage" mode="simple" @change="getDataList()"/>
     </div>
 
-    <van-dialog v-model="detailShow" title="项目详情">
+    <van-dialog v-model="detailShow" title="项目详情" confirmButtonText="返回">
       <div style="width:90%;margin:0 auto;">
-        <van-row style="padding-bottom:5px;"><van-col span="20">项目编号:{{detailItem.projectNo}}</van-col></van-row>
-        <van-row style="padding-bottom:5px;"><van-col span="24">项目名称:{{detailItem.projectName}}</van-col></van-row>
-        <van-row style="padding-bottom:5px;"><van-col span="20">所属合同的编号:{{detailItem.contractNo}}</van-col></van-row>
-        <van-row style="padding-bottom:5px;"><van-col span="20">项目负责人:{{detailItem.projectCharge}}</van-col></van-row>
-        <van-row style="padding-bottom:5px;"><van-col span="20">委托单位:{{detailItem.contractAuthorize}}</van-col></van-row>
-        <van-row style="padding-bottom:5px;">
-          <van-col span="20">项目启动时间:{{detailItem.projectStartDateTime != null?detailItem.projectStartDateTime.replace('00:00:00',''):detailItem.projectStartDateTime}}</van-col>
+        <van-row class="recycle_title">
+          <van-col span="10">项目编号:</van-col>
+          <van-col span="14" style="font-size:14px;">{{detailItem.projectNo}}</van-col>
         </van-row>
-        <van-row>
+        <van-row class="recycle_title">
+          <van-col span="10">项目名称:</van-col>
+          <van-col span="14" style="font-size:14px;">{{detailItem.projectName}}</van-col>
+        </van-row>
+        <van-row class="recycle_title">
+          <van-col span="10">所属合同的编号:</van-col>
+          <van-col span="14" style="font-size:14px;">{{detailItem.contractNo}}</van-col>
+        </van-row>
+        <van-row class="recycle_title">
+          <van-col span="10">项目负责人:</van-col>
+          <van-col span="14" style="font-size:14px;">{{detailItem.projectCharge}}</van-col>
+        </van-row>
+        <van-row class="recycle_title">
+          <van-col span="10">委托单位:</van-col>
+          <van-col span="14" style="font-size:14px;">{{detailItem.contractAuthorize}}</van-col>
+        </van-row>
+        <van-row class="recycle_title">
+          <van-col span="10">项目启动时间:</van-col>
+          <van-col span="14" style="font-size:14px;">{{detailItem.projectStartDateTime != null?detailItem.projectStartDateTime.replace('00:00:00',''):detailItem.projectStartDateTime}}</van-col>
+        </van-row>
+        <van-row style="padding-bottom:5px;">
           <van-col span="12" class="footerbtngroup"><van-button type="info" size="small" @click="restoreHandle(detailItem)">恢复项目</van-button></van-col>
           <van-col span="12" class="footerbtngroup"><van-button type="danger" size="small" @click="deleteHandle(detailItem.projectNo)">删除</van-button></van-col>
         </van-row>
@@ -246,6 +262,9 @@
 </script>
 
 <style scoped>
+  .recycle_title{
+    font-size:14px; padding-bottom:5px;
+  }
   .van-tabs--line .van-tabs__wrap {
     height: 44px;
   }
