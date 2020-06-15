@@ -39,7 +39,7 @@
     <!-- 日历控件-->
     <van-calendar v-model="datePickerShow" :default-date="dataForm.projectStartDateTime == ''?new Date(): new Date(dataForm.projectStartDateTime)"
                   :min-date="new Date(2010,0,1)" :max-date="new Date(2050,11,31)"
-                  @confirm="onDateConfirm" color="#07c160" />
+                  @confirm="onDateConfirm" color="#1989fa" />
     <!-- 生产负责人 -->
     <van-popup ref="businessId" v-model="producePickerShow" position="bottom" >
       <van-picker show-toolbar title="选择业务负责人" value-key="username" :columns="produceList"
