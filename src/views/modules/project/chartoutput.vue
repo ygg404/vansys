@@ -372,7 +372,6 @@ export default {
 .chart_title {
   width: 100%;
   text-align: center;
-  margin-top: 20px;
   font-size: 17px;
   font-weight: 700;
 }
@@ -382,7 +381,7 @@ export default {
   font-weight: 500;
 }
 .table_class {
-  margin-top: 10px;
+  margin-top: 1px;
 }
 .table_class .table_row {
   border-bottom: 1px solid #6f7180;
