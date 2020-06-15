@@ -1,16 +1,12 @@
 <template>
   <div class="mod-config" style="width:98%;margin-left:1%;margin-right:1%;">
-    <van-row  type="flex" align="center" justify="space-around" style="margin-bottom:5px;border-bottom: 1px solid #e3d8d8;">
+    <van-row  type="flex" align="center" justify="space-around" style="padding-top:2px;padding-bottom:2px;margin-top:5px;margin-bottom:5px;border-bottom: 1px solid #e3d8d8;border-top: 1px solid #e3d8d8;">
       <van-col span="18" class="wgns">
-        <van-cell
-          center
-          @click="sedShow = true"
-          style="border:1px solid gb(232, 213, 213);"
-        >项目启动时间: {{sdateStr}} 至 {{edateStr}}</van-cell>
+        <van-cell center @click="sedShow = true">项目启动时间: {{sdateStr}} 至 {{edateStr}}</van-cell>
         <van-calendar v-model="sedShow" type="range" :default-date="defaultDateArray" :min-date="minDate" :max-date="maxDate" @confirm="onConfirm" />
       </van-col>
        <van-col span="5">
-        <van-button type="info" @click="goBack" style="margin-left:10px;">返回</van-button>
+        <van-button type="info" size="small" @click="goBack" style="margin-left:10px;">返回</van-button>
       </van-col>
     </van-row>
 
@@ -140,7 +136,7 @@ export default {
 .chart_title {
   width: 100%;
   text-align: center;
-  margin-top: 20px;
+  margin-top: 17px;
   font-size: 17px;
   font-weight: 700;
 }
