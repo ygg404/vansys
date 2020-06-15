@@ -2,17 +2,17 @@
      <van-row class="mb5" type="flex" align="center">
       <van-col span="1" />
       <van-col span="11" class="wgns">
-        <van-cell center @click="wgshow = true" style="width:80%;">作业组:{{wgName}}</van-cell>
+        <van-cell center @click="wgshow = true" style="width:100%;">作业组:{{wgName}}</van-cell>
         <van-popup v-model="wgshow" position="bottom">
           <van-picker
-            show-toolbar title="选择作业组" value-key="name" :columns="wgList"
+            show-toolbar title="选择作业组" value-key="name" :columns="wgDataList"
             @cancel="wgshow = false" @confirm="onworkGroupConfirm"/>
         </van-popup>
       </van-col>
        <van-col span="13">
          <van-row>
-           <van-col span="12"><van-button type="primary" size="small" @click="exportChartHandle">导出Excel</van-button></van-col>
-           <van-col span="12"><van-button type="info" size="small" @click="goBack">返回</van-button></van-col>
+           <van-col span="12" style="text-align: center;"><van-button type="primary" size="small" @click="exportChartHandle">导出Excel</van-button></van-col>
+           <van-col span="12" style="text-align: center;"><van-button type="info" size="small" @click="goBack">返回</van-button></van-col>
          </van-row>
        </van-col>
     </van-row>
@@ -34,8 +34,14 @@
     },
     data () {
       return {
-        wgshow: false
+        wgshow: false,
+        wgDataList:''
       }
+    },
+    beforeMount(){
+      this.wgDataList = this.wgList
+      var allStr = {id:'',name:'全部'}
+      this.wgDataList.unshift(allStr)
     },
     methods: {
       onworkGroupConfirm (item) {
