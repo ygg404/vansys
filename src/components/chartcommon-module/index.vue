@@ -5,7 +5,7 @@
         <van-cell center @click="wgshow = true" style="width:100%;">作业组:{{wgName}}</van-cell>
         <van-popup v-model="wgshow" position="bottom">
           <van-picker
-            show-toolbar title="选择作业组" value-key="name" :columns="wgDataList"
+            show-toolbar title="选择作业组" value-key="name" :columns="wgList"
             @cancel="wgshow = false" @confirm="onworkGroupConfirm"/>
         </van-popup>
       </van-col>
@@ -34,12 +34,8 @@
     },
     data () {
       return {
-        wgshow: false,
-        wgDataList:''
+        wgshow: false
       }
-    },
-    beforeMount(){
-      this.wgDataList = this.wgList
     },
     methods: {
       onworkGroupConfirm (item) {
