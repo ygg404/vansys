@@ -118,7 +118,7 @@
     <!---->
     <van-calendar v-model="datePickerShow" :default-date="dataForm.accountAddDateTime == ''?new Date(): new Date(dataForm.accountAddDateTime)"
                   :min-date="new Date(2010,0,1)" :max-date="new Date(2050,11,31)"
-                  @confirm="onDateConfirm" color="#07c160"></van-calendar>
+                  @confirm="onDateConfirm" color="#1989fa"></van-calendar>
   </div>
 </template>
 
