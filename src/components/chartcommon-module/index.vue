@@ -15,13 +15,6 @@
            <van-col span="12"><van-button type="info" size="small" @click="goBack">返回</van-button></van-col>
          </van-row>
        </van-col>
-      <!--<van-col span="8">-->
-        <!--<van-button type="primary" size="small" @click="exportChartHandle">导出Excel</van-button>-->
-      <!--</van-col>-->
-       <!--<van-col span="4">-->
-        <!--<van-button type="info" size="small" @click="goBack">返回</van-button>-->
-      <!--</van-col>-->
-       <!--<van-col span="1" />-->
     </van-row>
 </template>
 
