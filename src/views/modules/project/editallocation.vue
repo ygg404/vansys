@@ -7,9 +7,9 @@
           <van-col span="12" class="talfspl">作业组数据</van-col>
           <van-col span="12" class="tarfspr">负责人:{{dataForm.projectCharge}}</van-col>
         </van-row>
-        <van-row v-if="dataForm.projectCharge != null" class="mlmrmtwhbb">
+        <van-row v-if="dataForm.projectCharge != null">
           <div v-if="groupWorkList">
-            <div v-for="group in this.groupWorkList" :key="group.groupId">
+            <div v-for="group in this.groupWorkList" :key="group.groupId" >
               <div  v-if="group.checked" class="groupitem">
                 {{group.groupName}}:占比{{group.outputRate}}%，产值:{{group.projectOutput}}，最短工期:{{group.shortDateTime}}，最长工期:{{group.lastDateTime}}
               </div>
@@ -244,8 +244,14 @@
     </div>
 
     <div class="foot">
-      <van-button @click="goBack()" type="warning">返回</van-button>
-      <van-button @click="dataFormSubmit" type="info">提交</van-button>
+      <van-row>
+        <van-col span="12" style="text-align:center;">
+          <van-button @click="goBack()" type="warning">返回</van-button>
+        </van-col>
+        <van-col span="12" style="text-align:center;">
+          <van-button @click="dataFormSubmit" type="info">提交</van-button>
+        </van-col>
+      </van-row>
     </div>
   </div>
 </template>
@@ -1053,10 +1059,10 @@
     padding-left: 10px;
   }
 
-  .mlmrmtwhbb {
-    min-height: 2px;
-    /*border-bottom: 1px solid rgb(195, 197, 199);*/
-  }
+  /*.mlmrmtwhbb {*/
+    /*min-height: 2px;*/
+    /*!*border-bottom: 1px solid rgb(195, 197, 199);*!*/
+  /*}*/
 
   .talfspl {
     text-align: left;
@@ -1081,6 +1087,9 @@
     padding-left: 1%;
   }
   .pt10mt5mb8bt1 {
+    width: 98%;
+    margin-left: 1%;
+    margin-right: 1%;
     padding-top: 10px;
     margin-top: 5px;
     margin-bottom: 8px;
@@ -1229,10 +1238,13 @@
   }
 
   .foot {
-    margin-top: 20px;
-    display: flex;
-    width: 100%;
     justify-content: space-around;
+    position: fixed;
+    width:100%;
+    bottom: 5%;
+    z-index: 0;
+    color: whitesmoke;
+    padding: 1px;
   }
   .tas{
     width: 80%;

@@ -108,17 +108,13 @@
         </div>
       </div>
     </div>
-    <div style="margin-top:20px;">
-      <van-row type="flex" justify="space-around" align="center">
-        <van-col span="10">
-          <div style="text-align:center; width:100%;height:100%;margin:0px; ">
-            <van-button @click="goBack()" type="warning">返回</van-button>
-          </div>
+    <div class="foot">
+      <van-row>
+        <van-col span="12" style="text-align:center;">
+          <van-button @click="goBack()" type="warning">返回</van-button>
         </van-col>
-        <van-col span="10">
-          <div style="text-align:center; width:100%;height:100%;margin:0px; ">
-            <van-button @click="saveForm" type="info">提交</van-button>
-          </div>
+        <van-col span="12" style="text-align:center;">
+          <van-button @click="dataFormSubmit" type="info">提交</van-button>
         </van-col>
       </van-row>
     </div>
@@ -716,4 +712,13 @@ export default {
   padding-bottom: 5px;
   border-bottom: 1px solid rgb(195, 197, 199);
 }
+  .foot {
+    justify-content: space-around;
+    position: fixed;
+    width:100%;
+    bottom: 5%;
+    z-index: 0;
+    color: whitesmoke;
+    padding: 1px;
+  }
 </style>
