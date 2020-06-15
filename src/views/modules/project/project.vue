@@ -41,7 +41,7 @@
       <van-col span="6" class="tac">操作</van-col>
     </van-row>
 
-    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 360).toString() + 'px'" class="os">
+    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 335).toString() + 'px'" class="os">
       <van-row
         :key="index"
         v-for="(item,index) in dataList"

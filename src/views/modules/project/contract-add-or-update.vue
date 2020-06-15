@@ -31,7 +31,7 @@
       </van-form>
       <!-- 上传文件控件-->
       <div class="folder_style">
-        <van-uploader accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlxs,image/*"  >
+        <van-uploader accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlxs,image/*" :after-read="afterReadHandle" >
           <van-button  icon="photo" type="primary" size="small">上传文件</van-button>
         </van-uploader>
         <span class="folder_span" >{{dataForm.filename}}
@@ -297,33 +297,32 @@
           })
         })
       },
-      // 上传文件之前的钩子
-      handleBeforeUpload (file) {
-        let size = file.size / 1024 / 1024 / 10
+      // 上传文件
+      afterReadHandle (file) {
+        console.log(file)
+        let size = file.file.size / 1024 / 1024
         if (size > 10) {
-          this.$message({
-            message: '文件必须小于10M',
-            type: 'warning',
-            duration: 1500
-          })
+          this.$notify({type: 'danger', message: '文件必须小于10M'})
+          return
         }
-      },
-      // 文件上传成功时的钩子
-      handleSuccess (res, file, fileList) {
-        console.log(res.fileName)
-        this.dataForm.filename = res.fileName
-        this.$message({
-          message: '文件上传成功',
-          type: 'success',
-          duration: 1500,
-          onClose: () => {
-            this.$refs.upload.clearFiles()
+        let param = new FormData()
+        param.append('contractNo', this.dataForm.contractNo)
+        param.append('file', file.file)
+        this.$http({
+          url: this.$http.adornUrl(`/project/contract/upContractFile/`),
+          method: 'POST',
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
+          data: param
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.dataForm.filename = data.fileName
+            this.$notify({ type: 'success' , message: '上传成功！'})
+          } else {
+            this.$notify({ type: 'danger' , message: data.msg })
           }
         })
-      },
-      // 文件上传失败时的钩子
-      handleError (err, file, fileList) {
-        this.$message.error('文件上传失败')
       }
     }
   }
