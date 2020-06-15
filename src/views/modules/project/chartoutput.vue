@@ -130,8 +130,8 @@
 <script>
 import moment from 'moment'
 import Vue from 'vue'
-import {treeDataTranslate} from '@/utils'
 import chartcommonModule from '@/components/chartcommon-module'
+import {treeDataTranslate} from '@/utils'
 export default {
   data () {
     return {
