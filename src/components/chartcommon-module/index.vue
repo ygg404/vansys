@@ -1,5 +1,5 @@
 <template>
-     <van-row style="margin-top:5px;margin-bottom:5px;" type="flex" align="center">
+     <van-row style="margin-bottom:5px;" type="flex" align="center">
       <van-col span="1" />
       <van-col span="11" class="wgns">
         <van-cell center @click="wgshow = true" style="width:80%;">作业组:{{wgName}}</van-cell>
