@@ -294,6 +294,7 @@
             </van-col>
           </van-row>
 
+
           <div>
             <button class="confirmbtn" style="float:right;" v-if="roleradio === 0 && isAuth('project:project:plan')"
                     @click="editProjectHandle(dpiData)">编辑安排
@@ -1004,6 +1005,7 @@
     height: 50px;
     line-height: 48px;
     border: 0;
+    border-top:1px solid #f7f8f9;
   }
   .os {
     overflow: scroll;

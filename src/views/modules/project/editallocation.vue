@@ -158,12 +158,6 @@
         <van-col span="5" class="tac" style="font-weight: 700;">备注</van-col>
         <van-col style="color: #00b7ee;"span="10">{{projectInfo.outputRemark}}</van-col>
       </van-row>
-      <van-row class="bzts">
-        <div style="font-size:14px;padding-bottom:5px;">上级部门: <span class="f14">{{firstgroupRate.parentGroup}}</span></div>
-        <div style="font-size:14px;padding-bottom:5px;">总安排产值: <span class="f14">{{firstgroupRate.allSetOutput}}</span></div>
-        <div style="font-size:14px;padding-bottom:5px;">总未完成产值: <span class="f14">{{firstgroupRate.allNotOutput}}</span></div>
-        <div style="font-size:14px;padding-bottom:5px;">总未完成项目数: <span class="f14">{{firstgroupRate.allUndoneNum}}</span></div>
-      </van-row>
       <!---->
       <van-row style="margin-top:10px;">
         <van-col span="4" class="tc">组名</van-col>
@@ -296,7 +290,6 @@
           projectActuallyOutput: ''
         },
         groupRateList: [],
-        firstgroupRate:'',
         produceList: [],
         executelist: [], //  执行标准列表
         worknotelist: [], //  作业内容列表
@@ -512,9 +505,6 @@
             groupRate.allSetOutput = numList[index].allSetOutput
             groupRate.allUndoneNum = numList[index].allUndoneNum
           }
-        }
-        if(groupRateList.length !== 0){
-          this.firstgroupRate = groupRateList[0]
         }
         console.log(this.groupRateList = groupRateList)
       },
@@ -1006,9 +996,6 @@
 </script>
 
 <style scoped>
-  .bzts{
-    padding-left:10px;border-bottom:1px dashed black;margin-bottom:5px;padding-bottom:5px;margin-top:5px;padding-top:5px;
-  }
   .timeccl .van-cell{
     border: 1px solid #d9d2d2;
     padding:4px;
