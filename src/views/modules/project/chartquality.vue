@@ -20,14 +20,7 @@
       />
     </van-row>
 
-    <chartcommonModule
-      :wgName="workgroupname"
-      :wgList="workGroupList"
-      @wgc="onworkGroupConfirm"
-      @ech="exportChartHandle"
-      @gb="goBack"
-    ></chartcommonModule>
-
+    <chartcommonModule :wgName="workgroupname" :wgList="workGroupList" @wgc="onworkGroupConfirm" @ech="exportChartHandle" @gb="goBack"/>
     <!---->
     <div id="chartId">
       <div class="chart_title">
@@ -126,6 +119,7 @@
 import moment from 'moment'
 import Vue from 'vue'
 import chartcommonModule from '@/components/chartcommon-module'
+import {treeDataTranslate} from '@/utils'
 export default {
   data () {
     return {
@@ -156,12 +150,12 @@ export default {
     chartcommonModule
   },
   created () {
-    this.sdateStr = moment(
-      new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
-    ).format('YYYY-MM-DD')
+    this.sdateStr = moment(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)).format('YYYY-MM-DD')
     this.edateStr = moment(new Date()).format('YYYY-MM-DD')
     this.defaultDateArray = [new Date(this.sdateStr), new Date()]
-    this.getWorkGroupDataListFromApi()
+    this.getWorkGroupDataListFromApi().then(list => {
+      this.workGroupList = this.getBranchChildList(treeDataTranslate(list, 'id', 'pid'))
+    })
     this.getOutputQuality()
   },
 
@@ -178,11 +172,10 @@ export default {
     getWorkGroupDataListFromApi () {
       return new Promise((resolve, reject) => {
         this.$http({
-          url: this.$http.adornUrl('/set/workgroup/selectworkgroup'),
+          url: this.$http.adornUrl('/set/workgroup/list'),
           method: 'get'
-        }).then(({ data }) => {
+        }).then(({data}) => {
           if (data && data.code === 0) {
-            this.workGroupList = data.list
             resolve(data.list)
           } else {
             this.workGroupList = []
@@ -190,7 +183,18 @@ export default {
         })
       })
     },
-    // 表格初始化
+    // 获取所有子部门
+    getBranchChildList (branchlist) {
+      let childList = []
+      for (let branch of branchlist) {
+        if (branch.children !== undefined) {
+          childList = childList.concat(this.getBranchChildList(branch.children))
+        } else {
+          childList.push(branch)
+        }
+      }
+      return childList
+    },
     // 表格初始化
     tableDataInit (datalist) {
       this.dataList = []
