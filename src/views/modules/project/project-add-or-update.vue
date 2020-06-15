@@ -13,7 +13,7 @@
         <van-field v-model="dataForm.contractNo" name="contractNo" label="合同编号" placeholder="合同编号"
                    :rules="[{ required: true, message: '请填写合同编号' }]"  disabled/>
         <van-field v-model="dataForm.projectName" name="projectName" label="项目名称" placeholder="项目名称"
-                   :rules="[{ required: false, message: '请填写项目名称' }]"/>
+                   :rules="[{ required: true, message: '请填写项目名称' }]"/>
         <van-field v-model="dataForm.projectAuthorize" label="委托单位" disabled/>
         <van-field v-model="dataForm.projectNote"  label="委托要求" disabled/>
         <van-field v-model="dataForm.projectBusiness" label="业务负责人" disabled/>
@@ -64,14 +64,14 @@
   export default {
     data () {
       return {
-        produceGroupName:' ',
-        projectProduceName:' ',
+        produceGroupName: ' ',
+        projectProduceName: ' ',
         datePickerShow: false,
         producePickerShow: false,
-        groupPickerShow:false,
+        groupPickerShow: false,
         addOrUpdateVisible: false,
         // 预计产值明细弹窗
-        detailsOutputVisible:false,
+        detailsOutputVisible: false,
         visible: false,
         dataForm: {
           id: 0,
@@ -96,7 +96,7 @@
         },
         produceList: [],
         workTypelist: [],
-        groupList: [], // 一级部门列表
+        groupList: [] // 一级部门列表
       }
     },
     components: {
@@ -104,13 +104,13 @@
       detailsOutput
     },
     methods: {
-      detailsOutputHandle(){
+      detailsOutputHandle () {
         this.detailsOutputVisible = true
         this.$nextTick(() => {
-          this.$refs.detailsOutput.init(this.workTypelist,this.dataForm)
+          this.$refs.detailsOutput.init(this.workTypelist, this.dataForm)
         })
       },
-      cancelEvent(){
+      cancelEvent () {
         this.produceGroupName = ''
         this.visible = false
       },
@@ -132,7 +132,7 @@
         this.producePickerShow = false
       },
       onGroupConfirm (item) {
-        if(item.id !== this.dataForm.produceGroupId){
+        if (item.id !== this.dataForm.produceGroupId) {
           this.dataForm.produceGroupId = item.id
           this.produceGroupName = item.name
           for (let group of this.groupList) {
@@ -153,12 +153,12 @@
             }
           }
           let flag = 0
-          for(let produce of this.produceList){
-            if(produce.userId === this.dataForm.projectProduceId){
-              flag++;
+          for (let produce of this.produceList) {
+            if (produce.userId === this.dataForm.projectProduceId) {
+              flag++
             }
           }
-          if(flag === this.produceList.length - 1){
+          if (flag === this.produceList.length - 1) {
             this.dataForm.projectProduceId = ''
             this.projectProduceName = ''
           }
@@ -173,58 +173,57 @@
         })
         this.dataForm.id = id || 0
         this.visible = true
-          if (this.dataForm.id) {
-            this.$http({
-              url: this.$http.adornUrl(`/project/project/info/${this.dataForm.id}`),
-              method: 'get',
-              params: this.$http.adornParams()
-            }).then(({data}) => {
-              if (data && data.code === 0) {
-                this.dataForm.projectNo = data.project.projectNo
-                this.dataForm.contractNo = data.project.contractNo
-                this.dataForm.projectName = data.project.projectName
-                this.dataForm.projectMoney = data.project.projectMoney
-                this.dataForm.projectAuthorize = data.project.projectAuthorize
-                this.dataForm.projectNote = data.project.projectNote
-                this.dataForm.projectBusiness = data.project.projectBusiness
-                this.dataForm.examineNote = data.project.examineNote
-                this.dataForm.projectType = data.project.projectType
-                this.dataForm.projectStage = data.project.projectStage
-                this.dataForm.projectProduce = data.project.projectProduce
-                this.dataForm.pStage = data.project.pStage
-                this.dataForm.projectProduceAccount = data.project.projectProduceAccount
-                this.dataForm.produceGroupId = data.project.produceGroupId
-                this.dataForm.projectProduceId = data.project.projectProduceId
-                this.dataForm.projectStartDateTime = data.project.projectStartDateTime
-                this.dataForm.projectCreateDateTime = data.project.projectCreateDateTime
-                this.dataForm.createuserid = data.project.createuserid
-                this.getWorkTypelist(data.project.projectNo).then(list => {
-                  this.workTypelist = list
-                  this.getPlanByProjectNo()
-                })
-              }
-            })
-          } else {
-            // 新增项目 获取项目号
-            this.getProjectNo(item.contractNo).then(projectNo => {
-              this.dataForm.projectNo = projectNo
-              this.getWorkTypelist(projectNo).then(list => {
+        if (this.dataForm.id) {
+          this.$http({
+            url: this.$http.adornUrl(`/project/project/info/${this.dataForm.id}`),
+            method: 'get',
+            params: this.$http.adornParams()
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              this.dataForm.projectNo = data.project.projectNo
+              this.dataForm.contractNo = data.project.contractNo
+              this.dataForm.projectName = data.project.projectName
+              this.dataForm.projectMoney = data.project.projectMoney
+              this.dataForm.projectAuthorize = data.project.projectAuthorize
+              this.dataForm.projectNote = data.project.projectNote
+              this.dataForm.projectBusiness = data.project.projectBusiness
+              this.dataForm.examineNote = data.project.examineNote
+              this.dataForm.projectType = data.project.projectType
+              this.dataForm.projectStage = data.project.projectStage
+              this.dataForm.projectProduce = data.project.projectProduce
+              this.dataForm.pStage = data.project.pStage
+              this.dataForm.projectProduceAccount = data.project.projectProduceAccount
+              this.dataForm.produceGroupId = data.project.produceGroupId
+              this.dataForm.projectProduceId = data.project.projectProduceId
+              this.dataForm.projectStartDateTime = data.project.projectStartDateTime
+              this.dataForm.projectCreateDateTime = data.project.projectCreateDateTime
+              this.dataForm.createuserid = data.project.createuserid
+              this.getWorkTypelist(data.project.projectNo).then(list => {
                 this.workTypelist = list
                 this.getPlanByProjectNo()
               })
+            }
+          })
+        } else {
+            // 新增项目 获取项目号
+          this.getProjectNo(item.contractNo).then(projectNo => {
+            this.dataForm.projectNo = projectNo
+            this.getWorkTypelist(projectNo).then(list => {
+              this.workTypelist = list
+              this.getPlanByProjectNo()
             })
-            this.dataForm.contractNo = item.contractNo
-            this.dataForm.projectName = item.contractName
-            this.dataForm.projectMoney = item.contractMoney
-            this.dataForm.projectAuthorize = item.contractAuthorize
-            this.dataForm.projectNote = item.contractNote
-            this.dataForm.projectBusiness = item.contractBusiness
-            this.dataForm.projectType = item.projectType
-            this.dataForm.projectProduceId = ''
-            this.dataForm.produceGroupId = ''
-            this.dataForm.projectProduce = ''
-          }
-
+          })
+          this.dataForm.contractNo = item.contractNo
+          this.dataForm.projectName = item.contractName
+          this.dataForm.projectMoney = item.contractMoney
+          this.dataForm.projectAuthorize = item.contractAuthorize
+          this.dataForm.projectNote = item.contractNote
+          this.dataForm.projectBusiness = item.contractBusiness
+          this.dataForm.projectType = item.projectType
+          this.dataForm.projectProduceId = ''
+          this.dataForm.produceGroupId = ''
+          this.dataForm.projectProduce = ''
+        }
       },
       // 编辑预算产值
       editOutputHandle () {
@@ -238,43 +237,43 @@
         this.$refs.dataForm.validateAll().then(
           success => {
               // 项目负责人
-              //this.dataForm.projectProduce = this.produceList.find(produce => produce.userId === this.dataForm.projectProduceId)['username']
-              console.log('项目负责人ID' + this.dataForm.projectProduceId, '项目负责人' + this.dataForm.projectProduce)
-              this.$http({
-                url: this.$http.adornUrl(`/project/project/${!this.dataForm.id ? 'save' : 'update'}`),
-                method: 'post',
-                data: this.$http.adornData({
-                  'id': this.dataForm.id || undefined,
-                  'projectNo': this.dataForm.projectNo,
-                  'contractNo': this.dataForm.contractNo,
-                  'projectName': this.dataForm.projectName,
-                  'projectMoney': this.dataForm.projectMoney,
-                  'projectAuthorize': this.dataForm.projectAuthorize,
-                  'projectNote': this.dataForm.projectNote,
-                  'projectBusiness': this.dataForm.projectBusiness,
-                  'pStage': this.dataForm.pStage,
-                  'examineNote': this.dataForm.examineNote,
-                  'projectType': this.dataForm.projectType,
-                  'projectStage': this.dataForm.projectStage,
-                  'projectProduce': this.dataForm.projectProduce,
-                  'projectProduceAccount': this.dataForm.projectProduceAccount,
-                  'projectProduceId': this.dataForm.projectProduceId,
-                  'produceGroupId': this.dataForm.produceGroupId,
-                  'projectStartDateTime': this.dataForm.projectStartDateTime,
-                  'outputRemark': this.dataForm.outputRemark,
-                  'createuserid': this.dataForm.createuserid
-                })
-              }).then(({data}) => {
-                if (data && data.code === 0) {
-                  this.postProjectPlanHandle().then(success => {
-                    this.$notify({ type: 'success', message: '操作成功'})
-                    this.visible = false
-                    this.$emit('refreshDataList', this.dataForm.contractNo)
-                  })
-                } else {
-                  this.$notify({message: data.msg, type: 'danger'})
-                }
+              // this.dataForm.projectProduce = this.produceList.find(produce => produce.userId === this.dataForm.projectProduceId)['username']
+            console.log('项目负责人ID' + this.dataForm.projectProduceId, '项目负责人' + this.dataForm.projectProduce)
+            this.$http({
+              url: this.$http.adornUrl(`/project/project/${!this.dataForm.id ? 'save' : 'update'}`),
+              method: 'post',
+              data: this.$http.adornData({
+                'id': this.dataForm.id || undefined,
+                'projectNo': this.dataForm.projectNo,
+                'contractNo': this.dataForm.contractNo,
+                'projectName': this.dataForm.projectName,
+                'projectMoney': this.dataForm.projectMoney,
+                'projectAuthorize': this.dataForm.projectAuthorize,
+                'projectNote': this.dataForm.projectNote,
+                'projectBusiness': this.dataForm.projectBusiness,
+                'pStage': this.dataForm.pStage,
+                'examineNote': this.dataForm.examineNote,
+                'projectType': this.dataForm.projectType,
+                'projectStage': this.dataForm.projectStage,
+                'projectProduce': this.dataForm.projectProduce,
+                'projectProduceAccount': this.dataForm.projectProduceAccount,
+                'projectProduceId': this.dataForm.projectProduceId,
+                'produceGroupId': this.dataForm.produceGroupId,
+                'projectStartDateTime': this.dataForm.projectStartDateTime,
+                'outputRemark': this.dataForm.outputRemark,
+                'createuserid': this.dataForm.createuserid
               })
+            }).then(({data}) => {
+              if (data && data.code === 0) {
+                this.postProjectPlanHandle().then(success => {
+                  this.$notify({ type: 'success', message: '操作成功'})
+                  this.visible = false
+                  this.$emit('refreshDataList', this.dataForm.contractNo)
+                })
+              } else {
+                this.$notify({message: data.msg, type: 'danger'})
+              }
+            })
           }
         )
       },
@@ -366,7 +365,7 @@
             if (data && data.code === 0) {
               resolve(data.list)
             } else {
-              this.$notify({message: data.msg, type: 'danger',duration: 3000})
+              this.$notify({message: data.msg, type: 'danger', duration: 3000})
               reject(data.msg)
             }
           })
