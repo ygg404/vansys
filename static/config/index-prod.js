@@ -4,6 +4,8 @@
 ;(function () {
   window.SITE_CONFIG = {};
 
+  // 根域名
+  window.SITE_CONFIG['indexUrl'] = 'https://www.gdjxch.cn/';
   // api接口请求地址
   window.SITE_CONFIG['baseUrl'] = 'https://www.gdjxch.cn/htsys';
 

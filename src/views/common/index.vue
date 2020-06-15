@@ -38,6 +38,7 @@
   export default {
     data () {
       return {
+        indexUrl: window.SITE_CONFIG['indexUrl'],
         images: [
           'https://www.gdjxch.cn/uploadFile/ren/img/compic1.jpg',
           'https://www.gdjxch.cn/uploadFile/ren/img/compic2.jpg',
@@ -62,6 +63,9 @@
 </script>
 
 <style scoped>
+  .item_url .van-grid-item__content {
+    background-color: #6f7180;
+  }
   .all{
     height:100%;
     width:100%;

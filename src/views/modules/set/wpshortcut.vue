@@ -1,5 +1,5 @@
 <template>
-  <div class="mod-config">
+  <div style="max-width:100%">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
         <el-input v-model="dataForm.key" @change="getDataListBykey()" placeholder="关键词搜索" clearable></el-input>
@@ -12,65 +12,45 @@
         </el-button>
       </el-form-item>
     </el-form>
-    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 250).toString() + 'px'" class="table_van_div">
-      <el-table
-        :data="dataList"
-        border
-        v-loading="dataListLoading"
-        @selection-change="selectionChangeHandle"
-        @sort-change="changeSort"
-        style="width: 100%;">
-        <el-table-column
-          type="selection"
-          header-align="center"
-          align="center"
-          width="50">
-        </el-table-column>
-        <el-table-column
-          prop="id"
-          header-align="center"
-          align="center"
-          label="ID"
-          sortable
-          :sort-orders="['descending','ascending']"
-          width="80">
-        </el-table-column>
-        <el-table-column
-          prop="shortcutName"
-          header-align="center"
-          align="center"
-          sortable
-          :sort-orders="['descending','ascending']"
-          label="输入项" min-width="150">
-        </el-table-column>
-        <el-table-column
-          prop="shortcutNote"
-          header-align="center"
-          align="center"
-          label="文字内容"
-          min-width="200">
-        </el-table-column>
-        <el-table-column
-          fixed="right"
-          header-align="center"
-          align="center"
-          width="150"
-          label="操作">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-            <el-button type="danger" size="mini" @click="deleteHandle(scope.row.id)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
+    <el-table
+      :data="dataList"
+      border row-key="id"
+      v-loading="dataListLoading"
+      @selection-change="selectionChangeHandle"
+      @sort-change="changeSort"
+      style="width: 100%;">
+      <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
+      <el-table-column prop="id" header-align="center" align="center" label="ID" sortable :sort-orders="['descending','ascending']" width="80"></el-table-column>
+      <el-table-column prop="shortcutNote" header-align="center" align="center" label="快捷输入短语内容" min-width="200"></el-table-column>
+      <el-table-column prop="shortcutName" header-align="center" align="center" sortable :sort-orders="['descending','ascending']" label="输入项">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.shortcutName != ''" v-for="(item,index) in (scope.row.shortcutName || '').split(',')" :key="index"
+                  style="margin-left: 5px;" type="success">{{item}}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="projectType" header-align="center" align="center" sortable :sort-orders="['descending','ascending']" label="项目类型">
+        <template slot-scope="scope">
+          <el-tag v-if="!(scope.row.projectType == null || scope.row.projectType == undefined)" v-for="(item,index) in (scope.row.projectType || '').split(',')" :key="index"
+                  style="margin-left: 5px;" >{{item}}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+          <el-button type="danger" size="mini" @click="deleteHandle(scope.row.id)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
     <el-pagination
+      small
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
+      layout="total,prev, pager, next"
       :current-page="pageIndex"
-      :page-sizes="[25, 50, 100]"
       :page-size="pageSize"
-      :total="totalPage"
-      layout="total, sizes, prev, pager, next, jumper">
+      :total="totalPage">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
@@ -78,7 +58,9 @@
 </template>
 
 <script>
+  import Sortable from 'sortablejs'
   import AddOrUpdate from './wpshortcut-add-or-update'
+  import {stringIsNull} from "@/utils"
 
   export default {
     data () {
@@ -97,16 +79,13 @@
         addOrUpdateVisible: false
       }
     },
-    computed: {
-      documentClientHeight: {
-        get () { return this.$store.state.common.documentClientHeight }
-      }
-    },
     components: {
-      AddOrUpdate
+      AddOrUpdate,
+      Sortable
     },
     created () {
       this.getDataList()
+      this.rowDrop()
     },
     methods: {
       // 排序字段改变
@@ -203,7 +182,7 @@
             }
           })
         })
-      }
+      },
     }
   }
 </script>

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div  style="text-align: center">
+  <div class="mod_card">
+    <div class="mod_content" style="text-align: center">
       <img src="~@/assets/img/avatar.png"  style="height:150px;"/>
       <van-row class="span_row">
         <van-col span="10" class="span_row_attr">账号：</van-col>
@@ -28,9 +28,9 @@
       <van-button icon="wap-home-o" type="danger" @click="logoutHandle">退出</van-button>
     </div>
     <!-- 弹窗, 修改密码 -->
-<!--    <van-dialog v-model="updatePassowrdVisible" title="修改密码" show-cancel-button bind:close="updatePassowrdVisible=false">-->
-<!--      <div>dddd</div>-->
-<!--    </van-dialog>-->
+    <!--    <van-dialog v-model="updatePassowrdVisible" title="修改密码" show-cancel-button bind:close="updatePassowrdVisible=false">-->
+    <!--      <div>dddd</div>-->
+    <!--    </van-dialog>-->
     <update-password v-if="updatePassowrdVisible" ref="updatePassowrd"></update-password>
   </div>
 </template>

@@ -4,6 +4,8 @@
 ;(function () {
   window.SITE_CONFIG = {};
 
+  // 根域名
+  window.SITE_CONFIG['indexUrl'] = 'http://localhost:19445/';
   // api接口请求地址
   window.SITE_CONFIG['baseUrl'] = 'http://localhost:19433/htsys';
 
