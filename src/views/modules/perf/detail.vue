@@ -13,12 +13,6 @@
       </div>
     </el-form>
 
-    <!--<van-row style="width:95%;margin:0 auto;">-->
-      <!--<van-col span="12">-->
-        <!--<button>参选情况</button>-->
-      <!--</van-col>-->
-    <!--</van-row>-->
-
     <div style="width: 95%;margin: 5px auto 10px;">
       <van-row type="flex" align="center" style="padding-bottom:5px;border-bottom:1px dotted black;">
         <van-col span="6">
@@ -30,16 +24,26 @@
           </div>
         </van-col>
       </van-row>
-      <!---->
-      <div :style="'max-height: ' + (documentClientHeight - 200).toString() + 'px'" class="os">
+      <!--标题-->
+      <van-row class="data_title">
+        <van-col span="4" class="tar">被考核人</van-col>
+        <van-col span="5" class="tac">效能评价分</van-col>
+        <van-col span="4" class="tac">加减得分</van-col>
+        <van-col span="5" class="tac">效能基准分</van-col>
+        <van-col span="6">最终效能得分</van-col>
+      </van-row>
+      <div :style="'max-height: ' + (documentClientHeight - 220).toString() + 'px'" class="os">
+        <!--数据-->
         <div v-for="(checkUser,indexA) in checkUserList">
           <van-collapse :value="saList[indexA].sollapseactive"  @change="grisEvent(indexA)" class="detailcoll">
             <van-collapse-item name="1">
               <template slot="title">
                 <van-row>
-                  <van-col span="8">{{checkUser.checkUserName}}</van-col>
-                  <van-col span="8">{{checkUser.kbiAllScore}}</van-col>
-                  <van-col span="8">{{checkUser.finalExtra}}</van-col>
+                  <van-col span="5">{{checkUser.checkUserName}}</van-col>
+                  <van-col span="5">{{checkUser.kbiAllScore}}</van-col>
+                  <van-col span="5">{{checkUser.finalExtra}}</van-col>
+                  <van-col span="5">{{checkUser.standardScore}}</van-col>
+                  <van-col span="4">{{getFinalKbiScore(checkUser)}}</van-col>
                 </van-row>
               </template>
               <van-collapse :value="saListA[indexA].sollapseactive"  @change="grisEventA(indexA)" class="detailcoll">
@@ -93,22 +97,22 @@
                   <div style="overflow-x: auto;max-height:300px;">
                     <table class="bs" cellspacing="10px">
                       <thead>
-                      <tr>
-                        <td class="tac detail_td_style" style="min-width:70px;">类型</td>
-                        <td class="tac detail_td_style" style="min-width:250px;">加减分项</td>
-                        <td class="tac detail_td_style" style="min-width:150px;">计分标准</td>
-                        <td class="tac detail_td_style" style="min-width:90px;">分数</td>
+                      <tr class="score_title">
+                        <td class="tac detail_td_style" >类型</td>
+                        <td class="tac detail_td_style">加减分项</td>
+                        <td class="tac detail_td_style">计分标准</td>
+                        <td class="tac detail_td_style">分数</td>
                       </tr>
                       </thead>
                       <tbody>
-                      <tr v-for="(score,indexB) in checkUser.scoreList">
-                        <td class="tac">
+                      <tr v-for="(score,indexB) in checkUser.scoreList" class="scorestyle">
+                        <td class="tac" style="min-width:70px;">
                           <div v-if="score.extraType == 0"class="f14cb">加分项</div>
                           <div v-if="score.extraType == 1" class="f14cb">减分项</div>
                         </td>
-                        <td class="f14cb">{{score.extraItem}}</td>
-                        <td class="f14cb">{{score.standard}}</td>
-                        <td class="tac f14cb">{{score.extraNum}}</td>
+                        <td class="f14cb" style="min-width:250px;">{{score.extraItem}}</td>
+                        <td class="f14cb" style="min-width:150px;">{{score.standard}}</td>
+                        <td class="tac f14cb" style="min-width:90px;">{{score.extraNum}}</td>
                       </tr>
                       </tbody>
                     </table>
@@ -126,7 +130,7 @@
 </template>
 
 <script>
-  import {getYearItem,getRateItem} from '@/utils/selectedItem'
+  import {getYearItem, getRateItem} from '@/utils/selectedItem'
   import { treeDataTranslate } from '@/utils'
   import {stringIsNull} from '../../../utils'
   import detailUser from './detail-user'
@@ -135,10 +139,10 @@
     data () {
       return {
         saList: [],
-        saListA:[],
-        saListB:[],
+        saListA: [],
+        saListB: [],
         dataForm: {
-          curYear: new Date(2020 , 1 ,1),   // 当前年份
+          curYear: new Date(2020, 1, 1),   // 当前年份
           updown: 0 // 上下半年
         },
         yearItemList: getYearItem(),
@@ -157,8 +161,8 @@
         }
       }
     },
-    created() {
-      this.dataForm.curYear = new Date(new Date().getFullYear() , new Date().getMonth() - 3, 1)
+    created () {
+      this.dataForm.curYear = new Date(new Date().getFullYear(), new Date().getMonth() - 3, 1)
       this.dataForm.updown = this.dataForm.curYear.getMonth() <= 6 ? 0 : 1
       this.init()
     },
@@ -188,7 +192,7 @@
           this.saListB[val].sollapseactive = ['1']
         }
       },
-      objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      objectSpanMethod ({ row, column, rowIndex, columnIndex }) {
         if (columnIndex === 0) {
           if (row.isFirst || rowIndex === 0) {
             return {
@@ -228,7 +232,7 @@
                 }
 
                 // 设置每成员的部门 并获取部门的最高分
-                checkUserList = this.setBranchScoreFun(checkUserList,branchList)
+                checkUserList = this.setBranchScoreFun(checkUserList, branchList)
                 this.checkUserList = this.setKbiScore(checkUserList)
                 this.checkUserList.forEach(item => {
                   this.saList.push({sollapseactive: []})
@@ -251,8 +255,8 @@
           h('span', {}, column.label.split('/')[1])
         ])
       },
-      //展示参选人数情况
-      showduEvent(){
+      // 展示参选人数情况
+      showduEvent () {
         this.$nextTick(() => {
           this.$refs.detailUser.init(this.dataForm)
         })
@@ -329,8 +333,8 @@
             let kbiItem = {
               userId: access.userId,
               userName: access.userName,
-              isGuider: this.isGuiderHandle(access.userId,access.checkUserId),
-              isSameBranch: this.isSameBranch(access.userId,access.checkUserId)
+              isGuider: this.isGuiderHandle(access.userId, access.checkUserId),
+              isSameBranch: this.isSameBranch(access.userId, access.checkUserId)
             }
             userId = access.userId
             checkUserList[checkUserList.length - 1].kbiList.push(kbiItem)
@@ -341,7 +345,7 @@
         return checkUserList
       },
       // 是否为部门领导
-      isGuiderHandle (userId,checkUserId) {
+      isGuiderHandle (userId, checkUserId) {
         let isGuider = false
         // 被考核人所在的所有部门
         let inBranchList = []
@@ -364,16 +368,16 @@
         return isGuider
       },
       // 获取部门的父部门
-      getParentBranchList (parentList = [] , branchId) {
-        this.branchList.map( branch => {
+      getParentBranchList (parentList = [], branchId) {
+        this.branchList.map(branch => {
           if (branch.id === branchId && branch.parentId !== 0) {
             parentList.push(branch.parentId)
-            this.getParentBranchList(parentList,branch.parentId)
+            this.getParentBranchList(parentList, branch.parentId)
           }
         })
       },
       // 判断 考核人与被考核人 是否为同一个部门
-      isSameBranch (userId,checkUserId) {
+      isSameBranch (userId, checkUserId) {
         let isSame = false
         let userBranchId = []     // 考核人的部门
         let checkBranchId = []    // 被考核人的部门
@@ -428,7 +432,7 @@
         })
       },
       // 评分列表初始化
-      extraScoreInit (checkUser,extraList,scoreList) {
+      extraScoreInit (checkUser, extraList, scoreList) {
         let uScoreList = []
         for (let scoreItem of scoreList) {
           if (scoreItem.checkUserId === checkUser.checkUserId) {
@@ -485,7 +489,7 @@
         }
         // 统计每个部门的最高分
         let branchMaxScoreList = []
-        for (let checkUser of checkUserList ) {
+        for (let checkUser of checkUserList) {
           let branch = branchMaxScoreList.find(branch => branch.brandId === checkUser.branchId)
           let branchScore = {
             branchId: checkUser.branchId,
@@ -498,9 +502,9 @@
           }
         }
         // 计算加减分最终的结果
-        for (let checkUser of checkUserList ) {
+        for (let checkUser of checkUserList) {
           let branch = branchMaxScoreList.find(branch => branch.branchId === checkUser.branchId)
-          if ( branch === undefined ) {
+          if (branch === undefined) {
             checkUser.maxScore = 0
           } else {
             checkUser.maxScore = branch.maxScore
@@ -518,7 +522,7 @@
             let score = 0
             for (var prop in scoreItem) {
               if (prop.indexOf('kbiId') >= 0) {
-                let propItem = checkUser.kbiItemList.find(kbi => kbi.kbiId === parseInt(prop.replace('kbiId','')))
+                let propItem = checkUser.kbiItemList.find(kbi => kbi.kbiId === parseInt(prop.replace('kbiId', '')))
                 if (propItem !== undefined && (!stringIsNull(scoreItem[prop]))) {
                   score += parseFloat(propItem.kbiRatio * scoreItem[prop] / 100)
                 }
@@ -547,8 +551,8 @@
               kbiScore4Num += 1
             }
           }
-          checkUser.kbiAllScore = parseFloat(kbiScore02 / (kbiScore2Num === 0 ? 1 : kbiScore2Num)
-            + kbiScore04 / (kbiScore4Num === 0 ? 1 : kbiScore4Num)).toFixed(2)
+          checkUser.kbiAllScore = parseFloat(kbiScore02 / (kbiScore2Num === 0 ? 1 : kbiScore2Num) +
+          kbiScore04 / (kbiScore4Num === 0 ? 1 : kbiScore4Num)).toFixed(2)
         }
         return checkUserList
       },
@@ -564,6 +568,14 @@
         }
         return childList
       },
+      getFinalKbiScore (item) {
+        console.log(item)
+        if (stringIsNull(item.standardScore)) {
+          return ''
+        } else {
+          return Math.round(parseInt((1 + (item.kbiAllScore + item.extraScore - 75) * 0.6 / 75) * 100) * item.standardScore / 100)
+        }
+      }
     }
   }
 </script>
@@ -599,6 +611,9 @@
   .tac{
     text-align: center;
   }
+  .tar{
+    text-align:right;
+  }
   .w95{
     width:95%;margin: 10px auto 0;
   }
@@ -616,7 +631,7 @@
   }
   .detail_td_style
   {
-    overflow:hidden;font-size:14px;color:black;
+    font-weight:600;overflow:hidden;font-size:14px;color:black;
   }
   .f14cb{
     font-size:14px;color:#666262;
@@ -627,5 +642,24 @@
     color: #FFF;
     font-size: 14px;
     background-color: #409EFF;
+  }
+  .data_title{
+    font-weight:600;padding-top:10px;padding-bottom:10px;
+  }
+  .bs td{
+    padding-bottom:5px;
+  }
+  .scorestyle td{
+    padding-top:5px;
+    padding-bottom:7px;
+  }
+  .scorestyle td:nth-child(2){
+    letter-spacing:1px;
+    line-height:16px;
+  }
+  .score_title td{
+    padding-top:7px;
+    font-weight:600;
+    padding-bottom:7px;
   }
 </style>
