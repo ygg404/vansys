@@ -32,7 +32,7 @@
           <tr>
             <td style="min-width:200px;font-weight: 600;font-size:15px;">考核项</td>
             <td class="tac" style="min-width:80px;font-weight: 600;font-size:15px;">占比(%)</td>
-            <td v-for="(user,indexB) in kbiRole.userList" style="min-width:100px;font-size:15px;">{{user.username}}</td>
+            <td v-for="(user,indexB) in kbiRole.userList" class="name_title">{{user.username}}</td>
           </tr>
           </thead>
           <tbody>
@@ -40,10 +40,6 @@
             <td>{{item.kbiName}}</td>
             <td class="tac">{{item.kbiRatio}}</td>
             <td v-for="user in kbiRole.userList">
-              <!--<el-select v-model="item['kbiScore' + user.userId]" placeholder="评价" :disabled="item.kbiRatio == 0">-->
-                <!--<el-option v-for="item in rateList" :label="item.rateItem" :key="item.id" :value="item.id">-->
-                <!--</el-option>-->
-              <!--</el-select>-->
               <div>
                 <van-field  v-model="item['kbiScore' + user.userId]" input-align="center" disabled class="ds" v-if="item.kbiRatio == 0">
                   <template slot="right-icon">
@@ -69,7 +65,7 @@
 
     <van-popup  v-model="scorePickerShow" position="bottom" >
       <van-picker show-toolbar :title="scoretitle" value-key="rateItem" :columns="rateList"
-                  @cancel="pscorePickerShow = false" @confirm="onScoreConfirm"/>
+                  @cancel="scorePickerShow = false" @confirm="onScoreConfirm"/>
     </van-popup>
 
   </div>
@@ -77,21 +73,21 @@
 
 <script>
   // import AddOrUpdate from './perfaccess-add-or-update'
-  import {getYearItem,getRateItem} from '@/utils/selectedItem'
+  import {getYearItem, getRateItem} from '@/utils/selectedItem'
   import {stringIsNull} from '../../../utils'
 
   export default {
     data () {
       return {
-        //评分弹窗标题
-        scoretitle:'',
-        scorePickerShow:false,
-        partA:'',
-        partB:'',
-        partC:'',
+        // 评分弹窗标题
+        scoretitle: '',
+        scorePickerShow: false,
+        partA: '',
+        partB: '',
+        partC: '',
         dataForm: {
           key: '',
-          curYear: new Date(2020 , 1 ,1),   // 当前年份
+          curYear: new Date(2020, 1, 1),   // 当前年份
           updown: 0 // 上下半年
         },
         yearItemList: getYearItem(),
@@ -125,27 +121,40 @@
       }
     },
     created () {
-      this.dataForm.curYear = new Date( new Date().getFullYear() , new Date().getMonth() - 3, 1)
+      this.dataForm.curYear = new Date(new Date().getFullYear(), new Date().getMonth() - 3, 1)
       this.dataForm.updown = this.dataForm.curYear.getMonth() <= 6 ? 0 : 1
       this.init()
     },
     methods: {
-      scorePickEvent (username,kbiName,A,B,C){
-        this.scoretitle = username + '-'+ kbiName + '-' + '评分'
+      scorePickEvent (username, kbiName, A, B, C) {
+        this.scoretitle = username + '-' + kbiName + '-' + '评分'
         this.partA = A
         this.partB = B
         this.partC = C
         this.scorePickerShow = true
       },
-      onScoreConfirm(item){
+      onScoreConfirm (item) {
         this.kbiRoleList[this.partA].kbiList[this.partC]['kbiScore' + this.partB ] = item.id
         this.scorePickerShow = false
+      },
+      // 对部分值进行处理
+      initItem () {
+        for (let itemA of this.kbiRoleList) {
+          for (let itemB of itemA.userList) {
+            for (let itemC of itemA.kbiList) {
+              if (itemC['kbiScore' + itemB.userId] === null) {
+                itemC['kbiScore' + itemB.userId] = ' '
+              }
+            }
+          }
+        }
       },
       // 时间初始化
       init () {
         this.dataListLoading = true
         this.getPerfAccessVoList().then(accessList => {
           this.kbiRoleList = this.kbiRoleInit(accessList)
+          this.initItem()
           this.dataListLoading = false
         })
       },
@@ -271,7 +280,6 @@
               i += 1
             }
             sums[index] = sum.toFixed(2)
-            return
           }
         })
         return sums
@@ -298,7 +306,7 @@
                   // 该考核项考核人对被考核人的评分
                   accessItem.kbiScore = item[prop]
                   // 被考核人id
-                  accessItem.checkUserId = parseInt(prop.replace('kbiScore',''))
+                  accessItem.checkUserId = parseInt(prop.replace('kbiScore', ''))
                   accessItem.checkUserName = roleKbi.userList.find(user => user.userId === accessItem.checkUserId)['username']
                   perfAccessList.push(accessItem)
                 }
@@ -365,5 +373,8 @@
   }
   .ds{
     background-color:#eff1f4;;
+  }
+  .name_title{
+    min-width:100px;font-size:15px;text-align:center;
   }
 </style>
