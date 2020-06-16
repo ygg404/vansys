@@ -24,105 +24,107 @@
           </div>
         </van-col>
       </van-row>
-      <!--标题-->
-      <van-row class="data_title">
-        <van-col span="4" class="tar">被考核人</van-col>
-        <van-col span="5" class="tac">效能评价分</van-col>
-        <van-col span="4" class="tac">加减得分</van-col>
-        <van-col span="5" class="tac">效能基准分</van-col>
-        <van-col span="6">最终效能得分</van-col>
-      </van-row>
-      <div :style="'max-height: ' + (documentClientHeight - 220).toString() + 'px'" class="os">
-        <!--数据-->
-        <div v-for="(checkUser,indexA) in checkUserList">
-          <van-collapse :value="saList[indexA].sollapseactive"  @change="grisEvent(indexA)" class="detailcoll">
-            <van-collapse-item name="1">
-              <template slot="title">
-                <van-row>
-                  <van-col span="5">{{checkUser.checkUserName}}</van-col>
-                  <van-col span="5">{{checkUser.kbiAllScore}}</van-col>
-                  <van-col span="5">{{checkUser.finalExtra}}</van-col>
-                  <van-col span="5">{{checkUser.standardScore}}</van-col>
-                  <van-col span="4">{{getFinalKbiScore(checkUser)}}</van-col>
-                </van-row>
-              </template>
-              <van-collapse :value="saListA[indexA].sollapseactive"  @change="grisEventA(indexA)" class="detailcoll">
-                <van-collapse-item name="1">
-                  <template slot="title">
-                    <div class="coll_title">效能评分表</div>
-                  </template>
-                  <div style="overflow-x: auto; max-height:300px;">
-                    <table class="bs">
-                      <thead>
-                      <tr>
-                        <td class="tac detail_td_style" style="min-width:60px;">评分人</td>
-                        <td v-for="(kbiItem,indexB) in checkUser.kbiItemList" v-if="kbiItem.kbiRatio != 0" class="tac detail_td_style" style="min-width:150px;">
-                          {{kbiItem.kbiName}}/{{kbiItem.kbiRatio}}%
-                        </td>
-                        <td style="min-width:90px;" class="detail_td_style">是否其领导</td>
-                        <td style="min-width:110px;" class="detail_td_style">是否为同一部门</td>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <tr v-for="(kbi,indexB) in checkUser.kbiList">
-                        <td class="tac f14cb">{{kbi.userName}}</td>
-                        <td v-for="(kbiItem,indexB) in checkUser.kbiItemList" v-if="kbiItem.kbiRatio != 0">
-                          <table-solt :List="kbi" :num="kbiItem.kbiId">
-                            <template slot-scope="slotProps">
-                              <div class="tac f14cb">
-                                {{slotProps.itemValue}}
-                              </div>
-                            </template>
-                          </table-solt>
-                        </td>
-                        <td class="tac">
-                          <van-tag type="primary" v-if="kbi.isGuider">是</van-tag>
-                          <van-tag  v-else>否</van-tag>
-                        </td>
-                        <td class="tac">
-                          <van-tag type="primary" v-if="kbi.isSameBranch">是</van-tag>
-                          <van-tag v-else>否</van-tag>
-                        </td>
-                      </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </van-collapse-item>
-              </van-collapse>
-              <van-collapse :value="saListB[indexA].sollapseactive"  @change="grisEventB(indexA)" class="detailcoll">
-                <van-collapse-item name="1">
-                  <template slot="title">
-                    <div class="coll_title">加减分评分表</div>
-                  </template>
-                  <div style="overflow-x: auto;max-height:300px;">
-                    <table class="bs" cellspacing="10px">
-                      <thead>
-                      <tr class="score_title">
-                        <td class="tac detail_td_style" >类型</td>
-                        <td class="tac detail_td_style">加减分项</td>
-                        <td class="tac detail_td_style">计分标准</td>
-                        <td class="tac detail_td_style">分数</td>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <tr v-for="(score,indexB) in checkUser.scoreList" class="scorestyle">
-                        <td class="tac" style="min-width:70px;">
-                          <div v-if="score.extraType == 0"class="f14cb">加分项</div>
-                          <div v-if="score.extraType == 1" class="f14cb">减分项</div>
-                        </td>
-                        <td class="f14cb" style="min-width:250px;">{{score.extraItem}}</td>
-                        <td class="f14cb" style="min-width:150px;">{{score.standard}}</td>
-                        <td class="tac f14cb" style="min-width:90px;">{{score.extraNum}}</td>
-                      </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </van-collapse-item>
-              </van-collapse>
-            </van-collapse-item>
-          </van-collapse>
-        </div>
-      </div>
+      <!---->
+       <!--标题-->
+       <van-row class="data_title">
+         <van-col span="4" class="tar">被考核人</van-col>
+         <van-col span="5" class="tac">效能评价分</van-col>
+         <van-col span="4" class="tac">加减得分</van-col>
+         <van-col span="5" class="tac">效能基准分</van-col>
+         <van-col span="6">最终效能得分</van-col>
+       </van-row>
+       <!--数据-->
+       <div :style="'max-height: ' + (documentClientHeight - 220).toString() + 'px'" class="os">
+         <div v-for="(checkUser,indexA) in checkUserList">
+           <van-collapse :value="saList[indexA].sollapseactive"  @change="grisEvent(indexA)" class="detailcoll">
+             <van-collapse-item name="1">
+               <template slot="title">
+                 <van-row>
+                   <van-col span="5">{{checkUser.checkUserName}}</van-col>
+                   <van-col span="5">{{checkUser.kbiAllScore}}</van-col>
+                   <van-col span="5">{{checkUser.finalExtra}}</van-col>
+                   <van-col span="5">{{checkUser.standardScore}}</van-col>
+                   <van-col span="4">{{getFinalKbiScore(checkUser)}}</van-col>
+                 </van-row>
+               </template>
+               <van-collapse :value="saListA[indexA].sollapseactive"  @change="grisEventA(indexA)" v-if="isAuth('perf:assess:detial')" class="detailcoll">
+                 <van-collapse-item name="1">
+                   <template slot="title">
+                     <div class="coll_title">效能评分表</div>
+                   </template>
+                   <div style="overflow-x: auto; max-height:300px;">
+                     <table class="bs">
+                       <thead>
+                       <tr>
+                         <td class="tac detail_td_style" style="min-width:60px;">评分人</td>
+                         <td v-for="(kbiItem,indexB) in checkUser.kbiItemList" v-if="kbiItem.kbiRatio != 0" class="tac detail_td_style" style="min-width:150px;">
+                           {{kbiItem.kbiName}}/{{kbiItem.kbiRatio}}%
+                         </td>
+                         <td style="min-width:90px;" class="detail_td_style">是否其领导</td>
+                         <td style="min-width:110px;" class="detail_td_style">是否为同一部门</td>
+                       </tr>
+                       </thead>
+                       <tbody>
+                       <tr v-for="(kbi,indexB) in checkUser.kbiList">
+                         <td class="tac f14cb">{{kbi.userName}}</td>
+                         <td v-for="(kbiItem,indexB) in checkUser.kbiItemList" v-if="kbiItem.kbiRatio != 0">
+                           <table-solt :List="kbi" :num="kbiItem.kbiId">
+                             <template slot-scope="slotProps">
+                               <div class="tac f14cb">
+                                 {{slotProps.itemValue}}
+                               </div>
+                             </template>
+                           </table-solt>
+                         </td>
+                         <td class="tac">
+                           <van-tag type="primary" v-if="kbi.isGuider">是</van-tag>
+                           <van-tag  v-else>否</van-tag>
+                         </td>
+                         <td class="tac">
+                           <van-tag type="primary" v-if="kbi.isSameBranch">是</van-tag>
+                           <van-tag v-else>否</van-tag>
+                         </td>
+                       </tr>
+                       </tbody>
+                     </table>
+                   </div>
+                 </van-collapse-item>
+               </van-collapse>
+               <van-collapse :value="saListB[indexA].sollapseactive"  @change="grisEventB(indexA)" v-if="isAuth('perf:assess:detial')" class="detailcoll">
+                 <van-collapse-item name="1">
+                   <template slot="title">
+                     <div class="coll_title">加减分评分表</div>
+                   </template>
+                   <div style="overflow-x: auto;max-height:300px;">
+                     <table class="bs" cellspacing="10px">
+                       <thead>
+                       <tr class="score_title">
+                         <td class="tac detail_td_style" >类型</td>
+                         <td class="tac detail_td_style">加减分项</td>
+                         <td class="tac detail_td_style">计分标准</td>
+                         <td class="tac detail_td_style">分数</td>
+                       </tr>
+                       </thead>
+                       <tbody>
+                       <tr v-for="(score,indexB) in checkUser.scoreList" class="scorestyle">
+                         <td class="tac" style="min-width:70px;">
+                           <div v-if="score.extraType == 0"class="f14cb">加分项</div>
+                           <div v-if="score.extraType == 1" class="f14cb">减分项</div>
+                         </td>
+                         <td class="f14cb" style="min-width:250px;">{{score.extraItem}}</td>
+                         <td class="f14cb" style="min-width:150px;">{{score.standard}}</td>
+                         <td class="tac f14cb" style="min-width:90px;">{{score.extraNum}}</td>
+                       </tr>
+                       </tbody>
+                     </table>
+                   </div>
+                 </van-collapse-item>
+               </van-collapse>
+             </van-collapse-item>
+           </van-collapse>
+         </div>
+       </div>
+
     </div>
 
     <detailUser ref="detailUser"></detailUser>
