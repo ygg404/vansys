@@ -236,6 +236,8 @@
           this.dataForm.projectProduceId = ''
           this.dataForm.produceGroupId = ''
           this.dataForm.projectProduce = ''
+          this.projectProduceName = ''
+          this.produceGroupName = ''
         }
       },
       // 编辑预算产值
