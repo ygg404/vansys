@@ -16,7 +16,7 @@
     <div style="width: 95%;margin: 5px auto 10px;">
       <van-row type="flex" align="center" style="padding-bottom:5px;border-bottom:1px dotted black;">
         <van-col span="6">
-          <button class="qkbtn" @click="showduEvent">参选情况</button>
+          <van-button size="small" type="info" icon="coupon-o" @click="showduEvent">参选情况</van-button>
         </van-col>
         <van-col span="18">
           <div class="f17dt">
@@ -36,24 +36,24 @@
        <!--数据-->
        <div :style="'max-height: ' + (documentClientHeight - 220).toString() + 'px'" class="os">
          <div v-for="(checkUser,indexA) in checkUserList">
-           <van-collapse :value="saList[indexA].sollapseactive"  @change="grisEvent(indexA)" class="detailcoll">
-             <van-collapse-item name="1">
+           <van-collapse :value="saList[indexA].sollapseactive"  @change="grisEvent(indexA)" class="detailcoll"   :key="indexA">
+             <van-collapse-item name="1" :is-link="isAuth('perf:assess:detial')" border >
                <template slot="title">
                  <van-row>
                    <van-col span="5">{{checkUser.checkUserName}}</van-col>
                    <van-col span="5">{{checkUser.kbiAllScore}}</van-col>
                    <van-col span="5">{{checkUser.finalExtra}}</van-col>
                    <van-col span="5">{{checkUser.standardScore}}</van-col>
-                   <van-col span="4">{{getFinalKbiScore(checkUser)}}</van-col>
+                   <van-col span="4" >{{getFinalKbiScore(checkUser)}}</van-col>
                  </van-row>
                </template>
-               <van-collapse :value="saListA[indexA].sollapseactive"  @change="grisEventA(indexA)" v-if="isAuth('perf:assess:detial')" class="detailcoll">
+               <van-collapse :value="saListA[indexA].sollapseactive"  @change="grisEventA(indexA)" class="detailcoll" v-if="isAuth('perf:assess:detial')">
                  <van-collapse-item name="1">
                    <template slot="title">
                      <div class="coll_title">效能评分表</div>
                    </template>
                    <div style="overflow-x: auto; max-height:300px;">
-                     <table class="bs">
+                     <table class="bs" border="1">
                        <thead>
                        <tr>
                          <td class="tac detail_td_style" style="min-width:60px;">评分人</td>
@@ -90,13 +90,13 @@
                    </div>
                  </van-collapse-item>
                </van-collapse>
-               <van-collapse :value="saListB[indexA].sollapseactive"  @change="grisEventB(indexA)" v-if="isAuth('perf:assess:detial')" class="detailcoll">
+               <van-collapse :value="saListB[indexA].sollapseactive"  @change="grisEventB(indexA)" class="detailcoll" v-if="isAuth('perf:assess:detial')">
                  <van-collapse-item name="1">
                    <template slot="title">
                      <div class="coll_title">加减分评分表</div>
                    </template>
-                   <div style="overflow-x: auto;max-height:300px;">
-                     <table class="bs" cellspacing="10px">
+                   <div style="overflow-x: auto;max-height:300px;" >
+                     <table class="bs" cellspacing="10px" border="1" cellpadding="0">
                        <thead>
                        <tr class="score_title">
                          <td class="tac detail_td_style" >类型</td>
@@ -106,10 +106,10 @@
                        </tr>
                        </thead>
                        <tbody>
-                       <tr v-for="(score,indexB) in checkUser.scoreList" class="scorestyle">
-                         <td class="tac" style="min-width:70px;">
-                           <div v-if="score.extraType == 0"class="f14cb">加分项</div>
-                           <div v-if="score.extraType == 1" class="f14cb">减分项</div>
+                       <tr v-for="(score,indexB) in checkUser.scoreList" class="scorestyle" >
+                         <td class="tac" style="min-width:70px;" v-if="score.isFirst" :rowspan="score.isFirst?score.size:1" colspan="1">
+                           <div v-if="score.extraType == 0 && score.isFirst" class="f14cb">加分项</div>
+                           <div v-if="score.extraType == 1 && score.isFirst" class="f14cb">减分项</div>
                          </td>
                          <td class="f14cb" style="min-width:250px;">{{score.extraItem}}</td>
                          <td class="f14cb" style="min-width:150px;">{{score.standard}}</td>
