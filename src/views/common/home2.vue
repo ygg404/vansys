@@ -31,7 +31,11 @@
           <td>姓名：</td><td><span>{{userDetail.username}}</span></td>
         </tr>
         <tr>
-          <td>性别：</td><td><span>{{userDetail.sex  == 1? '男': '女'}}</span></td>
+          <td>性别：</td>
+          <td>
+            <span v-if="userDetail.sex  == 1">男</span>
+            <span v-if="userDetail.sex  == 2">女</span>
+          </td>
         </tr>
         <tr>
           <td>工作类型：</td>

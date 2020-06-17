@@ -14,9 +14,9 @@ export function getMaritalItem () {
  * 获取职称等级选项
  */
 export function getJobItem () {
-  return [{'id': 1, 'dateItem': '全职'},
-            {'id': 2, 'dateItem': '兼职'},
-            {'id': 3, 'dateItem': '实习'}]
+  return [{'id': 1, 'jobItem': '全职'},
+            {'id': 2, 'jobItem': '兼职'},
+            {'id': 3, 'jobItem': '实习'}]
 }
 
 /**
