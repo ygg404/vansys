@@ -154,7 +154,7 @@
         this.dataListLoading = true
         this.getPerfAccessVoList().then(accessList => {
           this.kbiRoleList = this.kbiRoleInit(accessList)
-          this.initItem()
+          // this.initItem()
           this.dataListLoading = false
         })
       },
@@ -299,8 +299,10 @@
                 kbiRatio: item.kbiRatio
               }
               if (prop.indexOf('kbiScore') !== -1) {
-                if (stringIsNull(item[prop]) && item.kbiRatio !== 0) {
-                  this.$message.error('有填写项为空！')
+                if ((stringIsNull(item[prop]) && item.kbiRatio !== 0) || (item[prop] === 'null' && item.kbiRatio !== 0)) {
+                  this.$notify({
+                    message: '有填写项为空！'
+                  })
                   return
                 } else {
                   // 该考核项考核人对被考核人的评分
