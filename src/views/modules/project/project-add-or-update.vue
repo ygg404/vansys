@@ -126,7 +126,7 @@
       },
       // 生产负责人选择
       onProduceConfirm (item) {
-        this.dataForm.projectProduceId = item.id
+        this.dataForm.projectProduceId = item.userId
         this.projectProduceName = item.username
         this.dataForm.projectProduceAccount = item.useraccount
         this.producePickerShow = false
@@ -166,6 +166,18 @@
         }
         this.groupPickerShow = false
       },
+      initName () {
+        for (let itemA of this.groupList) {
+          if (itemA.id === this.dataForm.produceGroupId) {
+            this.produceGroupName = itemA.name
+          }
+        }
+        for (let itemB of this.produceList) {
+          if (itemB.userId === this.dataForm.projectProduceId) {
+            this.projectProduceName = itemB.username
+          }
+        }
+      },
       init (id, item) {
         this.getProduceList()
         this.getWorkgroupList().then(list => {
@@ -202,6 +214,7 @@
                 this.workTypelist = list
                 this.getPlanByProjectNo()
               })
+              this.initName()
             }
           })
         } else {
@@ -237,7 +250,7 @@
         this.$refs.dataForm.validateAll().then(
           success => {
               // 项目负责人
-              // this.dataForm.projectProduce = this.produceList.find(produce => produce.userId === this.dataForm.projectProduceId)['username']
+            this.dataForm.projectProduce = this.produceList.find(produce => produce.userId === this.dataForm.projectProduceId)['username']
             console.log('项目负责人ID' + this.dataForm.projectProduceId, '项目负责人' + this.dataForm.projectProduce)
             this.$http({
               url: this.$http.adornUrl(`/project/project/${!this.dataForm.id ? 'save' : 'update'}`),
