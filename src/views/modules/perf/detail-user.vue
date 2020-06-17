@@ -1,27 +1,24 @@
 <template>
-  <van-dialog width="80%" :showConfirmButton="noshowBtn" :showCancelButton="noshowBtn" :closeOnClickOverlay="overlayclick" @cancel="visible = false" v-model="visible">
+  <van-dialog width="80%" v-model="visible" confirm-button-text="返回">
     <template slot="title">
       <div class="span_header">参评人数:<span>{{person}}</span></div>
     </template>
-    <div style="width:95%;margin-top:0px;margin-bottom:20px;margin:auto;">
-      <van-row style="margin-bottom:10px;">
-        <van-col span="12" class="span_header tac">用户名</van-col>
-        <van-col span="12" class="span_header tac">是否提交</van-col>
-      </van-row>
-      <van-list v-model="userListShow" :finished="userListShow" style="border-top:1px solid black;padding-top:5px;">
-        <van-row :key="item.userName + index" v-for="(item,index) in uRoleList" style="margin-bottom:4px;">
-          <van-col span="12">
-            <div class="tac">
-              {{item.userName}}
-            </div>
-          </van-col>
-          <van-col span="12" class="tac">
+    <table border="1" width="100%" style="text-align: center;margin-top:5px;">
+      <thead>
+        <tr>
+          <th>用户名</th><th>是否提交</th>
+        </tr>
+      </thead>
+        <tbody style="overflow-y:auto;max-height:300px;">
+        <tr :key="item.userName + index" v-for="(item,index) in uRoleList">
+          <td>{{item.userName}}</td>
+          <td>
             <van-tag v-if="item.isAssess" type="primary">已提交</van-tag>
             <van-tag v-else>未提交</van-tag>
-          </van-col>
-        </van-row>
-      </van-list>
-    </div>
+          </td>
+        </tr>
+        </tbody>
+    </table>
   </van-dialog>
 </template>
 
@@ -29,16 +26,20 @@
   export default {
     data () {
       return {
-        noshowBtn:false,
-        overlayclick:true,
         visible: false,
-        userListShow:false,
         uRoleList: [],
         dataForm: {
           curYear: '',
           updown: 0
         },
         person: 0
+      }
+    },
+    computed: {
+      documentClientHeight: {
+        get () {
+          return this.$store.state.common.documentClientHeight
+        }
       }
     },
     methods: {
@@ -98,6 +99,20 @@
   }
   .tac{
     text-align:center;
+  }
+
+  table tbody {
+    display:block;
+    overflow-y:scroll;
+    overflow-x:hidden;
+  }
+  ::-webkit-scrollbar {
+    width: 1px;
+  }
+  table thead,tbody tr,tfoot tr,thead tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
   }
 
 </style>

@@ -1,6 +1,5 @@
 <template>
   <div >
-
     <el-form :inline="true" :model="dataForm" style="display:flex;justify-content: space-between;">
       <div class="w95">
         <el-form-item>
@@ -36,10 +35,10 @@
        <!--数据-->
        <div :style="'max-height: ' + (documentClientHeight - 220).toString() + 'px'" class="os">
          <div v-for="(checkUser,indexA) in checkUserList">
-           <van-collapse :value="saList[indexA].sollapseactive"  @change="grisEvent(indexA)" class="detailcoll"   :key="indexA">
-             <van-collapse-item name="1" :is-link="isAuth('perf:assess:detial')" border >
+           <van-collapse v-model="activeName"  class="detailcoll"   :key="indexA">
+             <van-collapse-item :name="checkUser.checkUserId" :is-link="isAuth('perf:assess:detial')" border >
                <template slot="title">
-                 <van-row>
+                 <van-row style="color: #3b97d7">
                    <van-col span="5">{{checkUser.checkUserName}}</van-col>
                    <van-col span="5">{{checkUser.kbiAllScore}}</van-col>
                    <van-col span="5">{{checkUser.finalExtra}}</van-col>
@@ -47,7 +46,7 @@
                    <van-col span="4" >{{getFinalKbiScore(checkUser)}}</van-col>
                  </van-row>
                </template>
-               <van-collapse :value="saListA[indexA].sollapseactive"  @change="grisEventA(indexA)" class="detailcoll" v-if="isAuth('perf:assess:detial')">
+               <van-collapse v-model="activeKbi" class="detailcoll" v-if="isAuth('perf:assess:detial')">
                  <van-collapse-item name="1">
                    <template slot="title">
                      <div class="coll_title">效能评分表</div>
@@ -90,7 +89,7 @@
                    </div>
                  </van-collapse-item>
                </van-collapse>
-               <van-collapse :value="saListB[indexA].sollapseactive"  @change="grisEventB(indexA)" class="detailcoll" v-if="isAuth('perf:assess:detial')">
+               <van-collapse v-model="activePlus" class="detailcoll" v-if="isAuth('perf:assess:detial')">
                  <van-collapse-item name="1">
                    <template slot="title">
                      <div class="coll_title">加减分评分表</div>
@@ -140,9 +139,9 @@
   export default {
     data () {
       return {
-        saList: [],
-        saListA: [],
-        saListB: [],
+        activePlus: [],
+        activeKbi: [],
+        activeName: [],
         dataForm: {
           curYear: new Date(2020, 1, 1),   // 当前年份
           updown: 0 // 上下半年
@@ -173,89 +172,36 @@
       tableSolt
     },
     methods: {
-      grisEvent (val) {
-        if (this.saList[val].sollapseactive.length === 1) {
-          this.saList[val].sollapseactive = []
-        } else {
-          this.saList[val].sollapseactive = ['1']
-        }
-      },
-      grisEventA (val) {
-        if (this.saListA[val].sollapseactive.length === 1) {
-          this.saListA[val].sollapseactive = []
-        } else {
-          this.saListA[val].sollapseactive = ['1']
-        }
-      },
-      grisEventB (val) {
-        if (this.saListB[val].sollapseactive.length === 1) {
-          this.saListB[val].sollapseactive = []
-        } else {
-          this.saListB[val].sollapseactive = ['1']
-        }
-      },
-      objectSpanMethod ({ row, column, rowIndex, columnIndex }) {
-        if (columnIndex === 0) {
-          if (row.isFirst || rowIndex === 0) {
-            return {
-              rowspan: row.size,
-              colspan: 1
-            }
-          } else {
-            return {
-              rowspan: 0,
-              colspan: 0
-            }
-          }
-        }
-      },
       init () {
         // 获取部门列表
         this.getBranchList().then(branchList => {
-          this.branchList = branchList
-          this.getAccessList().then(list => {
-            this.getExtralist().then(extraList => {
-              this.getExtraScorelist().then(scoreList => {
-                let checkUserList = this.acceessListInit(list)
-                checkUserList.forEach(item => {
-                  this.saList.push({sollapseactive: []})
-                  this.saListA.push({sollapseactive: []})
-                  this.saListB.push({sollapseactive: []})
-                })
-                console.log(this.saList)
-                for (let checkUser of checkUserList) {
-                  checkUser.scoreList = this.extraScoreInit(checkUser, extraList, scoreList)
-                  // 计算每个人的总加减分
-                  let allScore = 0
-                  for (let score of checkUser.scoreList) {
-                    allScore += score.extraNum
+          this.getUaccessList().then(uRoleList => {
+            this.branchList = branchList
+            this.getAccessList().then(list => {
+              this.getExtralist().then(extraList => {
+                this.getExtraScorelist().then(scoreList => {
+                  let checkUserList = this.acceessListInit(list)
+                  for (let checkUser of checkUserList) {
+                    // 设置每个人的效能基准分
+                    checkUser.standardScore = uRoleList.find( item => item.userId === checkUser.checkUserId).standardScore
+                    checkUser.scoreList = this.extraScoreInit(checkUser, extraList, scoreList)
+                    // 计算每个人的总加减分
+                    let allScore = 0
+                    for (let score of checkUser.scoreList) {
+                      allScore += score.extraNum
+                    }
+                    checkUser.allScore = allScore
                   }
-                  checkUser.allScore = allScore
-                }
-
-                // 设置每成员的部门 并获取部门的最高分
-                checkUserList = this.setBranchScoreFun(checkUserList, branchList)
-                this.checkUserList = this.setKbiScore(checkUserList)
-                this.checkUserList.forEach(item => {
-                  this.saList.push({sollapseactive: []})
+                  // 设置每成员的部门 并获取部门的最高分
+                  checkUserList = this.setBranchScoreFun(checkUserList,branchList)
+                  this.checkUserList = this.setKbiScore(checkUserList)
+                  console.log(checkUserList)
                 })
-                // kbiList
-
-                console.log(checkUserList)
               })
             })
           })
         })
-        // this.$nextTick(() => {
-        //   this.$refs.detailUser.init(this.dataForm)
-        // })
-      },
-      renderheader (h, { column, $index }) {
-        return h('span', {}, [
-          h('span', {}, column.label.split('/')[0]),
-          h('br'),
-          h('span', {}, column.label.split('/')[1])
-        ])
+        this.$refs.detailUser.init(this.dataForm)
       },
       // 展示参选人数情况
       showduEvent () {
@@ -285,6 +231,26 @@
         return new Promise((resolve, reject) => {
           this.$http({
             url: this.$http.adornUrl(`/perf/access/list`),
+            method: 'get',
+            params: this.$http.adornParams({
+              year: this.dataForm.curYear.getFullYear(),
+              updown: this.dataForm.updown
+            })
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              resolve(data.list)
+            } else {
+              this.$message.error(data.msg)
+              reject(data.msg)
+            }
+          })
+        })
+      },
+      // 获取已经评分的用户列表
+      getUaccessList () {
+        return new Promise((resolve, reject) => {
+          this.$http({
+            url: this.$http.adornUrl(`/perf/access/uAssessList`),
             method: 'get',
             params: this.$http.adornParams({
               year: this.dataForm.curYear.getFullYear(),
@@ -335,8 +301,8 @@
             let kbiItem = {
               userId: access.userId,
               userName: access.userName,
-              isGuider: this.isGuiderHandle(access.userId, access.checkUserId),
-              isSameBranch: this.isSameBranch(access.userId, access.checkUserId)
+              isGuider: this.isGuiderHandle(access.userId,access.checkUserId),
+              isSameBranch: this.isSameBranch(access.userId,access.checkUserId)
             }
             userId = access.userId
             checkUserList[checkUserList.length - 1].kbiList.push(kbiItem)
@@ -347,7 +313,7 @@
         return checkUserList
       },
       // 是否为部门领导
-      isGuiderHandle (userId, checkUserId) {
+      isGuiderHandle (userId,checkUserId) {
         let isGuider = false
         // 被考核人所在的所有部门
         let inBranchList = []
@@ -370,16 +336,16 @@
         return isGuider
       },
       // 获取部门的父部门
-      getParentBranchList (parentList = [], branchId) {
-        this.branchList.map(branch => {
+      getParentBranchList (parentList = [] , branchId) {
+        this.branchList.map( branch => {
           if (branch.id === branchId && branch.parentId !== 0) {
             parentList.push(branch.parentId)
-            this.getParentBranchList(parentList, branch.parentId)
+            this.getParentBranchList(parentList,branch.parentId)
           }
         })
       },
       // 判断 考核人与被考核人 是否为同一个部门
-      isSameBranch (userId, checkUserId) {
+      isSameBranch (userId,checkUserId) {
         let isSame = false
         let userBranchId = []     // 考核人的部门
         let checkBranchId = []    // 被考核人的部门
@@ -434,7 +400,7 @@
         })
       },
       // 评分列表初始化
-      extraScoreInit (checkUser, extraList, scoreList) {
+      extraScoreInit (checkUser,extraList,scoreList) {
         let uScoreList = []
         for (let scoreItem of scoreList) {
           if (scoreItem.checkUserId === checkUser.checkUserId) {
@@ -491,7 +457,7 @@
         }
         // 统计每个部门的最高分
         let branchMaxScoreList = []
-        for (let checkUser of checkUserList) {
+        for (let checkUser of checkUserList ) {
           let branch = branchMaxScoreList.find(branch => branch.brandId === checkUser.branchId)
           let branchScore = {
             branchId: checkUser.branchId,
@@ -504,9 +470,9 @@
           }
         }
         // 计算加减分最终的结果
-        for (let checkUser of checkUserList) {
+        for (let checkUser of checkUserList ) {
           let branch = branchMaxScoreList.find(branch => branch.branchId === checkUser.branchId)
-          if (branch === undefined) {
+          if ( branch === undefined ) {
             checkUser.maxScore = 0
           } else {
             checkUser.maxScore = branch.maxScore
@@ -524,7 +490,7 @@
             let score = 0
             for (var prop in scoreItem) {
               if (prop.indexOf('kbiId') >= 0) {
-                let propItem = checkUser.kbiItemList.find(kbi => kbi.kbiId === parseInt(prop.replace('kbiId', '')))
+                let propItem = checkUser.kbiItemList.find(kbi => kbi.kbiId === parseInt(prop.replace('kbiId','')))
                 if (propItem !== undefined && (!stringIsNull(scoreItem[prop]))) {
                   score += parseFloat(propItem.kbiRatio * scoreItem[prop] / 100)
                 }
@@ -553,8 +519,8 @@
               kbiScore4Num += 1
             }
           }
-          checkUser.kbiAllScore = parseFloat(kbiScore02 / (kbiScore2Num === 0 ? 1 : kbiScore2Num) +
-          kbiScore04 / (kbiScore4Num === 0 ? 1 : kbiScore4Num)).toFixed(2)
+          checkUser.kbiAllScore = parseFloat(kbiScore02 / (kbiScore2Num === 0 ? 1 : kbiScore2Num)
+            + kbiScore04 / (kbiScore4Num === 0 ? 1 : kbiScore4Num)).toFixed(2)
         }
         return checkUserList
       },
@@ -571,7 +537,6 @@
         return childList
       },
       getFinalKbiScore (item) {
-        console.log(item)
         if (stringIsNull(item.standardScore)) {
           return ''
         } else {
