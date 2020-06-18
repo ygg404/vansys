@@ -9,7 +9,7 @@
             <button class="execbtn" style="width:90%;" @click="visibletrue()">{{title}}</button>
           </div>
           <div style="margin-right:5px;">
-            <van-icon name="arrow-down" />
+            <van-icon name="arrow-down" @click="visibletrue()"/>
           </div>
         </div>
            </van-col>
@@ -21,37 +21,37 @@
 
 <script>
 export default {
-  props: ["title"],
-  data: function() {
+  props: ['title'],
+  data: function () {
     return {
-      
-    };
+
+    }
   },
   watch: {
 
   },
   methods: {
-    visibletrue() {
-      this.$emit("vtrue");
+    visibletrue () {
+      this.$emit('vtrue')
     }
   },
-  mounted() {}
-};
+  mounted () {}
+}
 </script>
 
 <style scoped>
 
 .execbtn {
-  font-size: 13px;
+  font-size: 14px;
   background: #fff;
   color: #777777;
-  line-height: 20px;
+  line-height: 35px;
   flex: 1;
   border: 0;
-  height: 20px;
+  height: 30px;
 }
 .uls{
-border-bottom:1px solid rgb(0,0,0); height:20px;width:100%; display:flex; align-items:flex-end;justify-content:space-between;
+border-bottom:1px solid rgb(0,0,0); height:30px;width:100%; display:flex; align-items:flex-end;justify-content:space-between;
 }
 .mtmb5{
 margin-top:5px;margin-bottom:5px;
