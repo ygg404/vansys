@@ -1,6 +1,6 @@
 <template>
   <div class="role_mod" id="rolePanel">
-      <div class="role_left" :style=" 'max-height:' + (documentClientHeight -100) + 'px' ">
+      <div class="role_left" :style=" 'max-height:' + (documentClientHeight -200) + 'px' ">
         <el-card >
           <div slot="header"><h2>未分组</h2></div>
           <div>
@@ -18,7 +18,7 @@
           </div>
         </el-card>
       </div>
-      <div class="role_right" style="width:49%;" :style=" 'max-height:' + (documentClientHeight -100) + 'px' ">
+      <div class="role_right" style="width:48%;" :style=" 'max-height:' + (documentClientHeight -140) + 'px' ">
         <div v-for="(item, index) in roleList" style="width: 200px;display:inline-block;" v-if="item.roleId != 0">
           <el-card>
             <div slot="header"><h1>{{item.roleName}}</h1></div>
@@ -217,7 +217,7 @@
     user-select: none;
   }
   .role_left{
-    width: 50%;
+    width: 47%;
     float: left;
     word-wrap: break-word;
     overflow-y: auto;

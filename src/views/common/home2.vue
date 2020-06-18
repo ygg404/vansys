@@ -86,14 +86,17 @@
           <td>学制:</td><td><span>{{userDetail.edType}}</span></td>
         </tr>
         <tr><th colspan="4">教育背景</th></tr>
-        <tr v-if="edBackgroundList.length === 0"><td colspan="4">暂无信息</td></tr>
         <tr>
           <td>起止时间</td><td>毕业学校</td><td>学历</td><td>专业</td>
         </tr>
+        <tr v-if="edBackgroundList.length === 0"><td colspan="4">暂无信息</td></tr>
         <tr v-for="(v,i) in edBackgroundList" :key="i">
           <td><span>{{v.startDate}}至{{v.endDate}}</span></td><td><span>{{v.educationSchool}}</span></td><td><span>{{v.educationBackground}}</span></td><td><span>{{v.major}}</span></td>
         </tr>
         <tr><th colspan="4">工作经历</th></tr>
+        <tr>
+          <td>起止时间</td><td>企业</td><td>职位</td><td>工作描述</td>
+        </tr>
         <tr v-if="workBackgroundList.length === 0"><td colspan="4">暂无信息</td></tr>
         <tr v-for="(v,i) in workBackgroundList" :key="i">
           <td><span>{{v.startDate}}至{{v.endDate}}</span></td><td><span>{{v.company}}</span></td><td><span>{{v.jobPosition}}</span></td><td><span>{{v.jobDescription}}</span></td>

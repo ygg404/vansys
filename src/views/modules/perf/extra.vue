@@ -25,7 +25,7 @@
             </template>
           </el-table-column>
           <el-table-column label="最终加减分" prop="finalScore" min-width="100px;" align="center"></el-table-column>
-          <el-table-column label="加减分编辑" min-width="100px;" align="center">
+          <el-table-column label="加减分编辑" min-width="100px;" fixed="right">
             <template slot-scope="scope">
               <el-button type="primary" size="small" @click="editExtraHandle(scope.row)">编辑</el-button>
             </template>
@@ -33,7 +33,7 @@
         </el-table>
       </div>
     </div>
-    <van-dialog v-model="infoShow" :showConfirmButton="noShowConfirmBtn" :closeOnClickOverlay="infoShow">
+    <van-dialog v-model="infoShow" :closeOnClickOverlay="infoShow" confirm-button-text="返回">
       <template slot="title">
         <div style="margin-bottom:10px;text-align:center;font-size:16px;font-weight:600;">个人加减分明细
           <span v-if="extraScoreItem.userName !== undefined" style="padding: 10px;font-size: 12pt;color: #3b97d7">
@@ -70,7 +70,6 @@
     data () {
       return {
         infoShow:false,
-        noShowConfirmBtn:false,
         dataForm: {
           key: '',
           curYear: new Date(2020 , 1 ,1),   // 当前年份
@@ -192,7 +191,7 @@
         for (let branch of branchChildList) {
           branch.recordVoList.map(record => {
             let userItem = userList.find(user => user.userId === record.userId)
-            if (!stringIsNull(userItem)) {
+            if (!stringIsNull(userItem) && userBranchList.find(user => user.userId === userItem.userId) === undefined) {
               let uscoreList = []
               let extraScore = 0
               for (let score of scoreList) {
