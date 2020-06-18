@@ -1,261 +1,125 @@
 <template>
-  <div class="mod-config">
-    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="用户名" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
-      </el-form-item>
-    </el-form>
-    <el-table :data="dataList" border v-loading="dataListLoading" @expand-change="recordLoadHandle" style="width: 100%;"  >
-      <el-table-column type="expand">
-        <template slot-scope="scope">
-          <el-card v-loading="infoloading" element-loading-text="正在加载个人资料...">
-            <div slot="header" class="clearfix">
-              <span class="card_head">详细资料</span>
+  <div>
+    <div style="width:90%;margin: 0 auto; margin-top:10px;margin-bottom:5px;">
+      <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+        <el-form-item style="margin-right:10px;">
+          <el-input v-model="dataForm.key" placeholder="用户名" clearable></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="getDataList()">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="yg_info">员工信息</div>
+    <div :style="'max-height: ' + (documentClientHeight - 180).toString() + 'px'" style="overflow: scroll;">
+      <div v-for="(item,indexA) in dataList">
+        <van-collapse v-model="activeNames">
+          <van-collapse-item :name="item.userId">
+            <template slot="title">
+              <van-row>
+                <van-col span="24">
+                  <van-row type="flex" align="center" justify="center">
+                    <van-col span="10" style="text-align: center;">
+                      <van-image width="100" height="100" :src="item.headImg" />
+                      <van-button size="mini" type="info" @click="addOrUpdateHandle(item.userId)">编辑资料</van-button>
+                    </van-col>
+                    <van-col span="14">
+                      <van-row><van-col span="24" class="title_info_font">用户id:{{item.userId}}</van-col></van-row>
+                      <van-row><van-col span="24" class="title_info_font">账号:{{item.useraccount}}</van-col></van-row>
+                      <van-row><van-col span="24" class="title_info_font">姓名:{{item.username}}</van-col></van-row>
+                      <van-row><van-col span="24" class="title_info_font">邮箱:{{item.email}}</van-col></van-row>
+                      <van-row><van-col span="24" class="title_info_font">手机号:{{item.mobile}}</van-col></van-row>
+                    </van-col>
+                  </van-row>
+                </van-col>
+              </van-row>
+            </template>
+            <div style="padding:0px 16px 0px 16px;">
+              <div style="color:#4c4e51;padding-bottom:2px;margin-bottom:2px;font-size:16px;border-bottom:1px solid dodgerblue;">
+                详细资料
+              </div>
+              <van-row class="card_name_title">
+                <van-col span="6">身份证号:</van-col>
+                <van-col span="18"><span class="span_style">{{item.idNo}}</span></van-col>
+              </van-row>
+              <van-row class="card_name_title">
+                <van-col span="6"> 性别:</van-col>
+                <van-col span="18">
+                  <van-tag v-if="item.sex === 1" type="primary">男</van-tag>
+                  <van-tag v-else-if="item.sex === 2" type="warning">女</van-tag>
+                </van-col>
+              </van-row>
+              <van-row class="card_name_title">
+                <van-col span="6">出生日期:</van-col>
+                <van-col span="18"><span class="span_style">{{item.birthday}}</span></van-col>
+              </van-row>
+              <van-row class="card_name_title">
+                <van-col span="6">籍贯:</van-col>
+                <van-col span="18"><span class="span_style">{{getPlaceName(item.nativeProvince,item.nativeCity)}}</span></van-col>
+              </van-row>
+              <van-row class="card_name_title">
+                <van-col span="6">婚姻情况:</van-col>
+                <van-col span="18">
+                  <van-tag v-if="item.maritalStatus === 0" type="success">未婚</van-tag>
+                  <van-tag v-else-if="item.maritalStatus === 1" type="primary">已婚</van-tag>
+                  <van-tag v-else-if="item.maritalStatus === 2" type="warning">离异</van-tag>
+                  <van-tag v-else-if="item.maritalStatus === 3" type="danger">丧偶</van-tag>
+                </van-col>
+              </van-row>
+              <van-row class="card_name_title">
+                <van-col span="6">最高学历:</van-col>
+                <van-col span="18"><span class="span_style">{{item.edName}}/{{item.edTypeName}}</span></van-col>
+              </van-row>
+              <van-row class="card_name_title">
+                <van-col span="6">入职时间:</van-col>
+                <van-col span="18"><span class="span_style">{{item.entryTime }}</span></van-col>
+              </van-row>
+              <van-row class="card_name_title">
+                <van-col span="6">试用期:</van-col>
+                <van-col span="18"><span class="span_style">{{item.trialPeriod}} 个月</span></van-col>
+              </van-row>
+              <van-row class="card_name_title">
+                <van-col span="6">职务:</van-col>
+                <van-col span="18"><span class="span_style">{{item.dutyName}}</span></van-col>
+              </van-row>
+              <van-row class="card_name_title">
+                <van-col span="6">工作类型:</van-col>
+                <van-col span="18">
+                  <van-tag v-if="item.jobType === 1" type="primary">全职</van-tag>
+                  <van-tag v-else-if="item.jobType === 2" type="success">兼职</van-tag>
+                  <van-tag v-else-if="item.jobType === 2" type="info">实习</van-tag>
+                </van-col>
+              </van-row>
+              <van-row class="card_name_title">
+                <van-col span="6">职称等级:</van-col>
+                <van-col span="18"><span class="span_style">{{item.titleName}}</span></van-col>
+              </van-row>
+              <!--<div>查看更多>></div>-->
+              <van-row type="flex" align="center" justify="center">
+                <van-col span="8">查看更多>></van-col>
+                <van-col span="8" class="tac"><van-button type="info" size="small" @click="ebClickEvent(item)">教育背景</van-button></van-col>
+                <van-col span="8" class="tac"><van-button type="info" size="small" @click="jeClickEvent(item)">工作经历</van-button></van-col>
+              </van-row>
             </div>
-            <div>
-              <el-row>
-                <el-col :span="18" style="margin-top:20px;">
-                  <el-row class="card_elrow_margin">
-                    <el-col :span="12">
-                      <el-row>
-                        <el-col :span="8">
-                          <span class="card_detail_span" >姓名：</span>
-                        </el-col>
-                        <el-col :span="16">
-                          <span class="card_detail_content">{{scope.row.username}}</span>
-                        </el-col>
-                      </el-row>
-                    </el-col>
-                    <el-col :span="12">
-                      <el-row>
-                        <el-col :span="8">
-                          <span class="card_detail_span">出生日期：</span>
-                        </el-col>
-                        <el-col :span="16">
-                          <span class="card_detail_content">{{scope.row.birthday}}</span>
-                        </el-col>
-                      </el-row>
-                    </el-col>
-                  </el-row>
+          </van-collapse-item>
+        </van-collapse>
+      </div>
+    </div>
+    <!--分页控件-->
+    <van-pagination v-model="pageIndex" items-per-page = "25" :total-items="totalPage" mode="simple" @change="getDataList()" />
 
-                  <el-row class="card_elrow_margin">
-                    <el-col :span="12">
-                      <el-row>
-                        <el-col :span="8">
-                          <span class="card_detail_span">性别：</span>
-                        </el-col>
-                        <el-col :span="16">
-                          <el-tag v-if="scope.row.sex === 1" type="primary">男</el-tag>
-                          <el-tag v-else-if="scope.row.sex === 2" type="warning">女</el-tag>
-                        </el-col>
-                      </el-row>
-                    </el-col>
-                    <el-col :span="12">
-                      <el-row>
-                        <el-col :span="8">
-                          <span class="card_detail_span" >身份证号：</span>
-                        </el-col>
-                        <el-col :span="16">
-                          <span class="card_detail_content">{{scope.row.idNo}}</span>
-                        </el-col>
-                      </el-row>
-                    </el-col>
-                  </el-row>
-
-                  <el-row class="card_elrow_margin">
-                    <el-col :span="12">
-                      <el-row>
-                        <el-col :span="8">
-                          <span class="card_detail_span">籍贯：</span>
-                        </el-col>
-                        <el-col :span="16">
-                          <span
-                            class="card_detail_content"
-                          >{{getPlaceName(scope.row.nativeProvince,scope.row.nativeCity)}}</span>
-                        </el-col>
-                      </el-row>
-                    </el-col>
-
-                    <el-col :span="12">
-                      <el-row>
-                        <el-col :span="8">
-                          <span class="card_detail_span">婚姻状况：</span>
-                        </el-col>
-                        <el-col :span="16">
-                          <span class="card_detail_content">
-                            <el-tag v-if="scope.row.maritalStatus === 0" type="success">未婚</el-tag>
-                            <el-tag v-else-if="scope.row.maritalStatus === 1" type="primary">已婚</el-tag>
-                            <el-tag v-else-if="scope.row.maritalStatus === 2" type="warning">离异</el-tag>
-                            <el-tag v-else-if="scope.row.maritalStatus === 3" type="danger">丧偶</el-tag>
-                          </span>
-                        </el-col>
-                      </el-row>
-                    </el-col>
-                  </el-row>
-
-                  <el-row class="card_elrow_margin">
-                    <el-col :span="12">
-                      <el-row>
-                        <el-col :span="8">
-                          <span class="card_detail_span">最高学历：</span>
-                        </el-col>
-                        <el-col :span="12">
-                          <span class="card_detail_content">
-                            {{scope.row.edName}}/{{scope.row.edTypeName}}
-                          </span>
-                        </el-col>
-                      </el-row>
-                    </el-col>
-
-                    <el-col :span="12">
-                      <el-row>
-                        <el-col :span="8">
-                          <span class="card_detail_span">职称等级：</span>
-                        </el-col>
-                        <el-col :span="16">
-                          <span class="card_detail_content">
-                            {{scope.row.titleName}}
-                          </span>
-                        </el-col>
-                      </el-row>
-                    </el-col>
-                  </el-row>
-
-                  <el-row class="card_elrow_margin">
-                    <el-col :span="12">
-                      <el-row>
-                        <el-col :span="8">
-                          <span class="card_detail_span">入职时间：</span>
-                        </el-col>
-                        <el-col :span="16">
-                          <span class="card_detail_content">{{scope.row.entryTime }}</span>
-                        </el-col>
-                      </el-row>
-                    </el-col>
-                    <el-col :span="12">
-                      <el-row>
-                        <el-col :span="8">
-                          <span class="card_detail_span">试用期：</span>
-                        </el-col>
-                        <el-col :span="16">
-                          <span class="card_detail_content">{{scope.row.trialPeriod}} 个月</span>
-                        </el-col>
-                      </el-row>
-                    </el-col>
-                  </el-row>
-
-                  <el-row class="card_elrow_margin">
-                    <el-col :span="12">
-                      <el-row>
-                        <el-col :span="8">
-                          <span class="card_detail_span">邮箱：</span>
-                        </el-col>
-                        <el-col :span="16">
-                          <span class="card_detail_content">{{scope.row.email}}</span>
-                        </el-col>
-                      </el-row>
-                    </el-col>
-                    <el-col :span="12">
-                      <el-row>
-                        <el-col :span="8">
-                          <span class="card_detail_span">手机号：</span>
-                        </el-col>
-                        <el-col :span="16">
-                          <span class="card_detail_content">{{scope.row.mobile}}</span>
-                        </el-col>
-                      </el-row>
-                    </el-col>
-                  </el-row>
-                  <el-row class="card_elrow_margin">
-                    <el-col :span="12">
-                      <el-row>
-                        <el-col :span="8">
-                          <span class="card_detail_span">工作类型：</span>
-                        </el-col>
-                        <el-col :span="16">
-                          <el-tag v-if="scope.row.jobType === 1" type="primary">全职</el-tag>
-                          <el-tag v-else-if="scope.row.jobType === 2" type="success">兼职</el-tag>
-                          <el-tag v-else-if="scope.row.jobType === 2" type="info">实习</el-tag>
-                        </el-col>
-                      </el-row>
-                    </el-col>
-                    <el-col :span="12">
-                      <el-col :span="8">
-                        <span class="card_detail_span">职务：</span>
-                      </el-col>
-                      <el-col :span="16">
-                        <span>{{scope.row.dutyName}}</span>
-                      </el-col>
-                    </el-col>
-                  </el-row>
-                </el-col>
-
-                <el-col :span="6">
-                  <img :src="scope.row.headImg" class="card_detail_img" />
-                </el-col>
-              </el-row>
-              <el-row class="card_table_title"><span>教育背景</span></el-row>
-              <el-row>
-                <el-table border :data="scope.row.edBackgroundList">
-                  <el-table-column header-align="center" align="center" label="日期">
-                    <template slot-scope="slot">
-                      <span>{{slot.row.startDate}} 至 {{slot.row.endDate}}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="educationBackground" header-align="center" align="center"
-                                   label="学历"></el-table-column>
-                  <el-table-column prop="educationSchool" header-align="center" align="center"
-                                   label="学校"></el-table-column>
-                  <el-table-column prop="major" header-align="center" align="center" label="专业"></el-table-column>
-                </el-table>
-              </el-row>
-              <el-row class="card_table_title"><span>工作经历</span></el-row>
-              <el-row>
-                <el-table border :data="scope.row.workBackgroundList">
-                  <el-table-column header-align="center" align="center" label="日期">
-                    <template slot-scope="slot">
-                      <span>{{slot.row.startDate}} 至 {{slot.row.endDate}}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="company" header-align="center" align="center" label="企业"></el-table-column>
-                  <el-table-column prop="jobPosition" header-align="center" align="center" label="职位"></el-table-column>
-                  <el-table-column prop="jobDescription" header-align="center" align="center" label="工作描述"></el-table-column>
-                </el-table>
-              </el-row>
-            </div>
-          </el-card>
-        </template>
-      </el-table-column>
-      <el-table-column prop="userId" header-align="center" align="center" label="用户id" width="90px;"></el-table-column>
-      <el-table-column prop="useraccount" header-align="center" align="center" label="账号" width="100px;"></el-table-column>
-      <el-table-column prop="username" header-align="center" align="center" label="姓名" width="120px;"></el-table-column>
-      <el-table-column prop="headImg" header-align="center" align="center" label="照片" width="90px;">
-        <template slot-scope="scope">
-          <img :src='scope.row.headImg' class="head_image"/>
-        </template>
-      </el-table-column>
-      <el-table-column prop="email" header-align="center" align="center" label="邮箱"></el-table-column>
-      <el-table-column prop="mobile" header-align="center" align="center" label="手机号"></el-table-column>
-
-      <el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="addOrUpdateHandle(scope.row.userId)">编辑</el-button>
-          <el-button type="danger" size="mini" @click="auditHandle(scope.row.userId)" v-if="scope.row.isAudit === 0">待审核</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-      @size-change="sizeChangeHandle"
-      @current-change="currentChangeHandle"
-      :current-page="pageIndex"
-      :page-sizes="[25, 50, 100]"
-      :page-size="pageSize"
-      :total="totalPage"
-      layout="total, sizes, prev, pager, next, jumper">
-    </el-pagination>
+    <van-dialog v-model="jybjShow" confirm-button-text ="返回">
+      <remplate slot="title">
+        <div style="font-weight:600;font-size:17px;">教育背景</div>
+      </remplate>
+      <record-list-module typeNum = "1" :dataList="passDataList" :titleList = "titleList[0]"/>
+    </van-dialog>
+    <van-dialog v-model="gzjyShow" confirm-button-text ="返回">
+      <remplate slot="title">
+        <div style="font-weight:600;font-size:17px;">工作经验</div>
+      </remplate>
+      <record-list-module typeNum = "2" :dataList = "passDataList" :titleList = "titleList[1]"/>
+    </van-dialog>
     <!-- 弹窗, 新增 / 修改 个人资料 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
     <!--审核 个人资料 -->
@@ -267,10 +131,22 @@
   import AddOrUpdate from './record-add-or-update'
   import RencordTempAddOrUpdate from './recordtemp-add-or-update'
   import {provinceAndCityData} from 'element-china-area-data'
+  import RecordListModule from '@/components/record-list-module'
 
   export default {
-    data() {
+    data () {
       return {
+        activeNames: [],
+        // 教育背景
+        jybjShow: false,
+        // 工作经验
+        gzjyShow: false,
+        // 接收数据
+        passDataList: [],
+        titleList: [
+          ['日期', '学历', '学校', '专业'],
+          ['日期', '企业', '职位', '工作描述']
+        ],
         dataForm: {
           key: '',
           sidx: 'id',
@@ -290,15 +166,22 @@
     },
     components: {
       AddOrUpdate,
-      RencordTempAddOrUpdate
+      RencordTempAddOrUpdate,
+      RecordListModule
     },
-    activated() {
+    computed: {
+      documentClientHeight: {
+        get () {
+          return this.$store.state.common.documentClientHeight
+        }
+      }
+    },
+    created () {
       this.getDataList()
     },
     methods: {
       // 排序字段改变
-      changeSort(val) {
-        console.log(val)
+      changeSort (val) {
         switch (val.order) {
           case 'ascending':
             this.dataForm.order = 'asc'
@@ -312,8 +195,20 @@
         this.dataForm.sidx = val.prop
         this.getDataList()
       },
+      ebClickEvent (item) {
+        this.recordLoadHandle(item).then(success => {
+          this.passDataList = item.edBackgroundList
+          this.jybjShow = true
+        })
+      },
+      jeClickEvent (item) {
+        this.recordLoadHandle(item).then(success => {
+          this.passDataList = item.workBackgroundList
+          this.gzjyShow = true
+        })
+      },
       // 获取数据列表
-      getDataList() {
+      getDataList () {
         this.dataListLoading = true
         this.$http({
           url: this.$http.adornUrl('/ren/record/page'),
@@ -338,22 +233,22 @@
         })
       },
       // 每页数
-      sizeChangeHandle(val) {
+      sizeChangeHandle (val) {
         this.pageSize = val
         this.pageIndex = 1
         this.getDataList()
       },
       // 当前页
-      currentChangeHandle(val) {
+      currentChangeHandle (val) {
         this.pageIndex = val
         this.getDataList()
       },
       // 多选
-      selectionChangeHandle(val) {
+      selectionChangeHandle (val) {
         this.dataListSelections = val
       },
       // 新增 / 修改
-      addOrUpdateHandle(id) {
+      addOrUpdateHandle (id) {
         this.addOrUpdateVisible = true
         this.$nextTick(() => {
           this.$refs.addOrUpdate.init(id)
@@ -363,49 +258,51 @@
       auditHandle (userId) {
         this.rencordTempVisible = true
         this.$nextTick(() => {
-          this.$refs.rencordTempAddOrUpdate.init(userId , 1)
+          this.$refs.rencordTempAddOrUpdate.init(userId, 1)
         })
       },
       // 获取个人详细资料
-      recordLoadHandle (row, expandedRows) {
-        console.log(expandedRows.length)
-        if (expandedRows.length < 1) return
-        this.infoloading = true
-        this.$http({
-          url: this.$http.adornUrl(`/ren/record/info/${row.userId}`),
-          method: 'get',
-          params: this.$http.adornParams()
-        }).then(({data}) => {
-          this.infoloading = false
-          if (data && data.code === 0) {
-            row.username = data.renRecordVo.username
-            row.idNo = data.renRecordVo.idNo
-            row.sex = data.renRecordVo.sex
-            row.birthday = data.renRecordVo.birthday
-            row.entryTime = data.renRecordVo.entryTime
-            row.jobType = data.renRecordVo.jobType
-            row.houseType = data.renRecordVo.houseType
-            row.education = data.renRecordVo.education
-            row.titleLever = data.renRecordVo.titleLever
-            row.email = data.renRecordVo.email
-            row.mobile = data.renRecordVo.mobile
-            row.trialPeriod = data.renRecordVo.trialPeriod
-            row.nativeProvince = data.renRecordVo.nativeProvince
-            row.nativeCity = data.renRecordVo.nativeCity
-            row.nativePlace = [data.renRecordVo.nativeProvince, data.renRecordVo.nativeCity]
-            row.maritalStatus = data.renRecordVo.maritalStatus
-            row.headImg = data.renRecordVo.headImg
-            row.edBackgroundList = data.renRecordVo.edBackgroundList
-            row.workBackgroundList = data.renRecordVo.workBackgroundList
-            row.edName = data.renRecordVo.edName
-            row.edTypeName = data.renRecordVo.edTypeName
-            row.dutyName = data.renRecordVo.dutyName
-            row.titleName = data.renRecordVo.titleName
-          }
+      recordLoadHandle (row) {
+        return new Promise((resolve, reject) => {
+          this.infoloading = true
+          this.$http({
+            url: this.$http.adornUrl(`/ren/record/info/${row.userId}`),
+            method: 'get',
+            params: this.$http.adornParams()
+          }).then(({data}) => {
+            this.infoloading = false
+            if (data && data.code === 0) {
+              row.username = data.renRecordVo.username
+              row.idNo = data.renRecordVo.idNo
+              row.sex = data.renRecordVo.sex
+              row.birthday = data.renRecordVo.birthday
+              row.entryTime = data.renRecordVo.entryTime
+              row.jobType = data.renRecordVo.jobType
+              row.houseType = data.renRecordVo.houseType
+              row.education = data.renRecordVo.education
+              row.titleLever = data.renRecordVo.titleLever
+              row.email = data.renRecordVo.email
+              row.mobile = data.renRecordVo.mobile
+              row.trialPeriod = data.renRecordVo.trialPeriod
+              row.nativeProvince = data.renRecordVo.nativeProvince
+              row.nativeCity = data.renRecordVo.nativeCity
+              row.nativePlace = [data.renRecordVo.nativeProvince, data.renRecordVo.nativeCity]
+              row.maritalStatus = data.renRecordVo.maritalStatus
+              row.headImg = data.renRecordVo.headImg
+              row.edBackgroundList = data.renRecordVo.edBackgroundList
+              row.workBackgroundList = data.renRecordVo.workBackgroundList
+              row.edName = data.renRecordVo.edName
+              row.edTypeName = data.renRecordVo.edTypeName
+              row.dutyName = data.renRecordVo.dutyName
+              row.titleName = data.renRecordVo.titleName
+              // return row
+            }
+            resolve(data)
+          })
         })
       },
       // 获取省市名称
-      getPlaceName(nProvinceId, nCityId) {
+      getPlaceName (nProvinceId, nCityId) {
         let pName = ''
         for (let provinceOption of this.placeOptions) {
           if (provinceOption.value === nProvinceId) {
@@ -423,43 +320,31 @@
 </script>
 
 <style scoped>
-  .head_image {
-    height: 50px;
-    width: 50px;
-    border-radius: 45%;
+  .title_info_font{
+    padding-bottom:1px;
   }
-
-  .card_head {
-    font-size: 16pt;
-    font-weight: 700;
+  .title_info_font:first-child{
+    padding-top:1px;
   }
-
-  .card_detail_span {
-    font-weight: 700;
-    font-size: 12pt;
+  .van-cell{
+    padding:8px 16px;
   }
-
-  .card_detail_content {
-    font-size: 12pt;
+  .card_name_title{
+    padding-bottom:3px;
+    font-weight:600;
+    color:black;
   }
-
-  .card_elrow_margin{
-    margin-bottom:12px;
+  .span_style{
+    font-weight:400;
   }
-
-  .card_table_title {
-    border-bottom: 2px solid #00a2d4;
-    font-size: 14pt;
-    font-weight: 700;
-    margin-top: 10px;
+  .tac{
+    text-align:center;
   }
-
-  .card_detail_img {
-    min-width: 180px;
-    min-height: 243px;
-    width: 180px;
-    height: 243px;
-    border: 1px solid #00b7ee;
-    border-radius: 10px;
+  .el-form-item{
+    padding:0px;
+    margin:0px;
+  }
+  .yg_info{
+    width:90%;font-size:15px;font-weight:600;border-bottom:1px solid dodgerblue;padding-bottom:2px;margin: 0 auto 1px;
   }
 </style>
