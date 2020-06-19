@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div v-if="loadFlag" class="load_style">
+      <van-loading size="40px">加载中...</van-loading>
+    </div>
+  <div v-else>
     <div style="width:90%;margin: 0 auto; margin-top:10px;margin-bottom:5px;">
       <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
         <el-form-item style="margin-right:10px;">
@@ -107,6 +111,7 @@
     </div>
     <!--分页控件-->
     <van-pagination v-model="pageIndex" items-per-page = "25" :total-items="totalPage" mode="simple" @change="getDataList()" />
+  </div>
 
     <van-dialog v-model="jybjShow" confirm-button-text ="返回">
       <remplate slot="title">
@@ -136,6 +141,7 @@
   export default {
     data () {
       return {
+         loadFlag: true,
         activeNames: [],
         // 教育背景
         jybjShow: false,
@@ -224,10 +230,12 @@
           if (data && data.code === 0) {
             this.dataList = data.page.list
             this.totalPage = data.page.totalCount
+            this.loadFlag = false
           } else {
             this.$message.error(data.msg)
             this.dataList = []
             this.totalPage = 0
+            this.loadFlag = true
           }
           this.dataListLoading = false
         })
@@ -346,5 +354,14 @@
   }
   .yg_info{
     width:90%;font-size:15px;font-weight:600;border-bottom:1px solid dodgerblue;padding-bottom:2px;margin: 0 auto 1px;
+  }
+  .load_style{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+  }
+  .van-loading__text{
+    font-size:16px;
   }
 </style>

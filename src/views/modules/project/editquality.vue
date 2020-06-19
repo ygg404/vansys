@@ -1,54 +1,52 @@
 <template>
   <div class="mod-config">
     <projectInfo :Info="projectInfo" :infotype="3"/>
-
-  <van-collapse :value="panelRShow" @change="panelRShowEvent" style="width:95%;margin:0 auto;">
-    <van-collapse-item title="返修记录信息" name="1" class="InfoTitle">
-       <van-row style="margin-top:2px;padding-top:5px;padding-bottom:5px;border-bottom: 1px solid rgb(195, 197, 199);">
+    <van-collapse :value="panelRShow" @change="panelRShowEvent" style="width:95%;margin:0 auto;">
+      <van-collapse-item title="返修记录信息" name="1" class="InfoTitle">
+        <van-row style="margin-top:2px;padding-top:5px;padding-bottom:5px;border-bottom: 1px solid rgb(195, 197, 199);">
           <van-col span="8" style="text-align:center;">返修日期</van-col>
           <van-col span="8" style="text-align:center;">返修要求</van-col>
           <van-col span="8" style="text-align:center;">修改说明</van-col>
-       </van-row>
-       <van-list :key="index" v-for="(item, index) in backWorkList" >
-         <van-row type="flex" align="center" justify="center">
-           <van-col span="8" style="text-align:center;">{{item.backCreateTime}}</van-col>
-           <van-col span="8">
-            <van-row type="flex" justify="center" align="center">
-               <button class="cnbtn" @click="checkReportHandle(item)">查看内容</button>
-            </van-row>
-           </van-col>
-           <van-col span="8" style="text-align:center;">{{item.submitCreateTime}}</van-col>
-         </van-row>
-       </van-list>
-     <div style="width:90%;">
-        <div class="quality_card_title">{{reportTitle}}</div>
-        <div ref="reportPreId" ></div>
-     </div>
-   </van-collapse-item>
- </van-collapse>
+        </van-row>
+        <van-list :key="index" v-for="(item, index) in backWorkList" >
+          <van-row type="flex" align="center" justify="center">
+            <van-col span="8" style="text-align:center;">{{item.backCreateTime}}</van-col>
+            <van-col span="8">
+              <van-row type="flex" justify="center" align="center">
+                <button class="cnbtn" @click="checkReportHandle(item)">查看内容</button>
+              </van-row>
+            </van-col>
+            <van-col span="8" style="text-align:center;">{{item.submitCreateTime}}</van-col>
+          </van-row>
+        </van-list>
+        <div style="width:90%;">
+          <div class="quality_card_title">{{reportTitle}}</div>
+          <div ref="reportPreId" ></div>
+        </div>
+      </van-collapse-item>
+    </van-collapse>
 
 
     <van-row style="height:40px; padding:10px;" type="flex" justify="center" align="center">
-        <van-col span="8">
+      <van-col span="8">
         <van-row type="flex" justify="center" align="center">
           <van-col><span style="font-size:14px;">质量检查信息</span></van-col>
         </van-row>
       </van-col>
-       <van-col span="8">
-         <button class="cnbtn btngreen" @click="editQualityReportHandler">编辑质检反馈</button>
-       </van-col>
-       <van-col span="8">
-         <button class="cnbtn" @click="addQualityscoreHandler">编辑质量评分</button>
-       </van-col>
+      <van-col span="8">
+        <button class="cnbtn btngreen" @click="editQualityReportHandler">编辑质检反馈</button>
+      </van-col>
+      <van-col span="8">
+        <button class="cnbtn" @click="addQualityscoreHandler">编辑质量评分</button>
+      </van-col>
     </van-row>
 
-  <van-collapse :value="panelQIFShow" @change="panelQIFShowEvent" style="width:95%;margin:0 auto;">
-    <van-collapse-item title="质检反馈" name="1" class="InfoTitle">
-    <div ref="reportId"></div>
-    </van-collapse-item>
-  </van-collapse>
+    <van-collapse :value="panelQIFShow" @change="panelQIFShowEvent" style="width:95%;margin:0 auto;">
+      <van-collapse-item title="质检反馈" name="1" class="InfoTitle">
+        <div ref="reportId"></div>
+      </van-collapse-item>
+    </van-collapse>
 
-  <!---->
     <van-form  ref="dataForm" style="margin-top:10px;">
       <van-row type="flex" align="center" justify="center" class="qsn">
         <van-col span="15">
@@ -59,12 +57,11 @@
     </van-form>
 
     <van-row style="margin-bottom:20px;margin-top:10px;">
-      <van-col span="5" class="footerbtngroup"><button style="width:80%;" class="cnbtn btnyellow"  @click="goBack">返回</button></van-col>
-      <van-col span="5" class="footerbtngroup"><button style="width:80%;" :class="[isCheck != 2? '':'btnLightblue']"  class="cnbtn" @click="dataFormSubmit" :disabled="isCheck == 2">提交</button></van-col>
-      <van-col span="7" class="footerbtngroup"><button style="width:80%;" :class="[isCheck != 2?'btnpink':'btnLightpink']" class="cnbtn" @click="repairNoteSubmit" :disabled="isCheck == 2">退回返修</button></van-col>
-      <van-col span="7" class="footerbtngroup"><button style="width:80%;" :class="[isCheck == 2?'btnpink':'btnLightpink']" class="cnbtn" @click="recallRepairHandle" :disabled="isCheck != 2">撤回返修</button></van-col>
+      <van-col span="6" class="tac"><van-button size="small" color="#E6A23C" @click="goBack">返回</van-button></van-col>
+      <van-col span="6" class="tac"><van-button size="small" type="info" @click="dataFormSubmit" :disabled="isCheck == 2">提交</van-button></van-col>
+      <van-col span="6" class="tac"><van-button size="small" color="#F56C6C" @click="repairNoteSubmit" :disabled="isCheck == 2">退回返修</van-button></van-col>
+      <van-col span="6" class="tac"><van-button size="small" color="#F56C6C" @click="recallRepairHandle" :disabled="isCheck != 2">撤回返修</van-button></van-col>
     </van-row>
-
 
     <qualityscore-add-or-update v-if="qualityScoreVisible" ref="qualityscoreAddOrUpdate" @refreshDataList="setQualityScore"></qualityscore-add-or-update>
     <qualityedit-add-or-update v-if="editVisible" ref="qualityeditAddOrUpdate" @refreshReport="setQualityReport"></qualityedit-add-or-update>

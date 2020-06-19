@@ -13,12 +13,12 @@
     <van-row type="flex" align="center" justify="center">
       <van-col span="2"></van-col>
       <van-col span="10">进度百分比</van-col>
-      <van-col span="12"><van-stepper v-model="scheduleRatenum" @change="sliderChangeHandle"/></van-col>
+      <van-col span="12"><van-stepper v-model="dataForm.scheduleRate" @change="sliderChangeHandle"/></van-col>
     </van-row>
     <van-row type="flex" align="center" class="mbmt20">
       <van-col span="1"></van-col>
       <van-col span="22">
-        <van-slider v-model="scheduleRatenum" @change="sliderChangeHandle"/>
+        <van-slider v-model="dataForm.scheduleRate" @change="sliderChangeHandle"/>
       </van-col>
       <van-col span="1"></van-col>
     </van-row>
@@ -33,7 +33,6 @@
     data () {
       return {
         visible: false,
-        scheduleRatenum: 0,
         dataForm: {
           id: 0,
           projectNo: '',
@@ -55,7 +54,6 @@
       init (item) {
         this.visible = true
         this.$nextTick(() => {
-          console.log(item)
           this.dataForm.projectNo = item.projectNo
           this.dataForm.projectName = item.projectName
           this.dataForm.scheduleNote = ''
@@ -65,12 +63,9 @@
       },
       // 进度改变
       sliderChangeHandle () {
-        if (this.scheduleRatenum > 90) {
+        if (this.dataForm.scheduleRate > 90) {
           this.$notify({ type: 'danger', message: '作业进度不得超过90%' })
           this.dataForm.scheduleRate = 90
-          this.scheduleRatenum = 90
-        } else {
-          this.dataForm.scheduleRate = this.scheduleRatenum.toString()
         }
       },
       // 表单提交
@@ -78,9 +73,7 @@
         if (this.scheduleRatenum > 90) {
           this.$notify({ type: 'danger', message: '作业进度不得超过90%' })
           this.dataForm.scheduleRate = 90
-          this.scheduleRatenum = 90
         } else {
-          this.dataForm.scheduleRate = this.scheduleRatenum.toString()
           this.$http({
             url: this.$http.adornUrl(`/project/schedule/save`),
             method: 'post',

@@ -525,6 +525,9 @@
             this.totalPage = data.page.totalPage
             // 计算 质检 和 作业超时时间
             for (let data of this.dataList) {
+              if (this.planProjectPopupShow && this.dpiData.projectNo === data.projectNo) {
+                this.dpiData = data
+              }
               data.backDateNum = data.backDateNum === null ? 0 : data.backDateNum
               // 开工时间为空
               if (data.projectBegunDateTime == null) {
@@ -593,7 +596,7 @@
         this.getDataList()
       },
 
-      // 合同详情按钮点击事件
+      // 详情按钮点击事件
       showDetailsDialogEvent (item) {
         this.planProjectPopupShow = true
         this.dpiData = item
