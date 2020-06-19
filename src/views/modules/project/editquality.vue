@@ -59,10 +59,10 @@
       </van-form>
 
  <van-row style="margin-bottom:20px;margin-top:10px;">
-   <van-col span="6" class="footerbtngroup"><button style="width:80%;" class="cnbtn btnyellow"  @click="goBack">返回</button></van-col>
-   <van-col span="6" class="footerbtngroup"><button style="width:80%;" :class="[isCheck != 2? '':'btnLightblue']"  class="cnbtn" @click="dataFormSubmit" :disabled="isCheck == 2">提交</button></van-col>
-   <van-col span="6" class="footerbtngroup"><button style="width:80%;" :class="[isCheck != 2?'btnpink':'btnLightpink']" class="cnbtn" @click="repairNoteSubmit" :disabled="isCheck == 2">退回返修</button></van-col>
-   <van-col span="6" class="footerbtngroup"><button style="width:80%;" :class="[isCheck == 2?'btnpink':'btnLightpink']" class="cnbtn" @click="recallRepairHandle" :disabled="isCheck != 2">撤回返修</button></van-col>
+   <van-col span="6" class="tac"><van-button size="mini" color="#E6A23C" @click="goBack">返回</van-button></van-col>
+   <van-col span="6" class="tac"><van-button size="mini" type="info" @click="dataFormSubmit" :disabled="isCheck == 2">提交</van-button></van-col>
+   <van-col span="6" class="tac"><van-button size="mini" color="#F56C6C" @click="repairNoteSubmit" :disabled="isCheck == 2">退回返修</van-button></van-col>
+   <van-col span="6" class="tac"><van-button size="mini" color="#F56C6C" @click="recallRepairHandle" :disabled="isCheck != 2">撤回返修</van-button></van-col>
 </van-row>
 
 
