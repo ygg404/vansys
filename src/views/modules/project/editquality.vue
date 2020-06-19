@@ -59,10 +59,10 @@
       </van-form>
 
  <van-row style="margin-bottom:20px;margin-top:10px;">
-   <van-col span="6" class="tac"><van-button size="mini" color="#E6A23C" @click="goBack">返回</van-button></van-col>
-   <van-col span="6" class="tac"><van-button size="mini" type="info" @click="dataFormSubmit" :disabled="isCheck == 2">提交</van-button></van-col>
-   <van-col span="6" class="tac"><van-button size="mini" color="#F56C6C" @click="repairNoteSubmit" :disabled="isCheck == 2">退回返修</van-button></van-col>
-   <van-col span="6" class="tac"><van-button size="mini" color="#F56C6C" @click="recallRepairHandle" :disabled="isCheck != 2">撤回返修</van-button></van-col>
+   <van-col span="6" class="tac"><van-button size="small" color="#E6A23C" @click="goBack">返回</van-button></van-col>
+   <van-col span="6" class="tac"><van-button size="small" type="info" @click="dataFormSubmit" :disabled="isCheck == 2">提交</van-button></van-col>
+   <van-col span="6" class="tac"><van-button size="small" color="#F56C6C" @click="repairNoteSubmit" :disabled="isCheck == 2">退回返修</van-button></van-col>
+   <van-col span="6" class="tac"><van-button size="small" color="#F56C6C" @click="recallRepairHandle" :disabled="isCheck != 2">撤回返修</van-button></van-col>
 </van-row>
 
 
