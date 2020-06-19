@@ -11,7 +11,6 @@
         </el-form-item>
       </div>
     </el-form>
-
     <div style="width: 95%;margin: 5px auto 10px;">
       <van-row type="flex" align="center" style="padding-bottom:5px;border-bottom:1px dotted black;">
         <van-col span="6">

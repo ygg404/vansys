@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="dataLoading">
     <div class="header_button">
       <van-button icon="user-o" type="primary"  @click="editRecordHandle">编辑个人档案</van-button>
       <van-button icon="setting-o" type="info"  @click="updatePasswordHandle">修改密码</van-button>
@@ -120,6 +120,7 @@
   export default {
     data () {
       return {
+        dataLoading: false,
         placeOptions: provinceAndCityData,
         rencordTempVisible: false,
         updatePassowrdVisible: false,
@@ -149,12 +150,14 @@
       }
     },
     created () {
+      this.dataLoading = true
       // 学历对照表信息
       this.getScoreEdList(1).then(edTypeList => {
         this.getScoreEdList(2).then(proList => {
           this.getScoreEdList(3).then(edItemList => {
             this.getTitleList().then(titleList => {
               this.getScoreDutyList().then(dutyList => {
+                this.dataLoading = false
                 this.edTypeItemList = edTypeList
                 this.proItemList = proList
                 this.edItemList = edItemList

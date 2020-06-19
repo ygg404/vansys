@@ -24,7 +24,7 @@
       </van-col>
       <van-col span="8" class="addcontract">
         <div class="lrmr2">
-          <van-button type="primary" @click="exportProjectExcel">导出Excel</van-button>
+<!--          <van-button type="primary" @click="exportProjectExcel">导出Excel</van-button>-->
         </div>
       </van-col>
     </van-row>
