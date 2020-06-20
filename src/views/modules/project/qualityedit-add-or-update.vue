@@ -1,9 +1,9 @@
 <template>
   <van-dialog
     title="编辑质检反馈"
-    show-cancel-button
+    show-cancel-button confirm-button-text="保存"
     width="90%" style="height:440px;"
-    v-model="visible" @cancel="closeHandle" @confirm="setReportHandle">
+    v-model="visible" @cancel="closeHandle" @confirm="saveReportHandle">
       <div>
         <wang-editor :content="ueContent" :id='id' :projectNo="projectNo" @refreshContent="getReportHandle" class="toolbar"></wang-editor>
       </div>
@@ -48,10 +48,29 @@
       getReportHandle (content) {
         this.ueContent = content
       },
-      // 设置报告内容
-      setReportHandle () {
-        this.visible = false
-        this.$emit('refreshReport', this.ueContent)
+      // 保存报告内容
+      saveReportHandle () {
+        this.loading = true
+        this.$http({
+          url: this.$http.adornUrl(`/project/quality/saveTemp`),
+          method: 'post',
+          data: this.$http.adornData({
+            'projectNo': this.projectNo,
+            'qualityReport': this.ueContent
+          })
+        }).then(({data}) => {
+          this.loading = false
+          if (data && data.code === 0) {
+            this.$message({
+              message: '保存成功！',
+              type: 'success',
+              duration: 1500
+            })
+            this.$emit('refreshReport', this.ueContent)
+          } else {
+            this.$message.error(data.msg)
+          }
+        })
       }
     }
   }
