@@ -382,14 +382,9 @@
       },
       // 撤回返修
       recallRepairHandle () {
-        this.$dialog.alert(
-          {
-            title: '提示',
-            message: '是否确定撤回质检反馈报告？',
-            showCancelButton:true,
-            cancelButtonText:'取消',
-            confirmButtonText:'确定'
-          }
+        this.$dialog.confirm({
+          title: '提示',
+          message: '是否确定撤回质检反馈报告？'}
         ).then(() => {
           this.$refs.reportPreId.innerHTML = ''
           this.$http({

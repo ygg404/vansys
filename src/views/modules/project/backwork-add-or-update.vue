@@ -1,8 +1,8 @@
 <template>
 <div>
-  <van-dialog v-model="visible" title="项目返修内容" width="90%" confirmButtonText="取消">
+  <van-dialog v-model="visible" title="项目返修内容" width="90%" confirmButtonText="返回">
     <div style="overflow: auto; width: 100%;">
-      <table style="width:150%;">
+      <table style="width:150%;" border="1" cellspacing="0">
         <thead>
         <tr>
           <td class="tac">返修日期</td>
@@ -14,24 +14,21 @@
         </thead>
         <tbody v-for="(item, index) in dataList">
         <tr>
-           <td class="tac">{{item.backCreateTime | dataStr}}</td>
-           <td class="tac"><van-button type="info" size="small" @click="checkReportHandle(item)">查看内容</van-button></td>
+          <td class="tac">{{(item.backCreateTime).substring(0,10)}}</td>
+          <td class="tac"><van-button type="info" size="small" @click="checkReportHandle(item)">查看内容</van-button></td>
           <td class="tac"><van-button type="primary" size="small"  @click="addNoteHandle(item)" v-if="item.submitNote == null">编辑</van-button></td>
           <td class="tac">{{item.submitNote}}</td>
-           <td class="tac">{{item.submitCreateTime | dataStr}}</td>
+          <td class="tac">{{item.submitCreateTime}}</td>
         </tr>
         </tbody>
       </table>
-
-      <div style="margin-bottom:10px;margin-top:10px;">
-        <div class="quality_card_title">{{reportTitle}}</div>
-        <div ref="reportId" class="quality_report" ></div>
-      </div>
     </div>
-
+    <div class="quality_report" >
+      <div>{{reportTitle}}</div>
+      <div ref="reportId" class="quality_report" ></div>
+    </div>
   </van-dialog>
-
-  <van-dialog title="编辑回复"  v-model="noteVisible" width="90%" show-cancel-button @confirm="dataFormSubmit">
+  <van-dialog title="编辑回复"  v-model="noteVisible" width="90%" show-cancel-button @confirm="dataFormSubmit" confirm-button-text="提交回复">
     <wang-editor  :id="editorId" :content="ueContent" :projectNo="dataForm.projectNo" @refreshContent="getReportHandle"></wang-editor>
   </van-dialog>
 </div>
@@ -40,6 +37,7 @@
 <script>
   import WangEditor from '@/components/WangEditor/index'
   import moment from 'moment'
+  import {stringIsNull} from '@/utils'
   export default {
     data () {
       return {
@@ -48,6 +46,7 @@
         visible: false,
         noteVisible: false,
         reportVisible: false,
+        contentVisible: false,
         reportTitle: '',
         isEdit: true,
         imageList: [], // 报告图片列表
@@ -78,13 +77,6 @@
         dataList: []
       }
     },
-    filters:{
-      'dataStr':function(str){
-        if(str === '' || str === null)
-          return ''
-        return moment(new Date(str)).format('YYYY-MM-DD');
-      }
-    },
     components: {
       WangEditor
     },
@@ -93,7 +85,6 @@
         this.visible = true
         this.isEdit = isEdit
         this.$nextTick(() => {
-          this.proLoading = true
           if (projectNo) {
             this.$http({
               url: this.$http.adornUrl(`/project/backwork/list/${projectNo}`),
@@ -103,7 +94,6 @@
               if (data && data.code === 0) {
                 this.dataList = data.list
                 this.$refs.reportId.innerHTML = ''
-                this.proLoading = false
               }
             })
           }
@@ -122,14 +112,17 @@
         this.noteVisible = true
         this.reportVisible = false
         this.curprog = 0
-        this.$refs.reportId.innerHTML = ''
         this.ueContent = item.backNote
       },
       // 查看返修要求说明内容
       checkReportHandle (item) {
-        this.reportVisible = true
+        this.contentVisible = !this.contentVisible
         this.reportTitle = '质检反馈报告（ 日期：' + item.backCreateTime + ')'
-        this.$refs.reportId.innerHTML = item.backNote
+        if (this.contentVisible) {
+          this.$refs.reportId.innerHTML = item.backNote
+        } else {
+          this.$refs.reportId.innerHTML = ''
+        }
       },
       // 实时获取编辑报告内容
       getReportHandle (content) {
@@ -234,5 +227,9 @@
     display: inline-block;
   }
 
+  .quality_report {
+    max-height: 500px;
+    overflow-y: auto;
+  }
 
 </style>
