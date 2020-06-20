@@ -3,7 +3,7 @@
     <template slot="title">
       <div class="span_header">参评人数:<span>{{person}}</span></div>
     </template>
-    <table border="1" width="100%" style="text-align: center;margin-top:5px;">
+    <table border="1" cellspacing="0" width="100%" style="text-align: center;margin-top:5px;">
       <thead>
         <tr>
           <th>用户名</th><th>是否提交</th>

@@ -2,8 +2,8 @@
   <van-dialog
     title="编辑质检反馈"
     show-cancel-button confirm-button-text="保存"
-    width="90%" style="height:440px;"
-    v-model="visible" @cancel="closeHandle" @confirm="saveReportHandle">
+    width="90%" style="height:440px;" :beforeClose="beforeClose"
+    v-model="visible" @cancel="closeHandle" @confirm="saveReportHandle" >
       <div>
         <wang-editor :content="ueContent" :id='id' :projectNo="projectNo" @refreshContent="getReportHandle" class="toolbar"></wang-editor>
       </div>
@@ -44,6 +44,11 @@
       closeHandle () {
         this.visible = false
       },
+      // 窗口关闭前的动作
+      beforeClose (action, done) {
+        console.log(this.visible)
+        done(!this.visible)
+      },
       // 实时获取编辑报告内容
       getReportHandle (content) {
         this.ueContent = content
@@ -67,6 +72,7 @@
               duration: 1500
             })
             this.$emit('refreshReport', this.ueContent)
+            this.visible = false
           } else {
             this.$message.error(data.msg)
           }

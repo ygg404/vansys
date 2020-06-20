@@ -23,31 +23,44 @@
           <van-field  v-model="dataForm.username"  label="姓名" name="username" disabled>
             <span style="color: #3b97d7">{{dataForm.username}}</span>
           </van-field>
-          <van-field v-model="dataForm.sex" label="性别">
+          <van-field v-model="dataForm.sex" label="性别" :rules="[{ required: true, message: '请选择性别' }]">
             <template slot="input">
               <input type="radio"  v-model="dataForm.sex" id="s1" value="1"  style="zoom:2;width:9px;"/>男
               <input type="radio"  v-model="dataForm.sex" id="s2" value="2"  style="zoom:2;margin-left: 6px;width:9px;"/>女
             </template>
           </van-field>
-          <van-field label="生日" v-model="dataForm.birthday" name="birthday" readonly clickable placeholder="请选择生日" @click="birthdayShow=true"></van-field>
-          <van-field label="籍贯" v-model="dataForm.nativePlace" name="username" clickable placeholder="请选择籍贯" @click="areaShow=true"></van-field>
-          <van-field label="身份证号" v-model="dataForm.idNo" name="idNo" placeholder="请填写身份证号码"></van-field>
-          <van-field label="手机号" v-model="dataForm.mobile" name="mobile" placeholder="填写手机号" type="digit"></van-field>
-          <van-field label="电子邮件" v-model="dataForm.email"  name="email" placeholder="电子邮件"></van-field>
-          <van-field label="入职时间" v-model="dataForm.entryTime" name="entryTime" placeholder="入职时间" @click="entryTimeShow=true" readonly clickable></van-field>
-          <van-field label="试用期(月)" v-model="dataForm.trialPeriod" name="trialPeriod" placeholder="试用期(月)" type="digit"></van-field>
-          <van-field v-model="dataForm.houseType" label="住房类型">
+          <van-field label="生日" v-model="dataForm.birthday" name="birthday" readonly clickable placeholder="请选择生日" @click="birthdayShow=true"
+                     :rules="[{ required: true, message: '请填写生日信息' }]"></van-field>
+          <van-field label="籍贯" v-model="dataForm.nativePlace" name="username" clickable placeholder="请选择籍贯" @click="areaShow=true"
+                     :rules="[{ required: true, message: '请填写籍贯' }]"></van-field>
+          <van-field label="身份证号" v-model="dataForm.idNo" name="idNo" placeholder="请填写身份证号码"
+                     :rules="[{ required: true, message: '请填写身份证信息' }]"></van-field>
+          <van-field label="手机号" v-model="dataForm.mobile" name="mobile" placeholder="填写手机号" type="digit"
+                     :rules="[{ required: true, message: '请填写手机号码' }]"></van-field>
+          <van-field label="电子邮件" v-model="dataForm.email"  name="email" placeholder="电子邮件"
+                     :rules="[{ validator:asyncValidator, message: '请填写正确的邮箱' }]" ></van-field>
+          <van-field label="入职时间" v-model="dataForm.entryTime" name="entryTime" placeholder="入职时间" @click="entryTimeShow=true" readonly clickable
+                     :rules="[{ required:true, message: '请选择入职时间' }]" ></van-field>
+          <van-field label="试用期(月)" v-model="dataForm.trialPeriod" name="trialPeriod" placeholder="试用期(月)" type="digit"
+                     :rules="[{ required:true, message: '试用期（月）不能为空' }]" ></van-field>
+          <van-field v-model="dataForm.houseType" label="住房类型" :rules="[{ required:true, message: '住房类型不能为空' }]">
             <template slot="input">
               <input type="radio"  v-model="dataForm.houseType" id="h1" value="1"  style="zoom:2;width:9px;"/>本地居民
               <input type="radio"  v-model="dataForm.houseType" id="h2" value="2"  style="zoom:2;margin-left: 6px;width:9px;"/>租房
             </template>
           </van-field>
-          <van-field v-model="dataForm.jobTypeName" label="工作类型" placeholder="工作类型" name="jobType" @click="jobTypeShow = true" readonly clickable></van-field>
-          <van-field v-model="dataForm.dutyName" label="职务" placeholder="职务" name="dutyId"  @click="dutyShow = true" readonly clickable></van-field>
-          <van-field v-model="dataForm.edName" label="最高学历" placeholder="最高学历" name="education"  @click="edShow = true" readonly clickable></van-field>
-          <van-field v-model="dataForm.edTypeName" label="学制" placeholder="学制" name="educationType"  @click="edTypeShow = true" readonly clickable></van-field>
-          <van-field v-model="dataForm.proName" label="专业系数" placeholder="专业系数" name="proRatio" @click="proRatioShow = true" readonly clickable></van-field>
-          <van-field v-model="dataForm.educationTime" label="毕业时间" placeholder="毕业时间" name="educationTime" @click="edTimeShow = true" readonly clickable></van-field>
+          <van-field v-model="dataForm.jobTypeName" label="工作类型" placeholder="工作类型" name="jobType" @click="jobTypeShow = true" readonly clickable
+                     :rules="[{ required:true, message: '工作类型不能为空' }]" ></van-field>
+          <van-field v-model="dataForm.dutyName" label="职务" placeholder="职务" name="dutyId"  @click="dutyShow = true" readonly clickable
+                     :rules="[{ required:true, message: '职务不能为空' }]"></van-field>
+          <van-field v-model="dataForm.edName" label="最高学历" placeholder="最高学历" name="education"  @click="edShow = true" readonly clickable
+                     :rules="[{ required:true, message: '请填写最高学历' }]"></van-field>
+          <van-field v-model="dataForm.edTypeName" label="学制" placeholder="学制" name="educationType"  @click="edTypeShow = true" readonly clickable
+                     :rules="[{ required:true, message: '请填写学制' }]"></van-field>
+          <van-field v-model="dataForm.proName" label="专业系数" placeholder="专业系数" name="proRatio" @click="proRatioShow = true" readonly clickable
+                     :rules="[{ required:true, message: '请填写专业系数' }]"></van-field>
+          <van-field v-model="dataForm.educationTime" label="毕业时间" placeholder="毕业时间" name="educationTime" @click="edTimeShow = true" readonly clickable
+                     :rules="[{ required:true, message: '请填写毕业时间' }]"></van-field>
         </van-form>
       </div>
     </van-dialog>
@@ -164,47 +177,6 @@
         },
         auditRule: {
           aduitMsg: [{required: true, message: '审核返退意见不能为空', trigger: 'blur'}]
-        },
-        dataRule: {
-          idNo: [
-            {required: true, message: '身份证号不能为空', trigger: 'blur'}
-          ],
-          birthday: [
-            {required: true, message: '出生日期不能为空', trigger: 'blur'}
-          ],
-          entryTime: [
-            {required: true, message: '入职时间不能为空', trigger: 'blur'}
-          ],
-          jobType: [
-            {required: true, message: '工作类型不能为空', trigger: 'blur'}
-          ],
-          houseType: [
-            {required: true, message: '住房类型不能为空', trigger: 'blur'}
-          ],
-          education: [
-            {required: true, message: '最高学历不能为空', trigger: 'blur'}
-          ],
-          titleLever: [
-            {required: true, message: '职称等级不能为空', trigger: 'blur'}
-          ],
-          email: [
-            {required: true, message: '邮箱不能为空', trigger: 'blur'}
-          ],
-          sex: [
-            {required: true, message: '性别不能为空', trigger: 'blur'}
-          ],
-          mobile: [
-            {required: true, message: '手机号不能为空', trigger: 'blur'}
-          ],
-          maritalStatus: [
-            {required: true, message: '婚姻状况不能为空', trigger: 'blur'}
-          ],
-          trialPeriod: [
-            {required: true, message: '试用期不能为空！', trigger: 'blur'}
-          ],
-          educationTime: [
-            {required: true, message: '毕业时间不能为空！', trigger: 'blur'}
-          ]
         }
       }
     },
@@ -285,6 +257,11 @@
               })
             })
           })
+        })
+      },
+      asyncValidator (val) {
+        return new Promise((resolve) => {
+          resolve(/^(((13[0-9]{1})|(14[57]{1})|(15[012356789]{1})|(17[03678]{1})|(18[0-9]{1})|(19[89]{1})|(16[6]{1}))+\d{8})$/.test(val))
         })
       },
       // 窗口关闭前的动作

@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div v-loading="dataLoading">
     <el-form :inline="true" :model="dataForm" style="display:flex;justify-content: space-between;">
       <div class="w95">
         <el-form-item>
@@ -51,7 +51,7 @@
                      <div class="coll_title">效能评分表</div>
                    </template>
                    <div style="overflow-x: auto; max-height:300px;">
-                     <table class="bs" border="1">
+                     <table class="bs" border="1" cellspacing="0">
                        <thead>
                        <tr>
                          <td class="tac detail_td_style" style="min-width:60px;">评分人</td>
@@ -141,6 +141,7 @@
         activePlus: [],
         activeKbi: [],
         activeName: [],
+        dataLoading:false,
         dataForm: {
           curYear: new Date(2020, 1, 1),   // 当前年份
           updown: 0 // 上下半年
@@ -172,6 +173,7 @@
     },
     methods: {
       init () {
+        this.dataLoading = true
         // 获取部门列表
         this.getBranchList().then(branchList => {
           this.getUaccessList().then(uRoleList => {
@@ -179,6 +181,7 @@
             this.getAccessList().then(list => {
               this.getExtralist().then(extraList => {
                 this.getExtraScorelist().then(scoreList => {
+                  this.dataLoading = false
                   let checkUserList = this.acceessListInit(list)
                   for (let checkUser of checkUserList) {
                     // 设置每个人的效能基准分

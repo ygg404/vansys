@@ -41,7 +41,7 @@
           maxlength="1000"
           show-word-limit
           placeholder="请输入质量综述"
-          :rules="[{ required: true, message: ' ' }]"
+          :rules="[{ required: true, message: '请输入质量综述' }]"
         />
       </div>
     </van-form>
