@@ -396,146 +396,145 @@
         this.visible = true
         this.$nextTick(() => {
           // 学历对照表信息
-          this.getScoreEdList(1).then(list => {
-            this.edTypeItemList = list
-          })
-          this.getScoreEdList(2).then(list => {
-            this.proItemList = list
-          })
-          this.getScoreEdList(3).then(list => {
-            this.edItemList = list
-          })
-          this.getJobTypeList().then(list => {
-            this.titleItemList = list
-          })
-          this.getScoreDutyList().then(list => {
-            this.dutyItemList = list
-          })
-          // this.$refs['dataForm'].resetFields()
-          this.loading = true
-          this.loadingtext = '正在加载中'
-          if (this.dataForm.userId) {
-            this.$http({
-              url: this.$http.adornUrl(`/ren/record/info/${this.dataForm.userId}`),
-              method: 'get',
-              params: this.$http.adornParams()
-            }).then(({data}) => {
-              this.loading = false
-              if (data && data.code === 0) {
-                this.dataForm.username = data.renRecordVo.username
-                this.dataForm.idNo = data.renRecordVo.idNo
-                this.dataForm.sex = data.renRecordVo.sex
-                this.dataForm.birthday = data.renRecordVo.birthday
-                this.dataForm.entryTime = data.renRecordVo.entryTime
-                this.dataForm.jobType = data.renRecordVo.jobType
-                this.dataForm.houseType = data.renRecordVo.houseType
-                this.dataForm.education = data.renRecordVo.education
-                this.dataForm.educationType = data.renRecordVo.educationType
-                this.dataForm.educationTime = data.renRecordVo.educationTime
-                this.dataForm.proRatio = data.renRecordVo.proRatio
-                this.dataForm.dutyName = data.renRecordVo.dutyName
-                this.dataForm.titleLever = data.renRecordVo.titleLever
-                this.dataForm.dutyId = data.renRecordVo.dutyId
-                this.dataForm.email = data.renRecordVo.email
-                this.dataForm.mobile = data.renRecordVo.mobile
-                this.dataForm.trialPeriod = data.renRecordVo.trialPeriod
-                this.dataForm.nativeProvince = data.renRecordVo.nativeProvince
-                this.dataForm.nativeCity = data.renRecordVo.nativeCity
-                this.dataForm.nativePlace = this.getPlaceName(data.renRecordVo.nativeProvince, data.renRecordVo.nativeCity)
-                this.dataForm.maritalStatus = data.renRecordVo.maritalStatus
-                this.dataForm.headImg = data.renRecordVo.headImg
-                for (let edBackground of data.renRecordVo.edBackgroundList) {
-                  edBackground.edId = getUUID()
-                  edBackground.monthRangeDate = [edBackground.startDate, edBackground.endDate]
-                }
-                for (let wBackground of data.renRecordVo.workBackgroundList) {
-                  wBackground.wbId = getUUID()
-                  wBackground.monthRangeDate = [wBackground.startDate, wBackground.endDate]
-                }
-                // 职务 回显
-                for (let item of this.jobItemList) {
-                  if (item.id === this.dataForm.jobType) {
-                    this.jobTypeName = item.jobItem
-                  }
-                }
-                // 最高学历 回显
-                for (let item of this.edItemList) {
-                  if (item.id === this.dataForm.education) {
-                    this.educationName = item.scoreName
-                  }
-                }
-                // 学制 回显
-                for (let item of this.edTypeItemList) {
-                  if (item.id === this.dataForm.educationType) {
-                    this.edTypeName = item.scoreName
-                  }
-                }
-                // 专业系数 回显
-                for (let item of this.proItemList) {
-                  if (item.id === this.dataForm.proRatio) {
-                    this.proName = item.scoreName
-                  }
-                }
-                // 婚姻状况 回显
-                for (let item of this.maritalItemList) {
-                  if (item.id === this.dataForm.maritalStatus) {
-                    this.maritalStatusName = item.dateItem
-                  }
-                }
-                // 职称等级 回显
-                for (let item of this.titleItemList) {
-                  if (item.id === this.dataForm.titleLever) {
-                    this.zcLevelName = item.jobTitle
-                  }
-                }
-                this.dataForm.edBackgroundList = data.renRecordVo.edBackgroundList
-                this.dataForm.workBackgroundList = data.renRecordVo.workBackgroundList
-                if (this.dataForm.edBackgroundList.length === 0) {
-                  this.egSelectStartTimeList.push({
-                    selectMin: new Date(1970, 0, 1),
-                    selectMax: new Date(2080, 11, 31)
+          this.getScoreEdList(1).then(edTypeList => {
+            this.edTypeItemList = edTypeList
+            this.getScoreEdList(2).then(proItemList => {
+              this.proItemList = proItemList
+              this.getScoreEdList(3).then(edList => {
+                this.edItemList = edList
+                this.getJobTypeList().then(titleList => {
+                  this.titleItemList = titleList
+                  this.getScoreDutyList().then(dutyList => {
+                    this.dutyItemList = dutyList
+                    this.loading = true
+                    this.loadingtext = '正在加载中'
+                    if (this.dataForm.userId) {
+                      this.$http({
+                        url: this.$http.adornUrl(`/ren/record/info/${this.dataForm.userId}`),
+                        method: 'get',
+                        params: this.$http.adornParams()
+                      }).then(({data}) => {
+                        this.loading = false
+                        if (data && data.code === 0) {
+                          this.dataForm.username = data.renRecordVo.username
+                          this.dataForm.idNo = data.renRecordVo.idNo
+                          this.dataForm.sex = data.renRecordVo.sex
+                          this.dataForm.birthday = data.renRecordVo.birthday
+                          this.dataForm.entryTime = data.renRecordVo.entryTime
+                          this.dataForm.jobType = data.renRecordVo.jobType
+                          this.dataForm.houseType = data.renRecordVo.houseType
+                          this.dataForm.education = data.renRecordVo.education
+                          this.dataForm.educationType = data.renRecordVo.educationType
+                          this.dataForm.educationTime = data.renRecordVo.educationTime
+                          this.dataForm.proRatio = data.renRecordVo.proRatio
+                          this.dataForm.dutyName = data.renRecordVo.dutyName
+                          this.dataForm.titleLever = data.renRecordVo.titleLever
+                          this.dataForm.dutyId = data.renRecordVo.dutyId
+                          this.dataForm.email = data.renRecordVo.email
+                          this.dataForm.mobile = data.renRecordVo.mobile
+                          this.dataForm.trialPeriod = data.renRecordVo.trialPeriod
+                          this.dataForm.nativeProvince = data.renRecordVo.nativeProvince
+                          this.dataForm.nativeCity = data.renRecordVo.nativeCity
+                          this.dataForm.nativePlace = this.getPlaceName(data.renRecordVo.nativeProvince, data.renRecordVo.nativeCity)
+                          this.dataForm.maritalStatus = data.renRecordVo.maritalStatus
+                          this.dataForm.headImg = data.renRecordVo.headImg
+                          for (let edBackground of data.renRecordVo.edBackgroundList) {
+                            edBackground.edId = getUUID()
+                            edBackground.monthRangeDate = [edBackground.startDate, edBackground.endDate]
+                          }
+                          for (let wBackground of data.renRecordVo.workBackgroundList) {
+                            wBackground.wbId = getUUID()
+                            wBackground.monthRangeDate = [wBackground.startDate, wBackground.endDate]
+                          }
+                          // 职务 回显
+                          for (let item of this.jobItemList) {
+                            if (item.id === this.dataForm.jobType) {
+                              this.jobTypeName = item.jobItem
+                            }
+                          }
+                          // 最高学历 回显
+                          for (let item of this.edItemList) {
+                            if (item.id === this.dataForm.education) {
+                              this.educationName = item.scoreName
+                            }
+                          }
+                          // 学制 回显
+                          for (let item of this.edTypeItemList) {
+                            if (item.id === this.dataForm.educationType) {
+                              this.edTypeName = item.scoreName
+                            }
+                          }
+                          // 专业系数 回显
+                          for (let item of this.proItemList) {
+                            if (item.id === this.dataForm.proRatio) {
+                              this.proName = item.scoreName
+                            }
+                          }
+                          // 婚姻状况 回显
+                          for (let item of this.maritalItemList) {
+                            if (item.id === this.dataForm.maritalStatus) {
+                              this.maritalStatusName = item.dateItem
+                            }
+                          }
+                          // 职称等级 回显
+                          for (let item of this.titleItemList) {
+                            if (item.id === this.dataForm.titleLever) {
+                              this.zcLevelName = item.jobTitle
+                            }
+                          }
+                          this.dataForm.edBackgroundList = data.renRecordVo.edBackgroundList
+                          this.dataForm.workBackgroundList = data.renRecordVo.workBackgroundList
+                          if (this.dataForm.edBackgroundList.length === 0) {
+                            this.egSelectStartTimeList.push({
+                              selectMin: new Date(1970, 0, 1),
+                              selectMax: new Date(2080, 11, 31)
+                            })
+                            this.egSelectEndTimeList.push({
+                              selectMin: new Date(1970, 0, 1),
+                              selectMax: new Date(2080, 11, 31)
+                            })
+                          } else {
+                            for (let size = 0; size < this.dataForm.edBackgroundList.length; size++) {
+                              this.egSelectStartTimeList.push({
+                                selectMin: new Date(1970, 0, 1),
+                                selectMax: new Date(2080, 11, 31)
+                              })
+                              this.egSelectEndTimeList.push({
+                                selectMin: new Date(1970, 0, 1),
+                                selectMax: new Date(2080, 11, 31)
+                              })
+                            }
+                          }
+                          //
+                          if (this.dataForm.workBackgroundList.length === 0) {
+                            this.wxSelectStartTimeList.push({
+                              selectMin: new Date(1970, 0, 1),
+                              selectMax: new Date(2080, 11, 31)
+                            })
+                            this.wxSelectEndTimeList.push({
+                              selectMin: new Date(1970, 0, 1),
+                              selectMax: new Date(2080, 11, 31)
+                            })
+                          } else {
+                            for (let size = 0; size < this.dataForm.workBackgroundList.length; size++) {
+                              this.wxSelectStartTimeList.push({
+                                selectMin: new Date(1970, 0, 1),
+                                selectMax: new Date(2080, 11, 31)
+                              })
+                              this.wxSelectEndTimeList.push({
+                                selectMin: new Date(1970, 0, 1),
+                                selectMax: new Date(2080, 11, 31)
+                              })
+                            }
+                          }
+                        }
+                      })
+                    }
                   })
-                  this.egSelectEndTimeList.push({
-                    selectMin: new Date(1970, 0, 1),
-                    selectMax: new Date(2080, 11, 31)
-                  })
-                } else {
-                  for (let size = 0; size < this.dataForm.edBackgroundList.length; size++) {
-                    this.egSelectStartTimeList.push({
-                      selectMin: new Date(1970, 0, 1),
-                      selectMax: new Date(2080, 11, 31)
-                    })
-                    this.egSelectEndTimeList.push({
-                      selectMin: new Date(1970, 0, 1),
-                      selectMax: new Date(2080, 11, 31)
-                    })
-                  }
-                }
-                //
-                if (this.dataForm.workBackgroundList.length === 0) {
-                  this.wxSelectStartTimeList.push({
-                    selectMin: new Date(1970, 0, 1),
-                    selectMax: new Date(2080, 11, 31)
-                  })
-                  this.wxSelectEndTimeList.push({
-                    selectMin: new Date(1970, 0, 1),
-                    selectMax: new Date(2080, 11, 31)
-                  })
-                } else {
-                  for (let size = 0; size < this.dataForm.workBackgroundList.length; size++) {
-                    this.wxSelectStartTimeList.push({
-                      selectMin: new Date(1970, 0, 1),
-                      selectMax: new Date(2080, 11, 31)
-                    })
-                    this.wxSelectEndTimeList.push({
-                      selectMin: new Date(1970, 0, 1),
-                      selectMax: new Date(2080, 11, 31)
-                    })
-                  }
-                }
-              }
+                })
+              })
             })
-          }
+          })
         })
       },
       // 表单提交
