@@ -63,12 +63,12 @@
                      :rules="[{ required:true, message: '请填写毕业时间' }]"/>
         </van-form>
         <!--工作经验部分-->
-        <div style="margin-top:5px;">
+        <div style="margin-top:5px;margin-bottom:5px;">
           <van-button icon="plus" type="info" size="small" @click="workBackgroundAddHandle">添加工作经历</van-button>
         </div>
         <div style="max-height:300px;overflow:scroll;">
           <div :key="item + index" v-for="(item,index) in dataForm.workBackgroundList" class="row_content">
-            <van-row type="flex" align="bottom" justify="end">
+            <van-row type="flex" align="bottom" justify="end" style="margin-top:10px;padding-bottom:5px;">
               <van-col span="17">
                 <van-field v-model="item.monthRangeDate[0]" label="开始时间:" @click="wxStartTimeAddEvent(index)"  disabled/>
                 <van-field v-model="item.monthRangeDate[1]" label="结束时间:" @click="wxEndTimeAddEvent(index)" disabled/>
@@ -81,12 +81,12 @@
           </div>
         </div>
         <!--教育背景部分-->
-        <div style="margin-top:5px;">
+        <div style="margin-top:5px;margin-bottom:5px;">
           <van-button icon="plus" type="info" size="small" @click="edBackgroundAddHandle">添加教育背景</van-button>
         </div>
         <div style="max-height:300px;overflow:scroll;">
           <div :key="item + index" v-for="(item,index) in dataForm.edBackgroundList" class="row_content">
-            <van-row type="flex" align="bottom" justify="end">
+            <van-row type="flex" align="bottom" justify="end" style="margin-top:10px;padding-bottom:5px;">
               <van-col span="17">
                 <van-field v-model="item.monthRangeDate[0]" label="开始时间:" @click="egStartTimeAddEvent(index)"  disabled/>
                 <van-field v-model="item.monthRangeDate[1]" label="结束时间:" @click="egEndTimeAddEvent(index)" disabled/>
@@ -463,7 +463,6 @@
                     this.zcLevelName = item.jobTitle
                   }
                 }
-
                 this.dataForm.edBackgroundList = data.renRecordVo.edBackgroundList
                 this.dataForm.workBackgroundList = data.renRecordVo.workBackgroundList
               }
