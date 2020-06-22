@@ -140,7 +140,7 @@
   export default {
     data () {
       return {
-         loadFlag: true,
+         loadFlag: false,
         activeNames: [],
         // 教育背景
         jybjShow: false,
@@ -214,6 +214,7 @@
       },
       // 获取数据列表
       getDataList () {
+        this.loadFlag = true
         this.dataListLoading = true
         this.$http({
           url: this.$http.adornUrl('/ren/record/page'),
@@ -234,7 +235,6 @@
             this.$message.error(data.msg)
             this.dataList = []
             this.totalPage = 0
-            this.loadFlag = true
           }
           this.dataListLoading = false
         })
