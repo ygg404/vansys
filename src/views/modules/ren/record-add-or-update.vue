@@ -63,7 +63,7 @@
           <van-field v-model="proName" label="专业系数"  name="proRatio" @click="proRatioShow = true" readonly
                      placeholder="专业系数" :rules="[{ required:true, message: '请填写专业系数' }]"/>
           <van-field v-model="dataForm.educationTime" label="毕业时间"  name="educationTime" @click="edTimeShow = true" readonly
-                     :rules="[{ required:true, message: '请填写毕业时间' }]"/>
+                     placeholder="请选择毕业时间" :rules="[{ required:true, message: '请填写毕业时间' }]"/>
         </van-form>
         <!--教育背景部分-->
         <div style="margin-top:5px;margin-bottom:5px;">
