@@ -1,7 +1,7 @@
 <template>
   <div>
-    <van-dialog title='编辑个人档案' use-slot show-cancel-button v-model="visible" confirm-button-text="提交"
-                @cancel="visible = false" @confirm="dataFormSubmit" :beforeClose="beforeClose">
+    <van-dialog title='编辑个人档案' use-slot  v-model="visible" :showConfirmButton="false"
+                 :beforeClose="beforeClose">
       <div :style="'max-height: ' + (documentClientHeight - 200).toString() + 'px'" style="overflow-y: auto;"
             v-loading="loading">
         <van-form  ref="dataForm">
@@ -40,7 +40,7 @@
           <van-field label="手机号" v-model="dataForm.mobile" name="mobile" placeholder="填写手机号" type="digit"
                      :rules="[{ required: true, message: '请填写手机号码' }]"></van-field>
           <van-field label="电子邮件" v-model="dataForm.email"  name="email" placeholder="电子邮件"
-                     :rules="[{ validator:asyncValidator, message: '请填写正确的邮箱' }]" ></van-field>
+                     :rules="[{ required: true, message: '请填写正确的邮箱' }]" ></van-field>
           <van-field label="入职时间" v-model="dataForm.entryTime" name="entryTime" placeholder="入职时间" @click="entryTimeShow=true" readonly clickable
                      :rules="[{ required:true, message: '请选择入职时间' }]" ></van-field>
           <van-field label="试用期(月)" v-model="dataForm.trialPeriod" name="trialPeriod" placeholder="试用期(月)" type="digit"
@@ -104,7 +104,34 @@
         </div>
         <!---->
       </div>
+      <van-row type="flex" align="center" justify="space-around" style="padding-bottom:10px;padding-top:5px;">
+        <van-col span="6"><van-button size="small" type="danger" @click="visible = false">取消</van-button></van-col>
+        <van-col span="6" v-if="dataForm.isAudit == 1"> <van-button size="small" type="warning" @click="returnAuditHandle()">退回重改</van-button></van-col>
+        <van-col span="6" v-if="dataForm.isAudit == 1"><van-button size="small" type="info" @click="dataFormSubmit()">审核确定</van-button></van-col>
+        <van-col span="6"  v-if="dataForm.isAudit == 0"><van-button size="small" type="primary" @click="dataFormSubmit()">提交审核</van-button></van-col>
+    </van-row>
+
+
     </van-dialog>
+
+    <!--档案审核返退内容表-->
+    <van-dialog title="档案退回重改意见" v-model="returnAuditVisible"
+                :showCancelButton="true" :cancelButtonText="返回"
+                @confirm="auditFormSubmit()" @cancel="returnAuditVisible = false">
+      <van-field
+        rows="4"
+        maxlength="1000"
+        autosize
+        label="留言"
+        type="textarea"
+        placeholder="请输入返退重改意见"
+                 v-model="dataForm.auditMsg" />
+      <!--<span slot="footer" class="dialog-footer">-->
+      <!--<van-button @click="returnAuditVisible = false" >返回</van-button>-->
+      <!--<van-button @click="auditFormSubmit()" type="danger" >确定返退</van-button>-->
+      <!--</span>-->
+    </van-dialog>
+
     <!-- 省市控件-->
     <van-popup v-model="areaShow" position="bottom" :style="{ height: '50%' }">
       <van-area title="选择省市" :area-list="areaList" :columns-num="2" @cancel="areaShow=false" @confirm="placeChangeHandle" />
@@ -181,7 +208,7 @@
   import {provinceAndCityData} from 'element-china-area-data'
   import moment from 'moment'
   import lrz from 'lrz'
-  import {getUUID , stringIsNull} from '@/utils'
+  import {getUUID, stringIsNull} from '@/utils'
   import {areaList} from '@/utils/areaList'
   import {getJobItem, getMaritalItem} from '@/utils/selectedItem'
 
@@ -272,7 +299,7 @@
       }
     },
     methods: {
-      init( id ,isaudit = 0) {
+      init (id, isaudit = 0) {
         this.dataForm.userId = id || 0
         this.visible = true
         this.$nextTick(() => {
@@ -313,7 +340,7 @@
                           this.dataForm.proRatio = data.renRecordVo.proRatio
                           this.dataForm.proName = stringIsNull(data.renRecordVo.proRatio) ? '' : this.proItemList.find(item => item.id == data.renRecordVo.proRatio).scoreName
                           this.dataForm.titleLever = data.renRecordVo.titleLever
-                          this.dataForm.titleName = stringIsNull(data.renRecordVo.titleLever) ? '' :this.titleItemList.find( item=> item.id == data.renRecordVo.titleLever).jobTitle
+                          this.dataForm.titleName = stringIsNull(data.renRecordVo.titleLever) ? '' : this.titleItemList.find(item => item.id == data.renRecordVo.titleLever).jobTitle
                           this.dataForm.email = data.renRecordVo.email
                           this.dataForm.mobile = data.renRecordVo.mobile
                           this.dataForm.trialPeriod = data.renRecordVo.trialPeriod
@@ -327,13 +354,13 @@
                           this.dataForm.headImg = data.renRecordVo.headImg
                           this.dataForm.isAudit = isaudit
                           this.dataForm.auditMsg = data.renRecordVo.auditMsg
-                          for (let edBackground of data.renRecordVo.edBackgroundList){
+                          for (let edBackground of data.renRecordVo.edBackgroundList) {
                             edBackground.edId = getUUID()
-                            edBackground.monthRangeDate = [edBackground.startDate , edBackground.endDate]
+                            edBackground.monthRangeDate = [edBackground.startDate, edBackground.endDate]
                           }
-                          for (let wBackground of data.renRecordVo.workBackgroundList){
+                          for (let wBackground of data.renRecordVo.workBackgroundList) {
                             wBackground.wbId = getUUID()
-                            wBackground.monthRangeDate = [wBackground.startDate , wBackground.endDate]
+                            wBackground.monthRangeDate = [wBackground.startDate, wBackground.endDate]
                           }
                           this.dataForm.edBackgroundList = data.renRecordVo.edBackgroundList
                           this.dataForm.workBackgroundList = data.renRecordVo.workBackgroundList
@@ -493,21 +520,21 @@
         this.hyShow = false
       },
       // 毕业时间选择
-      onEdTimeConfirm(date) {
+      onEdTimeConfirm (date) {
         console.log(date)
         this.dataForm.educationTime = moment(date).format('YYYY-MM')
         this.edTimeShow = false
       },
       // 表单提交
-      dataFormSubmit() {
+      dataFormSubmit () {
         console.log('eee')
         this.$refs['dataForm'].validateAll().then(
-          success =>{
-            for (let edBackground of this.dataForm.edBackgroundList){
+          success => {
+            for (let edBackground of this.dataForm.edBackgroundList) {
               edBackground.startDate = moment(edBackground.monthRangeDate[0]).format('YYYY-MM-DD')
               edBackground.endDate = moment(edBackground.monthRangeDate[1]).format('YYYY-MM-DD')
             }
-            for (let wBackground of this.dataForm.workBackgroundList){
+            for (let wBackground of this.dataForm.workBackgroundList) {
               wBackground.startDate = moment(wBackground.monthRangeDate[0]).format('YYYY-MM-DD')
               wBackground.endDate = moment(wBackground.monthRangeDate[1]).format('YYYY-MM-DD')
             }
@@ -535,7 +562,7 @@
                 this.$message.error(data.msg)
               }
             })
-        })
+          })
       },
             // 添加教育背景
       edBackgroundAddHandle () {
@@ -602,9 +629,9 @@
         this.returnAuditVisible = true
       },
       // 退回重改意见
-      auditFormSubmit(){
+      auditFormSubmit () {
         console.log(this.dataForm.auditMsg)
-        if (this.dataForm.auditMsg === undefined || this.dataForm.auditMsg === null){
+        if (this.dataForm.auditMsg === undefined || this.dataForm.auditMsg === null) {
           this.$message.error('审核反馈意见不能为空！')
           return
         }
@@ -697,7 +724,7 @@
         this.dataForm.edBackgroundList.push({
           edId: getUUID(),
           userId: this.dataForm.userId,
-          monthRangeDate: ['',''],
+          monthRangeDate: ['', ''],
           educationBackground: '',
           educationSchool: '',
           major: ''
@@ -705,9 +732,9 @@
         console.log(this.dataForm.edBackgroundList)
       },
       // 删除教育背景
-      edBackgroundDeleteHandle ( edId) {
+      edBackgroundDeleteHandle (edId) {
         let edTmpeList = []
-        for (let edBackground of this.dataForm.edBackgroundList){
+        for (let edBackground of this.dataForm.edBackgroundList) {
           if (edBackground.edId !== edId) {
             edTmpeList.push(edBackground)
           }
@@ -719,16 +746,16 @@
         this.dataForm.workBackgroundList.push({
           wbId: getUUID(),
           userId: this.dataForm.userId,
-          monthRangeDate: ['',''],
+          monthRangeDate: ['', ''],
           company: '',
           jobPosition: '',
           jobDescription: ''
         })
       },
       // 删除工作经验
-      workBackgroundDeleteHandle ( wbId) {
+      workBackgroundDeleteHandle (wbId) {
         let workBackTempList = []
-        for (let wbground of this.dataForm.workBackgroundList){
+        for (let wbground of this.dataForm.workBackgroundList) {
           if (wbground.wbId !== wbId) {
             workBackTempList.push(wbground)
           }
@@ -751,14 +778,14 @@
               that.dataForm.headImg = rst.base64
             }).catch(function (error) {
             // 失败时执行
-            that.$message.error('上传图片有误，请重新上传！')
-          }).always(function () {
+              that.$message.error('上传图片有误，请重新上传！')
+            }).always(function () {
             // 不管成功或失败，都会执行
-          })
+            })
         }
       },
       // 获取省市名称
-      getPlaceName(nProvinceId, nCityId) {
+      getPlaceName (nProvinceId, nCityId) {
         let pName = ''
         for (let provinceOption of this.placeOptions) {
           if (provinceOption.value === nProvinceId) {
