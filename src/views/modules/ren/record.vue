@@ -25,7 +25,6 @@
                   <van-row type="flex" align="center" justify="center">
                     <van-col span="10" style="text-align: center;">
                       <van-image width="100" height="100" :src="item.headImg" />
-                      <van-button size="mini" type="info" @click="addOrUpdateHandle(item.userId)">编辑资料</van-button>
                     </van-col>
                     <van-col span="14">
                       <van-row><van-col span="24" class="title_info_font">用户id:{{item.userId}}</van-col></van-row>
@@ -39,8 +38,8 @@
               </van-row>
             </template>
             <div style="padding:0px 16px 0px 16px;">
-              <div style="color:#4c4e51;padding-bottom:2px;margin-bottom:2px;font-size:16px;border-bottom:1px solid dodgerblue;">
-                详细资料
+              <div class="zl">
+                详细资料 <van-button size="mini" type="info" @click="addOrUpdateHandle(item.userId)" style="float:right;">编辑资料</van-button>
               </div>
               <van-row class="card_name_title">
                 <van-col span="6">身份证号:</van-col>
@@ -363,5 +362,8 @@
   }
   .van-loading__text{
     font-size:16px;
+  }
+  .zl{
+    color:#4c4e51;padding-bottom:2px;margin-bottom:2px;font-size:16px;border-bottom:1px solid dodgerblue;
   }
 </style>
