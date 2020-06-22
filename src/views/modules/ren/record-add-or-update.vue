@@ -28,40 +28,61 @@
               <input type="radio"  v-model="dataForm.sex" id="s2" value="2"  style="zoom:2;margin-left: 6px;width:9px;"/>女
             </template>
           </van-field>
-          <van-field label="身份证号" v-model="dataForm.idNo" type="number" name="idNo" :rules="[{ required: true, message: '请填写身份证信息' }]"/>
-          <van-field label="生日" v-model="dataForm.birthday" name="birthday" clickable @click="birthdayShow = true"
-                     :rules="[{ required: true, message: '请填写生日信息' }]"/>
-          <van-field label="籍贯" v-model="dataForm.nativePlace" name="nativePlace" clickable @click="areaShow = true"
-                     :rules="[{ required: true, message: '请填写籍贯' }]"/>
-          <van-field label="婚姻状况" v-model="maritalStatusName" name="maritalStatus" clickable @click="hyShow = true"
-                     :rules="[{ required: true, message: '请填写婚姻状况' }]"/>
-          <van-field label="手机号" v-model="dataForm.mobile" type="tel" name="mobile" :rules="[{ required: true, message: '请填写手机号码' }]"/>
+          <van-field label="身份证号" v-model="dataForm.idNo" type="number" name="idNo"
+                     placeholder="身份证号" :rules="[{ required: true, message: '请填写身份证信息' }]"/>
+          <van-field label="生日" v-model="dataForm.birthday" name="birthday" clickable @click="birthdayShow = true" readonly
+                     placeholder="出生日期" :rules="[{ required: true, message: '请填写生日信息' }]"/>
+          <van-field label="籍贯" v-model="dataForm.nativePlace" name="nativePlace" clickable @click="areaShow = true" readonly
+                     placeholder="请选择籍贯" :rules="[{ required: true, message: '请填写籍贯' }]"/>
+          <van-field label="婚姻状况" v-model="maritalStatusName" name="maritalStatus" clickable @click="hyShow = true" readonly
+                     placeholder="请选择婚姻状况" :rules="[{ required: true, message: '请填写婚姻状况' }]"/>
+          <van-field label="手机号" v-model="dataForm.mobile" type="tel" name="mobile"
+                     placeholder="手机号" :rules="[{ required: true, message: '请填写手机号码' }]"/>
           <van-field label="邮箱" v-model="dataForm.email"  name="email"
-                     :rules="[{ required: true, message: '请填写正确的邮箱' }]"/>
-          <van-field label="入职时间" v-model="dataForm.entryTime" name="entryTime"@click="entryTimeShow=true" clickable
-                     :rules="[{ required:true, message: '请选择入职时间' }]"/>
-          <van-field label="试用期(月)" v-model="dataForm.trialPeriod" name="trialPeriod"  type="digit" :rules="[{ required:true, message: '试用期（月）不能为空' }]"/>
+                     placeholder="邮箱" :rules="[{ required: true, message: '请填写正确的邮箱' }]"/>
+          <van-field label="入职时间" v-model="dataForm.entryTime" name="entryTime"@click="entryTimeShow=true" readonly
+                     placeholder="入职时间" :rules="[{ required:true, message: '请选择入职时间' }]"/>
+          <van-field label="试用期(月)" v-model="dataForm.trialPeriod" name="trialPeriod"  type="digit"
+                     placeholder="试用期(月)" :rules="[{ required:true, message: '试用期（月）不能为空' }]"/>
           <van-field v-model="dataForm.houseType" label="住房类型" :rules="[{ required:true, message: '住房类型不能为空' }]">
             <template slot="input">
               <input type="radio"  v-model="dataForm.houseType" id="h1" value="1"  style="zoom:2;width:9px;"/>本地居民
               <input type="radio"  v-model="dataForm.houseType" id="h2" value="2"  style="zoom:2;margin-left: 6px;width:9px;"/>租房
             </template>
           </van-field>
-          <van-field v-model="zcLevelName" label="职称等级" name="zcLevelName" @click="zcLevelShow = true" clickable
-                     :rules="[{ required:true, message: '职称等级不能为空' }]"/>
-          <van-field v-model="jobTypeName" label="工作类型" name="jobType" @click="jobTypeShow = true" clickable
-                     :rules="[{ required:true, message: '工作类型不能为空' }]"/>
-          <van-field v-model="dataForm.dutyName" label="职务"  name="dutyId"  @click="dutyShow = true" clickable
-                     :rules="[{ required:true, message: '请填写职务' }]"/>
-          <van-field v-model="educationName" label="最高学历"  name="education"  @click="edShow = true" clickable
-                     :rules="[{ required:true, message: '请填写最高学历' }]"/>
-          <van-field v-model="edTypeName" label="学制"  name="educationType"  @click="edTypeShow = true" clickable
-                     :rules="[{ required:true, message: '请填写学制' }]"/>
-          <van-field v-model="proName" label="专业系数"  name="proRatio" @click="proRatioShow = true" clickable
-                     :rules="[{ required:true, message: '请填写专业系数' }]"/>
-          <van-field v-model="dataForm.educationTime" label="毕业时间"  name="educationTime" @click="edTimeShow = true" clickable
+          <van-field v-model="zcLevelName" label="职称等级" name="zcLevelName" @click="zcLevelShow = true" readonly
+                     placeholder="请选择职称等级" :rules="[{ required:true, message: '职称等级不能为空' }]"/>
+          <van-field v-model="jobTypeName" label="工作类型" name="jobType" @click="jobTypeShow = true" readonly
+                     placeholder="请选择工作类型" :rules="[{ required:true, message: '工作类型不能为空' }]"/>
+          <van-field v-model="dataForm.dutyName" label="职务"  name="dutyId"  @click="dutyShow = true" readonly
+                     placeholder="请选择职务" :rules="[{ required:true, message: '请填写职务' }]"/>
+          <van-field v-model="educationName" label="最高学历"  name="education"  @click="edShow = true" readonly
+                     placeholder="最高学历" :rules="[{ required:true, message: '请填写最高学历' }]"/>
+          <van-field v-model="edTypeName" label="学制"  name="educationType"  @click="edTypeShow = true" readonly
+                     placeholder="学制" :rules="[{ required:true, message: '请填写学制' }]"/>
+          <van-field v-model="proName" label="专业系数"  name="proRatio" @click="proRatioShow = true" readonly
+                     placeholder="专业系数" :rules="[{ required:true, message: '请填写专业系数' }]"/>
+          <van-field v-model="dataForm.educationTime" label="毕业时间"  name="educationTime" @click="edTimeShow = true" readonly
                      :rules="[{ required:true, message: '请填写毕业时间' }]"/>
         </van-form>
+        <!--教育背景部分-->
+        <div style="margin-top:5px;margin-bottom:5px;">
+          <van-button icon="plus" type="info" size="small" @click="edBackgroundAddHandle">添加教育背景</van-button>
+        </div>
+        <div style="max-height:300px;overflow:scroll;">
+          <div :key="item + index" v-for="(item,index) in dataForm.edBackgroundList" class="row_content">
+            <van-row type="flex" align="bottom" justify="end" style="margin-top:10px;padding-bottom:5px;">
+              <van-col span="17">
+                <van-field v-model="item.monthRangeDate[0]" label="开始时间:" @click="egStartTimeAddEvent(index)"  disabled/>
+                <van-field v-model="item.monthRangeDate[1]" label="结束时间:" @click="egEndTimeAddEvent(index)"  disabled/>
+                <van-field v-model="item.educationBackground" label="学历:"  />
+                <van-field v-model="item.educationSchool" label="学校:"  />
+                <van-field v-model="item.major" label="专业:"  />
+              </van-col>
+              <van-col span="6"><van-button type="danger" size="small" @click="edBackgroundDeleteHandle(item.edId)">删除</van-button></van-col>
+            </van-row>
+          </div>
+        </div>
         <!--工作经验部分-->
         <div style="margin-top:5px;margin-bottom:5px;">
           <van-button icon="plus" type="info" size="small" @click="workBackgroundAddHandle">添加工作经历</van-button>
@@ -76,25 +97,7 @@
                 <van-field v-model="item.jobPosition" label="职位:"  />
                 <van-field v-model="item.jobDescription" label="工作描述:"  />
               </van-col>
-              <van-col span="6"><van-button type="info" size="small" @click="workBackgroundDeleteHandle(item.wbId)">删除</van-button></van-col>
-            </van-row>
-          </div>
-        </div>
-        <!--教育背景部分-->
-        <div style="margin-top:5px;margin-bottom:5px;">
-          <van-button icon="plus" type="info" size="small" @click="edBackgroundAddHandle">添加教育背景</van-button>
-        </div>
-        <div style="max-height:300px;overflow:scroll;">
-          <div :key="item + index" v-for="(item,index) in dataForm.edBackgroundList" class="row_content">
-            <van-row type="flex" align="bottom" justify="end" style="margin-top:10px;padding-bottom:5px;">
-              <van-col span="17">
-                <van-field v-model="item.monthRangeDate[0]" label="开始时间:" @click="egStartTimeAddEvent(index)"  disabled/>
-                <van-field v-model="item.monthRangeDate[1]" label="结束时间:" @click="egEndTimeAddEvent(index)" disabled/>
-                <van-field v-model="item.educationBackground" label="学历:"  />
-                <van-field v-model="item.educationSchool" label="学校:"  />
-                <van-field v-model="item.major" label="专业:"  />
-              </van-col>
-              <van-col span="6"><van-button type="info" size="small" @click="edBackgroundDeleteHandle(item.edId)">删除</van-button></van-col>
+              <van-col span="6"><van-button type="danger" size="small" @click="workBackgroundDeleteHandle(item.wbId)">删除</van-button></van-col>
             </van-row>
           </div>
         </div>
@@ -151,17 +154,25 @@
 
     <!--单条教育背景日期选择器-->
     <van-popup v-model="egStartTimeAddShow" position="bottom" :style="{ height: '50%' }" ref="edTypeId">
-      <van-datetime-picker type="year-month" title="开始时间" @cancel="egStartTimeAddShow=false" @confirm="oneEgStartTimeAddConfirm"/>
+      <van-datetime-picker type="year-month" title="开始时间"
+                           :min-date="this.egSelectStartTimeList[egTimeAddIndex].selectMin" :max-date="this.egSelectStartTimeList[egTimeAddIndex].selectMax"
+                           @cancel="egStartTimeAddShow=false" @confirm="oneEgStartTimeAddConfirm"/>
     </van-popup>
     <van-popup v-model="egEndTimeAddShow" position="bottom" :style="{ height: '50%' }" ref="edTypeId">
-      <van-datetime-picker type="year-month" title="结束时间" @cancel="egEndTimeAddShow=false" @confirm="oneEgEndTimeAddConfirm"/>
+      <van-datetime-picker type="year-month" title="结束时间"
+                           :min-date="this.egSelectEndTimeList[egTimeAddIndex].selectMin" :max-date="this.egSelectEndTimeList[egTimeAddIndex].selectMax"
+                           @cancel="egEndTimeAddShow=false" @confirm="oneEgEndTimeAddConfirm"/>
     </van-popup>
     <!--单条工作经历日期选择器-->
     <van-popup v-model="wxStartTimeAddShow" position="bottom" :style="{ height: '50%' }" ref="edTypeId">
-      <van-datetime-picker type="year-month" title="开始时间" @cancel="wxStartTimeAddShow=false" @confirm="oneWxStartTimeAddConfirm"/>
+      <van-datetime-picker type="year-month" title="开始时间"
+                           :min-date="this.wxSelectStartTimeList[wxTimeAddIndex].selectMin" :max-date="this.wxSelectStartTimeList[wxTimeAddIndex].selectMax"
+                           @cancel="wxStartTimeAddShow=false" @confirm="oneWxStartTimeAddConfirm"/>
     </van-popup>
     <van-popup v-model="wxEndTimeAddShow" position="bottom" :style="{ height: '50%' }" ref="edTypeId">
-      <van-datetime-picker type="year-month" title="结束时间" @cancel="wxEndTimeAddShow=false" @confirm="oneWxEndTimeAddConfirm"/>
+      <van-datetime-picker type="year-month" title="结束时间"
+                           :min-date="this.wxSelectEndTimeList[wxTimeAddIndex].selectMin" :max-date="this.wxSelectEndTimeList[wxTimeAddIndex].selectMax"
+                           @cancel="wxEndTimeAddShow=false" @confirm="oneWxEndTimeAddConfirm"/>
     </van-popup>
 
   </div>
@@ -177,10 +188,16 @@
   export default {
     data () {
       return {
-        wxStartTimeAddShow: false,
-        wxEndTimeAddShow: false,
+        egSelectStartTimeList: [], // 教育背景提供开始选择
+        egSelectEndTimeList: [], // 教育背景提供结束选择
         egStartTimeAddShow: false,
         egEndTimeAddShow: false,
+        egTimeAddIndex: 0, // 暂存变量 下标
+        wxSelectStartTimeList: [],
+        wxSelectEndTimeList: [],
+        wxStartTimeAddShow: false,
+        wxEndTimeAddShow: false,
+        wxTimeAddIndex: 0, // 暂存变量 下标
         jobTypeName: '',
         educationName: '', // 最高学历
         edTypeName: '', // 学制
@@ -262,18 +279,26 @@
       },
       oneEgStartTimeAddConfirm (date) {
         this.dataForm.edBackgroundList[this.egTimeAddIndex].monthRangeDate[0] = moment(date).format('YYYY-MM')
+        // 时间控件设置 结束最小 时间 起码要大于 选中日期 一个月
+        this.egSelectEndTimeList[this.egTimeAddIndex].selectMin = new Date(date.getFullYear(), date.getMonth() + 1)
         this.egStartTimeAddShow = false
       },
       oneEgEndTimeAddConfirm (date) {
         this.dataForm.edBackgroundList[this.egTimeAddIndex].monthRangeDate[1] = moment(date).format('YYYY-MM')
+        // 时间控件设置 开始最大 时间 起码要小于 选中日期 一个月
+        this.egSelectStartTimeList[this.egTimeAddIndex].selectMax = new Date(date.getFullYear(), date.getMonth() - 1)
         this.egEndTimeAddShow = false
       },
       oneWxStartTimeAddConfirm (date) {
         this.dataForm.workBackgroundList[this.wxTimeAddIndex].monthRangeDate[0] = moment(date).format('YYYY-MM')
+        // 时间控件设置 结束最小 时间 起码要大于 选中日期 一个月
+        this.wxSelectEndTimeList[this.wxTimeAddIndex].selectMin = new Date(date.getFullYear(), date.getMonth() + 1)
         this.wxStartTimeAddShow = false
       },
       oneWxEndTimeAddConfirm (date) {
         this.dataForm.workBackgroundList[this.wxTimeAddIndex].monthRangeDate[1] = moment(date).format('YYYY-MM')
+        // 时间控件设置 开始最大 时间 起码要小于 选中日期 一个月
+        this.wxSelectStartTimeList[this.wxTimeAddIndex].selectMax = new Date(date.getFullYear(), date.getMonth() - 1)
         this.wxEndTimeAddShow = false
       },
       asyncValidator (val) {
@@ -465,6 +490,49 @@
                 }
                 this.dataForm.edBackgroundList = data.renRecordVo.edBackgroundList
                 this.dataForm.workBackgroundList = data.renRecordVo.workBackgroundList
+                if (this.dataForm.edBackgroundList.length === 0) {
+                  this.egSelectStartTimeList.push({
+                    selectMin: new Date(1970, 0, 1),
+                    selectMax: new Date(2080, 11, 31)
+                  })
+                  this.egSelectEndTimeList.push({
+                    selectMin: new Date(1970, 0, 1),
+                    selectMax: new Date(2080, 11, 31)
+                  })
+                } else {
+                  for (let size = 0; size < this.dataForm.edBackgroundList.length; size++) {
+                    this.egSelectStartTimeList.push({
+                      selectMin: new Date(1970, 0, 1),
+                      selectMax: new Date(2080, 11, 31)
+                    })
+                    this.egSelectEndTimeList.push({
+                      selectMin: new Date(1970, 0, 1),
+                      selectMax: new Date(2080, 11, 31)
+                    })
+                  }
+                }
+                //
+                if (this.dataForm.workBackgroundList.length === 0) {
+                  this.wxSelectStartTimeList.push({
+                    selectMin: new Date(1970, 0, 1),
+                    selectMax: new Date(2080, 11, 31)
+                  })
+                  this.wxSelectEndTimeList.push({
+                    selectMin: new Date(1970, 0, 1),
+                    selectMax: new Date(2080, 11, 31)
+                  })
+                } else {
+                  for (let size = 0; size < this.dataForm.workBackgroundList.length; size++) {
+                    this.wxSelectStartTimeList.push({
+                      selectMin: new Date(1970, 0, 1),
+                      selectMax: new Date(2080, 11, 31)
+                    })
+                    this.wxSelectEndTimeList.push({
+                      selectMin: new Date(1970, 0, 1),
+                      selectMax: new Date(2080, 11, 31)
+                    })
+                  }
+                }
               }
             })
           }
@@ -519,6 +587,14 @@
           educationSchool: '',
           major: ''
         })
+        this.egSelectStartTimeList.push({
+          selectMin: new Date(1970, 0, 1),
+          selectMax: new Date(2080, 11, 31)
+        })
+        this.egSelectEndTimeList.push({
+          selectMin: new Date(1970, 0, 1),
+          selectMax: new Date(2080, 11, 31)
+        })
         console.log(this.dataForm.edBackgroundList)
       },
       // 删除教育背景
@@ -540,6 +616,14 @@
           company: '',
           jobPosition: '',
           jobDescription: ''
+        })
+        this.wxSelectStartTimeList.push({
+          selectMin: new Date(1970, 0, 1),
+          selectMax: new Date(2080, 11, 31)
+        })
+        this.wxSelectEndTimeList.push({
+          selectMin: new Date(1970, 0, 1),
+          selectMax: new Date(2080, 11, 31)
         })
       },
       // 删除工作经验
@@ -748,7 +832,7 @@
     padding:7px 13px;
   }
   .row_content .van-cell{
-    padding:0px;
+    padding:2px;
   }
 
 </style>
