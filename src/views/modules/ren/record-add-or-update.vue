@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-dialog title='编辑个人档案' use-slot show-cancel-button v-model="visible" confirm-button-text="提交" 
+    <van-dialog title='编辑个人档案' use-slot show-cancel-button v-model="visible" confirm-button-text="提交"
                 v-if="visible" @cancel="visible = false" @confirm="dataFormSubmit" :beforeClose="beforeClose">
       <div :style="'max-height: ' + (documentClientHeight - 200).toString() + 'px'" style="overflow-y: auto;" class="record_content">
         <van-form  ref="dataForm">
@@ -28,11 +28,13 @@
               <input type="radio"  v-model="dataForm.sex" id="s2" value="2"  style="zoom:2;margin-left: 6px;width:9px;"/>女
             </template>
           </van-field>
+          <van-field label="身份证号" v-model="dataForm.idNo" type="number" name="idNo" :rules="[{ required: true, message: '请填写身份证信息' }]"/>
           <van-field label="生日" v-model="dataForm.birthday" name="birthday" clickable @click="birthdayShow = true"
                      :rules="[{ required: true, message: '请填写生日信息' }]"/>
           <van-field label="籍贯" v-model="dataForm.nativePlace" name="nativePlace" clickable @click="areaShow = true"
                      :rules="[{ required: true, message: '请填写籍贯' }]"/>
-          <van-field label="身份证号" v-model="dataForm.idNo" type="number" name="idNo" :rules="[{ required: true, message: '请填写身份证信息' }]"/>
+          <van-field label="婚姻状况" v-model="maritalStatusName" name="maritalStatus" clickable @click="hyShow = true"
+                     :rules="[{ required: true, message: '请填写婚姻状况' }]"/>
           <van-field label="手机号" v-model="dataForm.mobile" type="tel" name="mobile" :rules="[{ required: true, message: '请填写手机号码' }]"/>
           <van-field label="邮箱" v-model="dataForm.email"  name="email"
                      :rules="[{ required: true, message: '请填写正确的邮箱' }]"/>
@@ -45,15 +47,17 @@
               <input type="radio"  v-model="dataForm.houseType" id="h2" value="2"  style="zoom:2;margin-left: 6px;width:9px;"/>租房
             </template>
           </van-field>
-          <van-field v-model="dataForm.jobTypeName" label="工作类型" name="jobType" @click="jobTypeShow = true" clickable
+          <van-field v-model="zcLevelName" label="职称等级" name="zcLevelName" @click="zcLevelShow = true" clickable
+                     :rules="[{ required:true, message: '职称等级不能为空' }]"/>
+          <van-field v-model="jobTypeName" label="工作类型" name="jobType" @click="jobTypeShow = true" clickable
                      :rules="[{ required:true, message: '工作类型不能为空' }]"/>
           <van-field v-model="dataForm.dutyName" label="职务"  name="dutyId"  @click="dutyShow = true" clickable
                      :rules="[{ required:true, message: '请填写职务' }]"/>
-          <van-field v-model="dataForm.edName" label="最高学历"  name="education"  @click="edShow = true" clickable
+          <van-field v-model="educationName" label="最高学历"  name="education"  @click="edShow = true" clickable
                      :rules="[{ required:true, message: '请填写最高学历' }]"/>
-          <van-field v-model="dataForm.edTypeName" label="学制"  name="educationType"  @click="edTypeShow = true" clickable
+          <van-field v-model="edTypeName" label="学制"  name="educationType"  @click="edTypeShow = true" clickable
                      :rules="[{ required:true, message: '请填写学制' }]"/>
-          <van-field v-model="dataForm.proName" label="专业系数"  name="proRatio" @click="proRatioShow = true" clickable
+          <van-field v-model="proName" label="专业系数"  name="proRatio" @click="proRatioShow = true" clickable
                      :rules="[{ required:true, message: '请填写专业系数' }]"/>
           <van-field v-model="dataForm.educationTime" label="毕业时间"  name="educationTime" @click="edTimeShow = true" clickable
                      :rules="[{ required:true, message: '请填写毕业时间' }]"/>
@@ -64,17 +68,15 @@
         </div>
         <div style="max-height:300px;overflow:scroll;">
           <div :key="item + index" v-for="(item,index) in dataForm.workBackgroundList" class="row_content">
-            <div style="width:90%;margin-left:10%;">
-              <van-cell title="开始时间" is-link :value="item.monthRangeDate[0]" @click="wxStartTimeAddEvent(index)" />
-              <van-cell title="结束时间" is-link :value="item.monthRangeDate[1]" @click="wxEndTimeAddEvent(index)" />
-            </div>
             <van-row type="flex" align="bottom" justify="end">
-              <van-col span="16" align="center">
-                <div style="padding-top:3px;">企业:<input  v-model="item.company"/></div>
-                <div style="padding-top:3px;">职位:<input v-model="item.jobPosition"/></div>
-                <div style="padding-top:3px;">工作描述:<input  v-model="item.jobDescription"/></div>
+              <van-col span="17">
+                <van-field v-model="item.monthRangeDate[0]" label="开始时间:" @click="wxStartTimeAddEvent(index)"  disabled/>
+                <van-field v-model="item.monthRangeDate[1]" label="结束时间:" @click="wxEndTimeAddEvent(index)" disabled/>
+                <van-field v-model="item.company" label="企业:"  />
+                <van-field v-model="item.jobPosition" label="职位:"  />
+                <van-field v-model="item.jobDescription" label="工作描述:"  />
               </van-col>
-              <van-col span="8"><van-button type="info" size="small">删除</van-button></van-col>
+              <van-col span="6"><van-button type="info" size="small" @click="workBackgroundDeleteHandle(item.wbId)">删除</van-button></van-col>
             </van-row>
           </div>
         </div>
@@ -84,17 +86,15 @@
         </div>
         <div style="max-height:300px;overflow:scroll;">
           <div :key="item + index" v-for="(item,index) in dataForm.edBackgroundList" class="row_content">
-            <div style="width:90%;margin-left:10%;">
-              <van-cell title="开始时间" is-link :value="item.monthRangeDate[0]" @click="egStartTimeAddEvent(index)" />
-              <van-cell title="结束时间" is-link :value="item.monthRangeDate[1]" @click="egEndTimeAddEvent(index)" />
-            </div>
             <van-row type="flex" align="bottom" justify="end">
-              <van-col span="16" align="center">
-                <div style="padding-top:3px;">学历:<input  v-model="item.educationBackground"/></div>
-                <div style="padding-top:3px;">学校:<input v-model="item.educationSchool"/></div>
-                <div style="padding-top:3px;">专业:<input  v-model="item.major"/></div>
+              <van-col span="17">
+                <van-field v-model="item.monthRangeDate[0]" label="开始时间:" @click="egStartTimeAddEvent(index)"  disabled/>
+                <van-field v-model="item.monthRangeDate[1]" label="结束时间:" @click="egEndTimeAddEvent(index)" disabled/>
+                <van-field v-model="item.educationBackground" label="学历:"  />
+                <van-field v-model="item.educationSchool" label="学校:"  />
+                <van-field v-model="item.major" label="专业:"  />
               </van-col>
-              <van-col span="8"><van-button type="info" size="small">删除</van-button></van-col>
+              <van-col span="6"><van-button type="info" size="small" @click="edBackgroundDeleteHandle(item.edId)">删除</van-button></van-col>
             </van-row>
           </div>
         </div>
@@ -115,9 +115,17 @@
       <van-datetime-picker   type="date" title="选择生日" @cancel="birthdayShow=false" @confirm="onBirthdayConfirm"
                              :min-date="new Date(1950,0,1)" :max-date="new Date(2030,11,31)"/>
     </van-popup>
+    <!--婚姻状况选择器-->
+    <van-popup v-model="hyShow" position="bottom" :style="{ height: '50%' }" ref="jobTypeId">
+      <van-picker title="选择婚姻状况" show-toolbar @cancel="hyShow=false" value-key="dateItem" :columns="maritalItemList"  @confirm="onHyConfirm" />
+    </van-popup>
     <!-- 工作类型选择器-->
     <van-popup v-model="jobTypeShow" position="bottom" :style="{ height: '50%' }" ref="jobTypeId">
       <van-picker title="选择工作类型" show-toolbar @cancel="jobTypeShow=false" value-key="jobItem" :columns="jobItemList"  @confirm="onJobTypeConfirm" />
+    </van-popup>
+    <!--职称等级选择器-->
+    <van-popup v-model="zcLevelShow" position="bottom" :style="{ height: '50%' }" ref="jobTypeId">
+      <van-picker title="选择职称等级" show-toolbar @cancel="zcLevelShow=false" value-key="jobTitle" :columns="titleItemList"  @confirm="onZcConfirm" />
     </van-popup>
     <!-- 职务选择器-->
     <van-popup v-model="dutyShow" position="bottom" :style="{ height: '50%' }" ref="dutyId">
@@ -143,21 +151,17 @@
 
     <!--单条教育背景日期选择器-->
     <van-popup v-model="egStartTimeAddShow" position="bottom" :style="{ height: '50%' }" ref="edTypeId">
-      <van-datetime-picker type="year-month" title="开始时间" @cancel="egStartTimeAddShow=false" @confirm="oneEgStartTimeAddConfirm"
-                           :min-date="this.egSelectStartTimeList[egTimeAddIndex].selectMin" :max-date="this.egSelectStartTimeList[egTimeAddIndex].selectMax" />
+      <van-datetime-picker type="year-month" title="开始时间" @cancel="egStartTimeAddShow=false" @confirm="oneEgStartTimeAddConfirm"/>
     </van-popup>
     <van-popup v-model="egEndTimeAddShow" position="bottom" :style="{ height: '50%' }" ref="edTypeId">
-      <van-datetime-picker type="year-month" title="结束时间" @cancel="egEndTimeAddShow=false" @confirm="oneEgEndTimeAddConfirm"
-                           :min-date="this.egSelectEndTimeList[egTimeAddIndex].selectMin" :max-date="this.egSelectEndTimeList[egTimeAddIndex].selectMax" />
+      <van-datetime-picker type="year-month" title="结束时间" @cancel="egEndTimeAddShow=false" @confirm="oneEgEndTimeAddConfirm"/>
     </van-popup>
     <!--单条工作经历日期选择器-->
     <van-popup v-model="wxStartTimeAddShow" position="bottom" :style="{ height: '50%' }" ref="edTypeId">
-      <van-datetime-picker type="year-month" title="开始时间" @cancel="wxStartTimeAddShow=false" @confirm="oneWxStartTimeAddConfirm"
-                           :min-date="this.wxSelectStartTimeList[wxTimeAddIndex].selectMin" :max-date="this.wxSelectStartTimeList[wxTimeAddIndex].selectMax" />
+      <van-datetime-picker type="year-month" title="开始时间" @cancel="wxStartTimeAddShow=false" @confirm="oneWxStartTimeAddConfirm"/>
     </van-popup>
     <van-popup v-model="wxEndTimeAddShow" position="bottom" :style="{ height: '50%' }" ref="edTypeId">
-      <van-datetime-picker type="year-month" title="结束时间" @cancel="wxEndTimeAddShow=false" @confirm="oneWxEndTimeAddConfirm"
-                           :min-date="this.wxSelectEndTimeList[wxTimeAddIndex].selectMin" :max-date="this.wxSelectEndTimeList[wxTimeAddIndex].selectMax" />
+      <van-datetime-picker type="year-month" title="结束时间" @cancel="wxEndTimeAddShow=false" @confirm="oneWxEndTimeAddConfirm"/>
     </van-popup>
 
   </div>
@@ -173,16 +177,16 @@
   export default {
     data () {
       return {
-        egSelectStartTimeList: [], // 教育背景提供开始选择
-        egSelectEndTimeList: [], // 教育背景提供结束选择
-        egStartTimeAddShow: false,
-        egEndTimeAddShow: false,
-        egTimeAddIndex: 0, // 暂存变量 下标
-        wxSelectStartTimeList: [],
-        wxSelectEndTimeList: [],
         wxStartTimeAddShow: false,
         wxEndTimeAddShow: false,
-        wxTimeAddIndex: 0, // 暂存变量 下标
+        egStartTimeAddShow: false,
+        egEndTimeAddShow: false,
+        jobTypeName: '',
+        educationName: '', // 最高学历
+        edTypeName: '', // 学制
+        proName: '', // 专业系数
+        maritalStatusName: '', // 婚姻状况
+        zcLevelName: '', // 职称等级
         visible: false,
         areaShow: false,
         entryTimeShow: false,
@@ -193,6 +197,8 @@
         edTypeShow: false,
         edTimeShow: false,
         proRatioShow: false,
+        hyShow: false, // 婚姻状况
+        zcLevelShow: false,
         areaList: areaList,
         loading: true,
         loadingtext: '正在加载中',
@@ -256,26 +262,18 @@
       },
       oneEgStartTimeAddConfirm (date) {
         this.dataForm.edBackgroundList[this.egTimeAddIndex].monthRangeDate[0] = moment(date).format('YYYY-MM')
-        // 时间控件设置 结束最小 时间 起码要大于 选中日期 一个月
-        this.egSelectEndTimeList[this.egTimeAddIndex].selectMin = new Date(date.getFullYear(), date.getMonth() + 1)
         this.egStartTimeAddShow = false
       },
       oneEgEndTimeAddConfirm (date) {
         this.dataForm.edBackgroundList[this.egTimeAddIndex].monthRangeDate[1] = moment(date).format('YYYY-MM')
-        // 时间控件设置 开始最大 时间 起码要小于 选中日期 一个月
-        this.egSelectStartTimeList[this.egTimeAddIndex].selectMax = new Date(date.getFullYear(), date.getMonth() - 1)
         this.egEndTimeAddShow = false
       },
       oneWxStartTimeAddConfirm (date) {
         this.dataForm.workBackgroundList[this.wxTimeAddIndex].monthRangeDate[0] = moment(date).format('YYYY-MM')
-        // 时间控件设置 结束最小 时间 起码要大于 选中日期 一个月
-        this.wxSelectEndTimeList[this.wxTimeAddIndex].selectMin = new Date(date.getFullYear(), date.getMonth() + 1)
         this.wxStartTimeAddShow = false
       },
       oneWxEndTimeAddConfirm (date) {
         this.dataForm.workBackgroundList[this.wxTimeAddIndex].monthRangeDate[1] = moment(date).format('YYYY-MM')
-        // 时间控件设置 开始最大 时间 起码要小于 选中日期 一个月
-        this.wxSelectStartTimeList[this.wxTimeAddIndex].selectMax = new Date(date.getFullYear(), date.getMonth() - 1)
         this.wxEndTimeAddShow = false
       },
       asyncValidator (val) {
@@ -308,16 +306,26 @@
         this.dataForm.birthday = moment(date).format('YYYY-MM-DD')
         this.birthdayShow = false
       },
+      onZcConfirm (item) {
+        this.zcLevelName = item.jobTitle
+        this.dataForm.titleLever = item.id
+        this.zcLevelShow = false
+      },
+      onHyConfirm (item) {
+        this.maritalStatusName = item.dateItem
+        this.dataForm.maritalStatus = item.id
+        this.hyShow = false
+      },
       // 学历选择
       onEdConfirm (item) {
+        this.educationName = item.scoreName
         this.dataForm.education = item.id
-        this.dataForm.edName = item.scoreName
         this.edShow = false
       },
       // 学制选择器
       onEdTypeConfirm (item) {
         this.dataForm.educationType = item.id
-        this.dataForm.edTypeName = item.scoreName
+        this.edTypeName = item.scoreName
         this.edTypeShow = false
       },
       // 专业系数
@@ -329,7 +337,7 @@
       // 工作类型选择
       onJobTypeConfirm (item) {
         this.dataForm.jobType = item.id
-        this.dataForm.jobTypeName = item.jobItem
+        this.jobTypeName = item.jobItem
         this.jobTypeShow = false
       },
       // 职务选择
@@ -344,25 +352,23 @@
         this.dataForm.educationTime = moment(date).format('YYYY-MM')
         this.edTimeShow = false
       },
+      // 获取省市名称
+      getPlaceName (nProvinceId, nCityId) {
+        let pName = ''
+        for (let provinceOption of this.placeOptions) {
+          if (provinceOption.value === nProvinceId) {
+            pName += provinceOption.label
+            for (let cityOption of provinceOption.children) {
+              if (cityOption.value === nCityId) pName += cityOption.label
+            }
+            break
+          }
+        }
+        return pName
+      },
       init (id) {
         this.dataForm.userId = id || 0
         this.visible = true
-        this.egSelectStartTimeList.push({
-          selectMin: new Date(1970, 0, 1),
-          selectMax: new Date(2080, 11, 31)
-        })
-        this.egSelectEndTimeList.push({
-          selectMin: new Date(1970, 0, 1),
-          selectMax: new Date(2080, 11, 31)
-        })
-        this.wxSelectStartTimeList.push({
-          selectMin: new Date(1970, 0, 1),
-          selectMax: new Date(2080, 11, 31)
-        })
-        this.wxSelectEndTimeList.push({
-          selectMin: new Date(1970, 0, 1),
-          selectMax: new Date(2080, 11, 31)
-        })
         this.$nextTick(() => {
           // 学历对照表信息
           this.getScoreEdList(1).then(list => {
@@ -402,6 +408,7 @@
                 this.dataForm.educationType = data.renRecordVo.educationType
                 this.dataForm.educationTime = data.renRecordVo.educationTime
                 this.dataForm.proRatio = data.renRecordVo.proRatio
+                this.dataForm.dutyName = data.renRecordVo.dutyName
                 this.dataForm.titleLever = data.renRecordVo.titleLever
                 this.dataForm.dutyId = data.renRecordVo.dutyId
                 this.dataForm.email = data.renRecordVo.email
@@ -409,7 +416,7 @@
                 this.dataForm.trialPeriod = data.renRecordVo.trialPeriod
                 this.dataForm.nativeProvince = data.renRecordVo.nativeProvince
                 this.dataForm.nativeCity = data.renRecordVo.nativeCity
-                this.dataForm.nativePlace = [data.renRecordVo.nativeProvince, data.renRecordVo.nativeCity]
+                this.dataForm.nativePlace = this.getPlaceName(data.renRecordVo.nativeProvince, data.renRecordVo.nativeCity)
                 this.dataForm.maritalStatus = data.renRecordVo.maritalStatus
                 this.dataForm.headImg = data.renRecordVo.headImg
                 for (let edBackground of data.renRecordVo.edBackgroundList) {
@@ -420,6 +427,43 @@
                   wBackground.wbId = getUUID()
                   wBackground.monthRangeDate = [wBackground.startDate, wBackground.endDate]
                 }
+                // 职务 回显
+                for (let item of this.jobItemList) {
+                  if (item.id === this.dataForm.jobType) {
+                    this.jobTypeName = item.jobItem
+                  }
+                }
+                // 最高学历 回显
+                for (let item of this.edItemList) {
+                  if (item.id === this.dataForm.education) {
+                    this.educationName = item.scoreName
+                  }
+                }
+                // 学制 回显
+                for (let item of this.edTypeItemList) {
+                  if (item.id === this.dataForm.educationType) {
+                    this.edTypeName = item.scoreName
+                  }
+                }
+                // 专业系数 回显
+                for (let item of this.proItemList) {
+                  if (item.id === this.dataForm.proRatio) {
+                    this.proName = item.scoreName
+                  }
+                }
+                // 婚姻状况 回显
+                for (let item of this.maritalItemList) {
+                  if (item.id === this.dataForm.maritalStatus) {
+                    this.maritalStatusName = item.dateItem
+                  }
+                }
+                // 职称等级 回显
+                for (let item of this.titleItemList) {
+                  if (item.id === this.dataForm.titleLever) {
+                    this.zcLevelName = item.jobTitle
+                  }
+                }
+
                 this.dataForm.edBackgroundList = data.renRecordVo.edBackgroundList
                 this.dataForm.workBackgroundList = data.renRecordVo.workBackgroundList
               }
@@ -476,14 +520,6 @@
           educationSchool: '',
           major: ''
         })
-        this.egSelectStartTimeList.push({
-          selectMin: new Date(1970, 0, 1),
-          selectMax: new Date(2080, 11, 31)
-        })
-        this.egSelectEndTimeList.push({
-          selectMin: new Date(1970, 0, 1),
-          selectMax: new Date(2080, 11, 31)
-        })
         console.log(this.dataForm.edBackgroundList)
       },
       // 删除教育背景
@@ -505,14 +541,6 @@
           company: '',
           jobPosition: '',
           jobDescription: ''
-        })
-        this.wxSelectStartTimeList.push({
-          selectMin: new Date(1970, 0, 1),
-          selectMax: new Date(2080, 11, 31)
-        })
-        this.wxSelectEndTimeList.push({
-          selectMin: new Date(1970, 0, 1),
-          selectMax: new Date(2080, 11, 31)
         })
       },
       // 删除工作经验
@@ -605,15 +633,6 @@
 </script>
 
 <style scoped>
-  .row_content input{
-    outline-style: none ;
-    border: 1px solid #ccc;
-    border-radius: 2px;
-    /*padding: 14px 14px;*/
-    /*width: 620px;*/
-    height:25px;
-    font-size: 14px;
-  }
   .person_img {
     width: 100%;
     text-align: center;
