@@ -7,7 +7,7 @@
         <div style="font-size:17px;font-weight:600;">财务操作</div>
       </template>
       <!---->
-      <van-collapse :value="panelShow" @change="panelShowEvent" class="coll" style="width:95%;margin:0 auto;">
+      <van-collapse v-model="panelShow"  class="coll" style="width:95%;margin:0 auto;">
         <van-collapse-item  name="1" class="Infocollapse">
           <template slot="title">
             <div style="font-size:16px;font-weight:600;">合同基本信息</div>
@@ -52,7 +52,7 @@
       </van-collapse>
 
       <!---->
-      <van-collapse :value="paneEIShow" @change="paneEIShowEvent" style="width:95%;margin:0 auto;" class="coll">
+      <van-collapse v-model="paneEIShow"  style="width:95%;margin:0 auto;" class="coll">
         <van-collapse-item  name="1" class="InfoTitle">
           <template slot="title">
             <div style="font-size:16px;font-weight:600;">收支信息</div>
@@ -146,8 +146,6 @@
       panelShow: ['1'],
       paneEIShow: ['1'],
       noshowconfirmbtnflag: false,
-      // 卡片选项 默认
-      activeNames: ['2'],
       // 当前对话框
       visible: false,
       ProjectInfoPanel: [false],
@@ -215,22 +213,6 @@
       onDateConfirm (date) {
         this.dataForm.accountAddDateTime = moment(date).format('YYYY-MM-DD')
         this.datePickerShow = false
-      },
-      // 收支信息面板
-      paneEIShowEvent () {
-        if (this.paneEIShow.length === 1) {
-          this.paneEIShow = []
-        } else {
-          this.paneEIShow = ['1']
-        }
-      },
-      // 合同信息面板
-      panelShowEvent () {
-        if (this.panelShow.length === 1) {
-          this.panelShow = []
-        } else {
-          this.panelShow = ['1']
-        }
       },
       // 初始化
       init (contractNo) {
@@ -331,6 +313,7 @@
 // 新增按钮点击事件
       AddAcountInfoHandle () {
         this.AccountaddVisible = true
+        this.dataForm.accountAddDateTime = moment(new Date()).format('YYYY-MM-DD')
       },
       // 排序字段改变
       changeSort (val) {
@@ -360,6 +343,7 @@
       // 表单提交
       dataFormSubmit () {
         this.$refs['dataForm'].validateAll().then(success => {
+          console.log(this.dataForm.accountAddDateTime)
           this.$http({
             url: this.$http.adornUrl(`/finance/account/save`),
             method: 'post',
