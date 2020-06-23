@@ -10,7 +10,7 @@
           <el-input v-model="dataForm.key" placeholder="用户名" clearable></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button @click="getDataList()">查询</el-button>
+          <el-button @click="pageIndex=1,getDataList()">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -41,6 +41,7 @@
               <div class="zl">
                 <span>详细资料</span>
                 <van-button size="small" type="info" @click="addOrUpdateHandle(item.userId)" style="float:right;">编辑资料</van-button>
+                <van-button type="danger" size="small" @click="auditHandle(item.userId)" v-if="item.isAudit === 0">待审核</van-button>
               </div>
               <van-row class="card_name_title">
                 <van-col span="6">身份证号:</van-col>
@@ -101,8 +102,13 @@
               <!--<div>查看更多>></div>-->
               <van-row type="flex" align="center" justify="center">
                 <van-col span="8">查看更多>></van-col>
-                <van-col span="8" class="tac"><van-button type="info" size="small" @click="ebClickEvent(item)">教育背景</van-button></van-col>
-                <van-col span="8" class="tac"><van-button type="info" size="small" @click="jeClickEvent(item)">工作经历</van-button></van-col>
+                <van-col span="8" class="tac">
+                  <van-button type="info" size="small" @click="ebClickEvent(item)">教育背景</van-button>
+                </van-col>
+                <van-col span="8" class="tac">
+                  <van-button type="info" size="small" @click="jeClickEvent(item)">工作经历</van-button>
+                </van-col>
+
               </van-row>
             </div>
           </van-collapse-item>
