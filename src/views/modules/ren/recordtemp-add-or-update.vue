@@ -118,18 +118,16 @@
     <van-dialog title="档案退回重改意见" v-model="returnAuditVisible"
                 :showCancelButton="true" :cancelButtonText="返回"
                 @confirm="auditFormSubmit()" @cancel="returnAuditVisible = false">
-      <van-field
-        rows="4"
-        maxlength="1000"
-        autosize
-        label="留言"
-        type="textarea"
-        placeholder="请输入返退重改意见"
-                 v-model="dataForm.auditMsg" />
-      <!--<span slot="footer" class="dialog-footer">-->
-      <!--<van-button @click="returnAuditVisible = false" >返回</van-button>-->
-      <!--<van-button @click="auditFormSubmit()" type="danger" >确定返退</van-button>-->
-      <!--</span>-->
+      <div style="max-height:300px;overflow:scroll;" class="audit_sty">
+        <van-field
+          rows="2"
+          maxlength="1000"
+          autosize
+          label="留言"
+          type="textarea"
+          placeholder="请输入返退重改意见"
+          v-model="dataForm.auditMsg" />
+      </div>
     </van-dialog>
 
     <!-- 省市控件-->
@@ -527,16 +525,15 @@
       },
       // 表单提交
       dataFormSubmit () {
-        console.log('eee')
         this.$refs['dataForm'].validateAll().then(
           success => {
             for (let edBackground of this.dataForm.edBackgroundList) {
-              edBackground.startDate = moment(edBackground.monthRangeDate[0]).format('YYYY-MM-DD')
-              edBackground.endDate = moment(edBackground.monthRangeDate[1]).format('YYYY-MM-DD')
+              edBackground.startDate = edBackground.monthRangeDate[0]
+              edBackground.endDate = edBackground.monthRangeDate[1]
             }
             for (let wBackground of this.dataForm.workBackgroundList) {
-              wBackground.startDate = moment(wBackground.monthRangeDate[0]).format('YYYY-MM-DD')
-              wBackground.endDate = moment(wBackground.monthRangeDate[1]).format('YYYY-MM-DD')
+              wBackground.startDate = wBackground.monthRangeDate[0]
+              wBackground.endDate = wBackground.monthRangeDate[1]
             }
             this.loading = true
             this.loadingtext = '正在上传中'
@@ -741,17 +738,6 @@
         }
         this.dataForm.edBackgroundList = edTmpeList
       },
-      // 工作经验添加事件
-      workBackgroundAddHandle () {
-        this.dataForm.workBackgroundList.push({
-          wbId: getUUID(),
-          userId: this.dataForm.userId,
-          monthRangeDate: ['', ''],
-          company: '',
-          jobPosition: '',
-          jobDescription: ''
-        })
-      },
       // 删除工作经验
       workBackgroundDeleteHandle (wbId) {
         let workBackTempList = []
@@ -898,6 +884,16 @@
     background-color: #01cd78;
     background-clip: content-box;
     padding: .2em;
+  }
+
+  .audit_sty .van-field__label{
+    width:50px;
+  }
+  .row_content{
+    border-top:1px dotted black;
+  }
+  .row_content .van-cell{
+    padding:2px;
   }
 </style>
 
