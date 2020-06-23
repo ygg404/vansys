@@ -1,6 +1,8 @@
 <template>
   <div>
-    <van-dialog width="95%" v-model="visible" show-cancel-button cancelButtonText="返回" cancelButtonColor="red" :show-confirm-button="noshowconfirmbtnflag">
+    <van-dialog width="95%" v-model="visible"
+                :beforeClose="beforeClose" show-cancel-button cancelButtonText="返回"
+                @cancel="visible = false" cancelButtonColor="red" :show-confirm-button="noshowconfirmbtnflag">
       <template slot="title">
         <div style="font-size:17px;font-weight:600;">财务操作</div>
       </template>
@@ -97,7 +99,9 @@
     </van-dialog>
 
     <!-- 添加收支数据 对话框 待测试-->
-    <van-dialog v-model="AccountaddVisible"  show-cancel-button @confirm ="dataFormSubmit" @cancel="AccountaddVisible = false">
+    <van-dialog v-model="AccountaddVisible"  show-cancel-button
+                :beforeClose="beforeCloseAccountAdd"
+                @confirm ="dataFormSubmit" @cancel="AccountaddVisible = false">
       <template slot="title">
         <div style="font-size:17px;font-weight:600;">添加收支数据</div>
       </template>
@@ -204,6 +208,9 @@
       snackbarTimeout: 2000
     }),
     methods: {
+      beforeCloseAccountAdd (action, done) {
+        done(!this.AccountaddVisible)
+      },
       // 启动时间选择
       onDateConfirm (date) {
         this.dataForm.accountAddDateTime = moment(date).format('YYYY-MM-DD')
@@ -402,11 +409,11 @@
             }).then(({data}) => {
               if (data && data.code === 0) {
                 this.$notify({message: '操作成功', type: 'success'})
-                  //
+                //
                 this.getContractInfoByContractNo(this.OpercontractNo)
-                  // 2 .获得合同编号对应的财务操作 数据
+                // 2 .获得合同编号对应的财务操作 数据
                 this.getAccountListByContractNo(this.OpercontractNo)
-                  // 3 . 获取 项目应收 未收款项 已收款项 支出款项
+                // 3 . 获取 项目应收 未收款项 已收款项 支出款项
                 this.getSettlementMoneyByContractNo(this.OpercontractNo)
               } else {
                 this.$notify({message: data.msg, type: 'danger'})
@@ -417,12 +424,10 @@
 
           })
       },
-      /**
-       * 点击 X 关闭对话框的回调
-       **/
-      handleDialogClose () {
-        this.$emit('refreshDataList')
-        this.visible = false
+      // 窗口关闭前的动作
+      beforeClose (action, done) {
+        console.log(this.visible)
+        done(!this.visible)
       }
     },
     mounted () {
@@ -438,9 +443,9 @@
     width: 100%;
     text-align: center;
   }
-.tac{
-  text-align: center;
-}
+  .tac{
+    text-align: center;
+  }
   .talpl10{
     text-align:left;padding-left:10px;
   }
