@@ -1,7 +1,7 @@
 <template>
   <div class="mod-config">
     <projectInfo :Info="projectInfo" :infotype="4" />
-    <van-collapse :value="panelRShow" @change="panelRShowEvent" style="width:95%;margin:0 auto;">
+    <van-collapse v-model="panelRShow" style="width:95%;margin:0 auto;">
       <van-collapse-item title="返修记录信息" name="1" class="InfoTitle">
         <van-row class="mtptpbbb1">
           <van-col span="8" class="tac">返修日期</van-col>
@@ -20,11 +20,7 @@
       </van-collapse-item>
     </van-collapse>
 
-    <van-collapse
-      :value="panelQIFShow"
-      @change="panelQIFShowEvent"
-      style="width:95%;margin:0 auto;"
-    >
+    <van-collapse v-model="panelQIFShow" style="width:95%;margin:0 auto;">
       <van-collapse-item title="质检反馈报告" name="1" class="InfoTitle">
         <div ref="reportId"></div>
       </van-collapse-item>
@@ -75,16 +71,15 @@
 </template>
 
 <script>
-import { closeTab } from "@/utils/tabs";
-import projectInfo from "@/components/projectinfo-module";
-import selectNote from "@/components/select-module/selectnote";
-import quickInput from "@/components/quickinput-module/quickinput.vue";
+import { closeTab } from '@/utils/tabs'
+import projectInfo from '@/components/projectinfo-module'
+import selectNote from '@/components/select-module/selectnote'
+import quickInput from '@/components/quickinput-module/quickinput.vue'
 export default {
-  data() {
+  data () {
     return {
-      panelPShow: ["1"],
-      panelRShow: ["1"],
-      panelQIFShow: ["1"],
+      panelRShow: ['1'],
+      panelQIFShow: ['1'],
       esVisible: false,
 
       proLoading: false,
@@ -92,32 +87,32 @@ export default {
       curprog: 0,
       totalprog: 1,
       dataLoading: false,
-      loadingText: "正在加载...",
-      projectNo: "",
+      loadingText: '正在加载...',
+      projectNo: '',
       reportVisible: false,
-      reportTitle: "",
+      reportTitle: '',
       isCheck: 0, // 检查状态： 2为返修中
-      projectInfo: "",
+      projectInfo: '',
       qualityNotelist: [],
-      qualityNoteValue: "",
+      qualityNoteValue: '',
       qualityScoreVisible: false, // 质检分数可视图
       repairVisible: false, // 返修可视图
       editVisible: false, // 编辑质检报告可视图
       backWorkList: [],
       activeNames: [],
       dataForm: {
-        id: "",
-        qualityNote: "" // 质检综述
+        id: '',
+        qualityNote: '' // 质检综述
       },
       dataRule: {
         qualityNote: [
-          { required: true, message: "质量综述不能为空", trigger: "blur" }
+          { required: true, message: '质量综述不能为空', trigger: 'blur' }
         ]
       }
-    };
+    }
   },
-  created() {
-    this.init();
+  created () {
+    this.init()
   },
   components: {
     projectInfo,
@@ -126,36 +121,14 @@ export default {
   },
 
   methods: {
-    panelPShowEvent() {
-      if (this.panelPShow.length == 1) {
-        this.panelPShow = [];
-      } else {
-        this.panelPShow = ["1"];
-      }
-    },
-    panelRShowEvent() {
-      if (this.panelRShow.length == 1) {
-        this.panelRShow = [];
-      } else {
-        this.panelRShow = ["1"];
-      }
-    },
-    panelQIFShowEvent() {
-      if (this.panelQIFShow.length == 1) {
-        this.panelQIFShow = [];
-      } else {
-        this.panelQIFShow = ["1"];
-      }
-    },
-
-    init() {
-      this.projectNo = this.$route.query.projectNo;
-      this.getInfoByProjectNo(this.projectNo);
+    init () {
+      this.projectNo = this.$route.query.projectNo
+      this.getInfoByProjectNo(this.projectNo)
       this.dataLoading = true
-      this.loadingText = ""
+      this.loadingText = ''
       this.getQualityByProjectNo(this.projectNo).then(data => {
         this.dataLoading = false
-      });
+      })
       this.getBackworkHandle(this.projectNo)
       this.getQualityNotelist()
       this.getRepairNotelist()
@@ -164,176 +137,175 @@ export default {
     dataFormSubmit () {
       this.$refs.dataForm.validateAll().then(
         success => {
-           let that = this
-            that.dataLoading = true
-            that.loadingText = ''
-            that.activeNames = []
-            this.$http({
-              url: this.$http.adornUrl(`/project/quality/update`),
-              method: 'post',
-              data: this.$http.adornData({
-                'id': this.dataForm.id,
-                'projectNo': this.projectNo,
-                'qualityNote': this.dataForm.qualityNote
-              }),
-              onUploadProgress (proEvent) {
-                that.loadingText = '正在上传中（' + parseInt(proEvent.loaded * 100 / proEvent.total).toString() + '%)'
-              }
-            }).then(({data}) => {
-              if (data && data.code === 0) {
-                that.dataLoading = false
-                this.$notify({
+          let that = this
+          that.dataLoading = true
+          that.loadingText = ''
+          that.activeNames = []
+          this.$http({
+            url: this.$http.adornUrl(`/project/quality/update`),
+            method: 'post',
+            data: this.$http.adornData({
+              'id': this.dataForm.id,
+              'projectNo': this.projectNo,
+              'qualityNote': this.dataForm.qualityNote
+            }),
+            onUploadProgress (proEvent) {
+              that.loadingText = '正在上传中（' + parseInt(proEvent.loaded * 100 / proEvent.total).toString() + '%)'
+            }
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              that.dataLoading = false
+              this.$notify({
                 message: '操作成功',
                 type: 'success',
                 duration: 1500
               })
-                this.visible = false
-                this.$emit('refreshDataList')
-                this.goBack()
-              } else {
-                 this.$notify({
+              this.visible = false
+              this.$emit('refreshDataList')
+              this.goBack()
+            } else {
+              this.$notify({
                 message: data.msg,
                 type: 'danger',
                 duration: 1500
               })
-              }
-            })
-          }
-      );
-
+            }
+          })
+        }
+      )
     },
     // 查看质检反馈内容
-    checkReportHandle(item) {
-      this.reportVisible = true;
-      this.reportTitle = "质检反馈报告（ 日期：" + item.backCreateTime + ")";
-      this.curprog = 0;
-      this.$refs.reportPreId.innerHTML = item.backNote;
+    checkReportHandle (item) {
+      this.reportVisible = true
+      this.reportTitle = '质检反馈报告（ 日期：' + item.backCreateTime + ')'
+      this.curprog = 0
+      this.$refs.reportPreId.innerHTML = item.backNote
     },
     // 返修列表关闭事件
-    reportDialogClose() {
-      this.reportVisible = false;
-      this.visible = false;
+    reportDialogClose () {
+      this.reportVisible = false
+      this.visible = false
     },
     // 获取项目基本信息
-    getInfoByProjectNo(projectNo) {
+    getInfoByProjectNo (projectNo) {
       return new Promise((resolve, reject) => {
         this.$http({
           url: this.$http.adornUrl(`/project/projectInfo/info/${projectNo}`),
-          method: "get",
+          method: 'get',
           params: this.$http.adornParams()
         }).then(({ data }) => {
           if (data && data.code === 0) {
-            this.projectInfo = data.projectInfo;
-            resolve(data.projectInfo);
+            this.projectInfo = data.projectInfo
+            resolve(data.projectInfo)
           } else {
-            this.$message.error(data.msg);
-            reject(data.msg);
+            this.$message.error(data.msg)
+            reject(data.msg)
           }
-        });
-      });
+        })
+      })
     },
     // 获取质检信息
-    getQualityByProjectNo(projectNo) {
+    getQualityByProjectNo (projectNo) {
       return new Promise((resolve, reject) => {
         this.$http({
           url: this.$http.adornUrl(`/project/quality/getInfo`),
-          method: "get",
+          method: 'get',
           params: this.$http.adornParams({
             projectNo: projectNo
           })
         }).then(({ data }) => {
           if (data && data.code === 0) {
             if (data.checkQuality != null) {
-              this.dataForm.id = data.checkQuality.id;
-              this.dataForm.qualityNote = data.checkQuality.qualityNote;
-              this.dataForm.qualityScore = data.checkQuality.qualityScore;
-              this.dataForm.qualityReport = data.checkQuality.qualityReport;
-              this.$refs.reportId.innerHTML = data.checkQuality.qualityReport;
+              this.dataForm.id = data.checkQuality.id
+              this.dataForm.qualityNote = data.checkQuality.qualityNote
+              this.dataForm.qualityScore = data.checkQuality.qualityScore
+              this.dataForm.qualityReport = data.checkQuality.qualityReport
+              this.$refs.reportId.innerHTML = data.checkQuality.qualityReport
             }
-            resolve(data);
+            resolve(data)
           } else {
-            this.$message.error(data.msg);
-            reject(data.msg);
+            this.$message.error(data.msg)
+            reject(data.msg)
           }
-        });
-      });
+        })
+      })
     },
     // 获取返修内容列表
-    getBackworkHandle(projectNo) {
+    getBackworkHandle (projectNo) {
       this.$http({
         url: this.$http.adornUrl(`/project/backwork/list/${projectNo}`),
-        method: "get",
+        method: 'get',
         params: this.$http.adornParams({})
       }).then(({ data }) => {
         if (data && data.code === 0) {
-          this.backWorkList = data.list;
+          this.backWorkList = data.list
         } else {
-          this.backWorkList = [];
+          this.backWorkList = []
         }
-      });
+      })
     },
     // 获取质量综述列表
-    getQualityNotelist() {
+    getQualityNotelist () {
       return new Promise((resolve, reject) => {
         this.$http({
           url: this.$http.adornUrl(`/set/wpshortcut/getListByShortTypeId/9`),
-          method: "get",
+          method: 'get',
           params: this.$http.adornParams()
         }).then(({ data }) => {
           if (data && data.code === 0) {
-            this.qualityNotelist = data.list;
-            resolve(data.list);
+            this.qualityNotelist = data.list
+            resolve(data.list)
           } else {
-            this.$message.error(data.msg);
-            reject(data.msg);
+            this.$message.error(data.msg)
+            reject(data.msg)
           }
-        });
-      });
+        })
+      })
     },
     // 获取返修综述列表
-    getRepairNotelist() {
+    getRepairNotelist () {
       return new Promise((resolve, reject) => {
         this.$http({
           url: this.$http.adornUrl(`/set/wpshortcut/getListByShortTypeId/12`),
-          method: "get",
+          method: 'get',
           params: this.$http.adornParams()
         }).then(({ data }) => {
           if (data && data.code === 0) {
-            this.repairNotelist = data.list;
-            resolve(data.list);
+            this.repairNotelist = data.list
+            resolve(data.list)
           } else {
-            this.$message.error(data.msg);
-            reject(data.msg);
+            this.$message.error(data.msg)
+            reject(data.msg)
           }
-        });
-      });
+        })
+      })
     },
 
     // 返回
-    goBack() {
+    goBack () {
       // closeTab('project-editqualityquth')
-      this.$router.push("project-project");
+      this.$router.push('project-project')
     }
   },
   watch: {
-    $route: function(to, from) {
-      this.projectNo = to.query["projectNo"];
+    $route: function (to, from) {
+      this.projectNo = to.query['projectNo']
       // 执行数据更新查询
-      if (to.name === "project-editqualityquth") {
-        this.init();
+      if (to.name === 'project-editqualityquth') {
+        this.init()
       } else {
-        closeTab("project-editqualityauth");
+        closeTab('project-editqualityauth')
       }
     },
-    activeNames: function(val) {
-      if (val.indexOf("preReport") !== -1) {
-        this.reportVisible = false;
-        this.proLoading = false;
-        this.$refs.reportPreId.innerHTML = "";
+    activeNames: function (val) {
+      if (val.indexOf('preReport') !== -1) {
+        this.reportVisible = false
+        this.proLoading = false
+        this.$refs.reportPreId.innerHTML = ''
       }
     }
   }
-};
+}
 </script>
 
 <style scoped>
