@@ -1,7 +1,7 @@
 <template>
   <div class="mod-config">
     <projectInfo :Info="projectInfo" :infotype="3"/>
-    <van-collapse :value="panelRShow" @change="panelRShowEvent" style="width:95%;margin:0 auto;">
+    <van-collapse v-model="panelRShow"  style="width:95%;margin:0 auto;">
       <van-collapse-item title="返修记录信息" name="1" class="InfoTitle">
         <van-row style="margin-top:2px;padding-top:5px;padding-bottom:5px;border-bottom: 1px solid rgb(195, 197, 199);">
           <van-col span="8" style="text-align:center;">返修日期</van-col>
@@ -41,7 +41,7 @@
       </van-col>
     </van-row>
 
-    <van-collapse :value="panelQIFShow" @change="panelQIFShowEvent" style="width:95%;margin:0 auto;">
+    <van-collapse v-model="panelQIFShow" style="width:95%;margin:0 auto;">
       <van-collapse-item title="质检反馈" name="1" class="InfoTitle">
         <div ref="reportId"></div>
       </van-collapse-item>
@@ -76,7 +76,6 @@
   export default {
     data () {
       return {
-        panelPShow: ['1'],
         panelRShow: ['1'],
         panelQIFShow: ['1'],
         projectNo: '',
@@ -115,28 +114,6 @@
       this.init()
     },
     methods: {
-      panelPShowEvent () {
-        if (this.panelPShow.length == 1) {
-          this.panelPShow = []
-        } else {
-          this.panelPShow = ['1']
-        }
-      },
-      panelRShowEvent () {
-        if (this.panelRShow.length == 1) {
-          this.panelRShow = []
-        } else {
-          this.panelRShow = ['1']
-        }
-      },
-      panelQIFShowEvent () {
-        if (this.panelQIFShow.length === 1) {
-          this.panelQIFShow = []
-        } else {
-          this.panelQIFShow = ['1']
-        }
-      },
-
       init () {
         this.projectNo = this.$route.query.projectNo
         this.getInfoByProjectNo(this.projectNo)
