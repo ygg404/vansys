@@ -4,7 +4,7 @@
           class="os">
       <div>
         <projectInfo :Info="projectInfo" :infotype="2" />
-        <van-collapse :value="spShow" @change="spShowEvent" style="width:95%;margin:0 auto;">
+        <van-collapse v-model="spShow" style="width:95%;margin:0 auto;">
           <van-collapse-item title="项目进度" name="1" class="InfoTitle">
             <van-row style="margin-top:2px;margin-bottom:8px;">
               <van-col span="8" style="text-align:center;">日期</van-col>
@@ -85,23 +85,23 @@
 </template>
 
 <script>
-  import { closeTab } from "@/utils/tabs";
-  import store from "@/store";
-  import selectNote from "@/components/select-module/selectnote";
-  import projectInfo from "@/components/projectinfo-module";
-  import quickInput from "@/components/quickinput-module/quickinput.vue";
-  export default {
+  import { closeTab } from '@/utils/tabs'
+import store from '@/store'
+import selectNote from '@/components/select-module/selectnote'
+import projectInfo from '@/components/projectinfo-module'
+import quickInput from '@/components/quickinput-module/quickinput.vue'
+export default {
     data () {
       return {
         // 技术交底弹框 标志
         tdVisiable: false,
-        //过程检查弹框 标志
+        // 过程检查弹框 标志
         piVisiable: false,
-        //上交资料弹框 标志
+        // 上交资料弹框 标志
         siVisiable: false,
-        //工作小结弹框 标志
+        // 工作小结弹框 标志
         swVisiable: false,
-        //工作量弹框 标志
+        // 工作量弹框 标志
         wlVisiable: false,
 
         disclosureNotesList: [],
@@ -109,33 +109,31 @@
         dataNameList: [],
         briefSummarysList: [],
         workLoadList: [],
-
-        panelShow: ["1"],
-        spShow: ["1"],
-        projectInfo: "",
+        spShow: ['1'],
+        projectInfo: '',
         scheduleList: [], // 项目进度表
 
-        disclosureValue: "",
-        checkValue: "",
-        dataValue: "",
-        briefValue: "",
-        workValue: "",
+        disclosureValue: '',
+        checkValue: '',
+        dataValue: '',
+        briefValue: '',
+        workValue: '',
         dataForm: {
-          technicalDisclosureNote: "",
-          checkSuggestion: "",
-          dataName: "",
-          workLoad: "",
-          briefSummary: ""
+          technicalDisclosureNote: '',
+          checkSuggestion: '',
+          dataName: '',
+          workLoad: '',
+          briefSummary: ''
         }
-      };
-    },
-    mounted() {
-      this.init();
-    },
+      }
+  },
+    mounted () {
+      this.init()
+  },
     computed: {
       documentClientHeight: {
-        get() {
-          return this.$store.state.common.documentClientHeight;
+        get () {
+          return this.$store.state.common.documentClientHeight
         }
       }
     },
@@ -145,205 +143,190 @@
       quickInput
     },
     methods: {
-      panelShowEvent() {
-        if (this.panelShow.length == 1) {
-          this.panelShow = [];
-        } else {
-          this.panelShow = ["1"];
-        }
-      },
-      spShowEvent() {
-        if (this.spShow.length == 1) {
-          this.spShow = [];
-        } else {
-          this.spShow = ["1"];
-        }
-      },
-
-      init() {
-        let projectNo = this.$route.query.projectNo;
-        this.getScheduleList(projectNo);
-        this.getInfoByProjectNo(projectNo);
-        this.getWorkByProjectNo(projectNo);
-        this.getdisclosureNote();
-        this.getcheckSuggestion();
-        this.getdataName();
-        this.getbriefSummary();
-        this.getworkLoad();
+      init () {
+        let projectNo = this.$route.query.projectNo
+        this.getScheduleList(projectNo)
+        this.getInfoByProjectNo(projectNo)
+        this.getWorkByProjectNo(projectNo)
+        this.getdisclosureNote()
+        this.getcheckSuggestion()
+        this.getdataName()
+        this.getbriefSummary()
+        this.getworkLoad()
       },
       // 获取进度列表
-      getScheduleList(projectNo) {
+      getScheduleList (projectNo) {
         this.$http({
-          url: this.$http.adornUrl("/project/schedule/list"),
-          method: "get",
+          url: this.$http.adornUrl('/project/schedule/list'),
+          method: 'get',
           params: this.$http.adornParams({
             projectNo: projectNo
           })
         }).then(({ data }) => {
           if (data && data.code === 0) {
-            this.scheduleList = data.list;
+            this.scheduleList = data.list
           } else {
-            this.scheduleList = [];
+            this.scheduleList = []
           }
-        });
+        })
       },
       // 获取项目工作
-      getWorkByProjectNo(projectNo) {
-        console.log(projectNo);
+      getWorkByProjectNo (projectNo) {
+        console.log(projectNo)
         return new Promise((resolve, reject) => {
           if (projectNo) {
             this.$http({
               url: this.$http.adornUrl(
                 `/project/work/getInfoByProjectNo/${projectNo}`
               ),
-              method: "get",
+              method: 'get',
               params: this.$http.adornParams()
             }).then(({ data }) => {
               if (data && data.code === 0) {
                 if (data.projectWork != null) {
-                  this.dataForm.id = data.projectWork.id;
-                  this.dataForm.projectNo = data.projectWork.projectNo;
-                  this.dataForm.technicalDisclosureNote = data.projectWork.technicalDisclosureNote == null ? '' : data.projectWork.technicalDisclosureNote;
-                  this.dataForm.checkSuggestion = data.projectWork.checkSuggestion == null ? '': data.projectWork.checkSuggestion;
-                  this.dataForm.dataName = data.projectWork.dataName == null ? '': data.projectWork.dataName;
-                  this.dataForm.briefSummary = data.projectWork.briefSummary == null ? '' : data.projectWork.briefSummary;
-                  this.dataForm.workLoad = data.projectWork.workLoad == null ? '' : data.projectWork.workLoad;
-                  this.dataForm.finishDateTime = data.projectWork.finishDateTime;
-                  this.dataForm.projectStatus = data.projectWork.projectStatus;
-                  this.dataForm.workNote = data.projectWork.workNote;
-                  this.dataForm.planWorkDate = data.projectWork.planWorkDate;
+                  this.dataForm.id = data.projectWork.id
+                  this.dataForm.projectNo = data.projectWork.projectNo
+                  this.dataForm.technicalDisclosureNote = data.projectWork.technicalDisclosureNote == null ? '' : data.projectWork.technicalDisclosureNote
+                  this.dataForm.checkSuggestion = data.projectWork.checkSuggestion == null ? '' : data.projectWork.checkSuggestion
+                  this.dataForm.dataName = data.projectWork.dataName == null ? '' : data.projectWork.dataName
+                  this.dataForm.briefSummary = data.projectWork.briefSummary == null ? '' : data.projectWork.briefSummary
+                  this.dataForm.workLoad = data.projectWork.workLoad == null ? '' : data.projectWork.workLoad
+                  this.dataForm.finishDateTime = data.projectWork.finishDateTime
+                  this.dataForm.projectStatus = data.projectWork.projectStatus
+                  this.dataForm.workNote = data.projectWork.workNote
+                  this.dataForm.planWorkDate = data.projectWork.planWorkDate
                 }
-                resolve(data);
+                resolve(data)
               } else {
-                this.$message.error(data.msg);
-                reject(data.msg);
+                this.$message.error(data.msg)
+                reject(data.msg)
               }
-            });
+            })
           } else {
           }
-        });
+        })
       },
       // 获取项目基本信息
-      getInfoByProjectNo(projectNo) {
+      getInfoByProjectNo (projectNo) {
         return new Promise((resolve, reject) => {
           this.$http({
             url: this.$http.adornUrl(`/project/projectInfo/info/${projectNo}`),
-            method: "get",
+            method: 'get',
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
               data.projectInfo.executeStandard =
-                "☑" +
-                data.projectInfo.executeStandard.replace(/;/g, "☑").slice(0, -1);
-              this.projectInfo = data.projectInfo;
-              resolve(data.projectInfo);
+                '☑' +
+                data.projectInfo.executeStandard.replace(/;/g, '☑').slice(0, -1)
+              this.projectInfo = data.projectInfo
+              resolve(data.projectInfo)
             } else {
-              this.$message.error(data.msg);
-              reject(data.msg);
+              this.$message.error(data.msg)
+              reject(data.msg)
             }
-          });
-        });
+          })
+        })
       },
 
       // 获取技术交底列表
-      getdisclosureNote() {
+      getdisclosureNote () {
         return new Promise((resolve, reject) => {
           this.$http({
             url: this.$http.adornUrl(`/set/wpshortcut/getListByShortTypeId/5`),
-            method: "get",
+            method: 'get',
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.disclosureNotesList = data.list;
-              resolve(data.list);
+              this.disclosureNotesList = data.list
+              resolve(data.list)
             } else {
-              this.$message.error(data.msg);
-              reject(data.msg);
+              this.$message.error(data.msg)
+              reject(data.msg)
             }
-          });
-        });
+          })
+        })
       },
       // 获取过程检查意见快捷数据
-      getcheckSuggestion() {
+      getcheckSuggestion () {
         return new Promise((resolve, reject) => {
           this.$http({
             url: this.$http.adornUrl(`/set/wpshortcut/getListByShortTypeId/6`),
-            method: "get",
+            method: 'get',
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.checkSuggestionsList = data.list;
-              resolve(data.list);
+              this.checkSuggestionsList = data.list
+              resolve(data.list)
             } else {
-              this.$message.error(data.msg);
-              reject(data.msg);
+              this.$message.error(data.msg)
+              reject(data.msg)
             }
-          });
-        });
+          })
+        })
       },
       // 获取上交资料快捷数据
-      getdataName() {
+      getdataName () {
         return new Promise((resolve, reject) => {
           this.$http({
             url: this.$http.adornUrl(`/set/wpshortcut/getListByShortTypeId/7`),
-            method: "get",
+            method: 'get',
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.dataNameList = data.list;
-              resolve(data.list);
+              this.dataNameList = data.list
+              resolve(data.list)
             } else {
-              this.$message.error(data.msg);
-              reject(data.msg);
+              this.$message.error(data.msg)
+              reject(data.msg)
             }
-          });
-        });
+          })
+        })
       },
       // 获取工作小结快捷数据
-      getbriefSummary() {
+      getbriefSummary () {
         return new Promise((resolve, reject) => {
           this.$http({
             url: this.$http.adornUrl(`/set/wpshortcut/getListByShortTypeId/8`),
-            method: "get",
+            method: 'get',
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.briefSummarysList = data.list;
-              resolve(data.list);
+              this.briefSummarysList = data.list
+              resolve(data.list)
             } else {
-              this.$message.error(data.msg);
-              reject(data.msg);
+              this.$message.error(data.msg)
+              reject(data.msg)
             }
-          });
-        });
+          })
+        })
       },
       // 获取工作量快捷数据
-      getworkLoad() {
+      getworkLoad () {
         return new Promise((resolve, reject) => {
           this.$http({
             url: this.$http.adornUrl(`/set/wpshortcut/getListByShortTypeId/11`),
-            method: "get",
+            method: 'get',
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.workLoadList = data.list;
-              resolve(data.list);
+              this.workLoadList = data.list
+              resolve(data.list)
             } else {
-              this.$message.error(data.msg);
-              reject(data.msg);
+              this.$message.error(data.msg)
+              reject(data.msg)
             }
-          });
-        });
+          })
+        })
       },
 
       // 表单提交
-      dataFormSubmit() {
+      dataFormSubmit () {
         this.$refs.dataForm.validateAll().then(success => {
           this.$http({
             url: this.$http.adornUrl(
-              `/project/work/${!this.dataForm.id ? "save" : "update"}`
+              `/project/work/${!this.dataForm.id ? 'save' : 'update'}`
             ),
-            method: "post",
+            method: 'post',
             data: this.$http.adornData({
               id: this.dataForm.id || undefined,
               projectNo: this.dataForm.projectNo,
@@ -355,31 +338,31 @@
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.$notify({ type: 'success', message: '操作成功',duration: 2500})
-              this.goBack();
+              this.$notify({ type: 'success', message: '操作成功', duration: 2500})
+              this.goBack()
             } else {
-              this.$notify({message: data.msg, type: 'danger',duration: 2500})
+              this.$notify({message: data.msg, type: 'danger', duration: 2500})
             }
-          });
-        });
+          })
+        })
       },
       // 返回
-      goBack() {
-        this.$router.push({ name: "project-project" });
+      goBack () {
+        this.$router.push({ name: 'project-project' })
       }
     },
     watch: {
-      $route: function(to, from) {
-        this.projectNo = to.query["projectNo"];
-        // 执行数据更新查询
-        if (to.name === "project-editwork") {
-          this.init();
+      $route: function (to, from) {
+        this.projectNo = to.query['projectNo']
+      // 执行数据更新查询
+        if (to.name === 'project-editwork') {
+          this.init()
         } else {
-          router.push({ name: mainTabs[mainTabs.length - 1].name });
+          router.push({ name: mainTabs[mainTabs.length - 1].name })
         }
       }
     }
-  };
+  }
 </script>
 
 <style>
