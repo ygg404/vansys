@@ -150,8 +150,6 @@ import projectInfo from '@/components/projectinfo-module'
 export default {
   data () {
     return {
-      // 折叠面板
-      panelShow: ['1'],
       projectStarttDatedata: '',
       minDate: new Date(2000, 0, 1),
       maxDate: new Date(2025, 10, 1),
@@ -212,13 +210,6 @@ export default {
     confirmPicker (val) {
       this.cutOffTime = `${val.getFullYear()}-${val.getMonth() + 1}`
       this.stShow = false;
-    },
-    panelShowEvent () {
-      if (this.panelShow.length === 1) {
-        this.panelShow = []
-      } else {
-        this.panelShow = ['1']
-      }
     },
     // Date 转化为 String
     formatDate (date) {
