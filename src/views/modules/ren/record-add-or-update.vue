@@ -60,7 +60,7 @@
                      placeholder="最高学历" :rules="[{ required:true, message: '请填写最高学历' }]"/>
           <van-field v-model="edTypeName" label="学制"  name="educationType"  @click="edTypeShow = true" readonly
                      placeholder="学制" :rules="[{ required:true, message: '请填写学制' }]"/>
-          <van-field v-model="dataForm.proName" label="专业系数"  name="proRatio" @click="proRatioShow = true" readonly
+          <van-field v-model="proName" label="专业系数"  name="proRatio" @click="proRatioShow = true" readonly
                      placeholder="专业系数" :rules="[{ required:true, message: '请填写专业系数' }]"/>
           <van-field v-model="dataForm.educationTime" label="毕业时间"  name="educationTime" @click="edTimeShow = true" readonly
                      placeholder="请选择毕业时间" :rules="[{ required:true, message: '请填写毕业时间' }]"/>
@@ -201,6 +201,7 @@
         jobTypeName: '',
         educationName: '', // 最高学历
         edTypeName: '', // 学制
+        proName: '', // 专业系数
         maritalStatusName: '', // 婚姻状况
         zcLevelName: '', // 职称等级
         visible: false,
@@ -461,6 +462,12 @@
                           for (let item of this.edTypeItemList) {
                             if (item.id === this.dataForm.educationType) {
                               this.edTypeName = item.scoreName
+                            }
+                          }
+                          // 专业系数 回显
+                          for (let item of this.proItemList) {
+                            if (item.id === this.dataForm.proRatio) {
+                              this.proName = item.scoreName
                             }
                           }
                           // 婚姻状况 回显
