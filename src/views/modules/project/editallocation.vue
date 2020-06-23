@@ -168,7 +168,7 @@
       <!--分割线-->
       <div v-if="groupRateList">
         <div :key="indexA" v-for="(itemA,indexA) in groupRateList" class="mmb">
-          <van-collapse :value="saList[indexA].sollapseactive" @change="grisEvent(indexA)" class="vc">
+          <van-collapse v-model="saList[indexA].sollapseactive" class="vc">
             <van-collapse-item name="1">
               <van-row slot="title">
                 <van-col span="7">{{itemA.groupName}}</van-col>
@@ -350,13 +350,6 @@
       onDateConfirm (date) {
         this.dataForm.projectBegunDateTime = moment(date).format('YYYY-MM-DD')
         this.datePickerShow = false
-      },
-      grisEvent (val) {
-        if (this.saList[val].sollapseactive.length === 1) {
-          this.saList[val].sollapseactive = []
-        } else {
-          this.saList[val].sollapseactive = ['1']
-        }
       },
       // 从后台获得工作组数据列表内容
       getWorkGroupDataListFromApi () {
