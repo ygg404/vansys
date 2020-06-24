@@ -2,17 +2,16 @@
   <van-dialog
     title="编辑质检反馈"
     show-cancel-button confirm-button-text="保存"
-    width="90%" style="height:440px;" :beforeClose="beforeClose"
+    width="90%"  :beforeClose="beforeClose"
     v-model="visible" @cancel="closeHandle" @confirm="saveReportHandle" >
-      <div>
-        <wang-editor :content="ueContent" :id='id' :projectNo="projectNo" @refreshContent="getReportHandle" class="toolbar"></wang-editor>
-      </div>
+    <div>
+      <wang-editor :content="ueContent" :id='id' :projectNo="projectNo" @refreshContent="getReportHandle" class="toolbar"></wang-editor>
+    </div>
   </van-dialog>
 </template>
 
 <script>
   import WangEditor from '@/components/WangEditor'
-
   export default {
     name: 'qualityedit-add-or-update',
     data () {
@@ -83,7 +82,10 @@
 </script>
 
 <style >
- .toolbar {
-  border: 1px solid #ccc;
- }
+  .toolbar {
+    border: 1px solid #ccc;
+  }
+  .w-e-text-container{
+    height: 400px !important;
+  }
 </style>
