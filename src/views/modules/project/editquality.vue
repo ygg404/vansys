@@ -474,5 +474,8 @@
   height:100%;
   font-size:16px;
 }
+  .tac{
+    text-align:center;
+  }
 
 </style>
