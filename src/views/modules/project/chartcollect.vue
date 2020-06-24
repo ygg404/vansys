@@ -1,12 +1,13 @@
 <template>
   <div class="mod-config" style="width:98%;margin-left:1%;margin-right:1%;">
-    <van-row  type="flex" align="center" justify="space-around" style="padding-top:2px;padding-bottom:2px;margin-top:5px;margin-bottom:5px;border-bottom: 1px solid #e3d8d8;border-top: 1px solid #e3d8d8;">
-      <van-col span="18" class="wgns">
-        <van-cell center @click="sedShow = true">项目启动时间: {{sdateStr}} 至 {{edateStr}}</van-cell>
+    <van-row  type="flex" align="center" justify="space-around" style="margin-bottom:5px;border-bottom: 1px solid #e3d8d8;">
+      <van-col span="20" class="wgns">
+        <van-cell
+          center
+          @click="sedShow = true"
+          style="line-height:32px;border:1px solid gb(232, 213, 213);"
+        >项目启动时间: {{sdateStr}} 至 {{edateStr}}</van-cell>
         <van-calendar v-model="sedShow" type="range" :default-date="defaultDateArray" :min-date="minDate" :max-date="maxDate" @confirm="onConfirm" />
-      </van-col>
-       <van-col span="5">
-        <van-button type="info" size="small" @click="goBack" style="margin-left:10px;">返回</van-button>
       </van-col>
     </van-row>
 
@@ -51,82 +52,89 @@
               <div class="group-header">{{totalOutPut}}</div>
             </van-col>
           </van-row>
+          <van-row style="margin-top:10px;">
+            <van-col span="14">
+            </van-col>
+            <van-col span="10" style="text-align:center;">
+              <van-button type="info" @click="goBack">返回</van-button>
+            </van-col>
+          </van-row>
         </div>
       </div>
   </div>
 </template>
 
 <script>
-import moment from 'moment'
+import moment from "moment";
 export default {
-  data () {
+  data() {
     return {
-      sedShow: false,
+      sedShow:false,
       minDate: new Date(2000, 0, 1),
       maxDate: new Date(2025, 10, 1),
-      defaultDateArray: [],
-      sdateStr: '',
-      edateStr: '',
+      defaultDateArray:[],
+      sdateStr:'',
+      edateStr:'',
       dataForm: {
-        startDate: '',
-        endDate: ''
+        startDate: "",
+        endDate: ""
       },
       totalProjectNum: 0, // 合计项目数
       totalOutPut: 0, // 合计产值
-      dateTitle: '', // 时间标题
+      dateTitle: "", // 时间标题
       dataList: [],
       dataListLoading: false
-    }
+    };
   },
-  created () {
-    this.sdateStr =  moment (new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)).format('YYYY-MM-DD')
-    this.edateStr = moment(new Date()).format('YYYY-MM-DD')
-    this.defaultDateArray = [new Date(this.sdateStr), new Date()]
-    this.getChartCollectDat()
+ created() {
+    this.sdateStr =  moment(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)).format("YYYY-MM-DD");
+    this.edateStr = moment(new Date()).format("YYYY-MM-DD");
+    this.defaultDateArray = [new Date(this.sdateStr),new Date()]
+    this.getChartCollectDat();
   },
   methods: {
-    goBack () {
-      this.$router.push({ name: 'project-project' })
+    goBack() {
+      this.$router.push({ name: "project-project" });
     },
-    onConfirm (date) {
-      const [start, end] = date
-      this.dataForm.startDate = start
-      this.dataForm.endDate = end
-      this.sdateStr = moment(this.dataForm.startDate).format('YYYY-MM-DD')
+    onConfirm(date) {
+      const [start, end] = date;
+      this.dataForm.startDate = start;
+      this.dataForm.endDate = end;
+       this.sdateStr = moment(this.dataForm.startDate).format('YYYY-MM-DD')
       this.edateStr = moment(this.dataForm.endDate).format('YYYY-MM-DD')
-      this.sedShow = false
+      this.sedShow = false;
       this.getChartCollectDat()
     },
     // 获取数据列表
-    getChartCollectDat () {
-      this.dateTitle = this.sdateStr + '至' + this.sdateStr
-      this.dataListLoading = true
+    getChartCollectDat() {
+      this.dateTitle = this.sdateStr + "至" + this.sdateStr;
+      this.dataListLoading = true;
       this.$http({
-        url: this.$http.adornUrl('/project/chartcollect/list'),
-        method: 'get',
+        url: this.$http.adornUrl("/project/chartcollect/list"),
+        method: "get",
         params: this.$http.adornParams({
           startDate: this.sdateStr,
           endDate: this.edateStr
         })
       }).then(({ data }) => {
         if (data && data.code === 0) {
-          this.totalProjectNum = 0
-          this.totalOutPut = 0
-          this.dataList = data.list
+          this.totalProjectNum = 0;
+          this.totalOutPut = 0;
+          this.dataList = data.list;
           data.list.forEach((item, index) => {
-            this.totalProjectNum += item.projectNum
-            this.totalOutPut += item.output
-          })
-          this.totalOutPut = this.totalOutPut.toFixed(2)
+            this.totalProjectNum += item.projectNum;
+            this.totalOutPut += item.output;
+          });
+          this.totalOutPut = this.totalOutPut.toFixed(2);
         } else {
-          this.dataList = []
+          this.dataList = [];
         }
-        this.dataListLoading = false
-      })
-    }
+        this.dataListLoading = false;
+      });
+    },
 
   }
-}
+};
 </script>
 
 <style scoped>
@@ -136,7 +144,7 @@ export default {
 .chart_title {
   width: 100%;
   text-align: center;
-  margin-top: 17px;
+  margin-top: 20px;
   font-size: 17px;
   font-weight: 700;
 }
