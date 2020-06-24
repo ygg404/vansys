@@ -231,5 +231,7 @@
     max-height: 500px;
     overflow-y: auto;
   }
-
+  .w-e-text-container{
+    height: 400px !important;
+  }
 </style>
