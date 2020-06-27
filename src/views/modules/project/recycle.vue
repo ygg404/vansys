@@ -15,6 +15,7 @@
       <van-col span="12" class="tac">项目名称</van-col>
       <van-col span="6" class="tac">操作</van-col>
     </van-row>
+    <div class="table_excuse" v-if="dataList.length < 1">暂无数据</div>
     <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 300).toString() + 'px'" class="os">
       <van-row
         :key="index"
@@ -445,5 +446,13 @@
   }
   .footerbtngroup{
     display: flex;align-items: center;justify-content: center;
+  }
+  .table_excuse{
+    width: 100%;
+    text-align: center;
+    padding: 5px;
+    color: #6f7180;
+    line-height: 300%;
+    border: 1px solid #1989faaf;
   }
 </style>
