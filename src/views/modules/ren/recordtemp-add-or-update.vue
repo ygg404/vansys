@@ -55,6 +55,8 @@
                      :rules="[{ required:true, message: '工作类型不能为空' }]" ></van-field>
           <van-field v-model="dataForm.titleName" label="职称等级" name="zcLevelName" @click="zcLevelShow = true" clickable readonly placeholder="请选择职称等级"
                      :rules="[{ required:true, message: '职称等级不能为空' }]"/>
+          <van-field v-model="zcxName" label="职称专业系数" name="zcxName" @click="zcxShow = true" readonly
+                     placeholder="请选择职称专业系数" :rules="[{ required:true, message: '职称专业系数不能为空' }]"/>
           <van-field v-model="dataForm.dutyName" label="职务" placeholder="职务" name="dutyId"  @click="dutyShow = true" readonly clickable
                      :rules="[{ required:true, message: '职务不能为空' }]"></van-field>
           <van-field v-model="dataForm.edName" label="最高学历" placeholder="最高学历" name="education"  @click="edShow = true" readonly clickable
@@ -172,6 +174,10 @@
     <van-popup v-model="zcLevelShow" position="bottom" :style="{ height: '50%' }" ref="jobTypeId">
       <van-picker title="选择职称等级" show-toolbar @cancel="zcLevelShow=false" value-key="jobTitle" :columns="titleItemList"  @confirm="onZcConfirm" />
     </van-popup>
+    <!--职称专业系数选择器-->
+    <van-popup v-model="zcxShow" position="bottom" :style="{ height: '50%' }" ref="jobTypeId">
+      <van-picker title="职称专业系数" show-toolbar @cancel="zcxShow=false" value-key="jobTitle" :columns="titleProList"  @confirm="onZcxConfirm" />
+    </van-popup>
     <!--单条教育背景日期选择器-->
     <van-popup v-model="egStartTimeAddShow" position="bottom" :style="{ height: '50%' }" ref="edTypeId">
       <van-datetime-picker type="year-month" title="开始时间"
@@ -216,6 +222,7 @@
         egTimeAddIndex: 0, // 暂存变量 下标
         wxSelectStartTimeList: [],
         wxSelectEndTimeList: [],
+        titleProList: [], // 职称专业列表
         wxStartTimeAddShow: false,
         wxEndTimeAddShow: false,
         wxTimeAddIndex: 0, // 暂存变量 下标
@@ -235,6 +242,8 @@
         recordeductionVisible: false,
         recordworkVisible: false,
         returnAuditVisible: false,
+        zcxName: '', // 职称系数名称
+        zcxShow: false,
         loading: true,
         imgLoading: false,
         loadingtext: '正在加载中',
@@ -307,7 +316,17 @@
               this.getScoreEdList(3).then(edList => {
                 this.edItemList = edList
                 this.getJobTypeList().then(titleList => {
-                  this.titleItemList = titleList
+                  let stitleProList = []
+                  let stitleItemList = []
+                  for (let dat of titleList) {
+                    if (dat.cateid === 1) {
+                      stitleItemList.push(dat)
+                    } else if (dat.cateid === 2) {
+                      stitleProList.push(dat)
+                    }
+                  }
+                  this.titleItemList = stitleItemList
+                  this.titleProList = stitleProList
                   this.getScoreDutyList().then(dutyList => {
                     this.dutyItemList = dutyList
                     if (this.dataForm.userId) {
@@ -488,6 +507,11 @@
         this.dataForm.proRatio = item.id
         this.dataForm.proName = item.scoreName
         this.proRatioShow = false
+      },
+      onZcxConfirm (item) {
+        this.zcxName = item.jobTitle
+        this.dataForm.titlePro = item.id
+        this.zcxShow = false
       },
       // 工作类型选择
       onJobTypeConfirm (item) {
@@ -760,10 +784,10 @@
               that.dataForm.headImg = rst.base64
             }).catch(function (error) {
             // 失败时执行
-            that.$message.error('上传图片有误，请重新上传！')
-          }).always(function () {
+              that.$message.error('上传图片有误，请重新上传！')
+            }).always(function () {
             // 不管成功或失败，都会执行
-          })
+            })
         }
       },
       // 获取省市名称
