@@ -1,9 +1,9 @@
 <template>
   <div>
     <van-dialog title='编辑个人档案' use-slot  v-model="visible" :showConfirmButton="false"
-                 :beforeClose="beforeClose">
+                :beforeClose="beforeClose">
       <div :style="'max-height: ' + (documentClientHeight - 200).toString() + 'px'" style="overflow-y: auto;"
-            v-loading="loading">
+           v-loading="loading">
         <van-form  ref="dataForm">
           <van-field v-model="dataForm.headImg" name="headImg" label="个人头像" disabled>
             <template slot="input">
@@ -70,37 +70,33 @@
         <div style="margin-top:5px;margin-bottom:5px;">
           <van-button icon="plus" type="info" size="small" @click="edBackgroundAddHandle">添加教育背景</van-button>
         </div>
-        <div style="max-height:300px;overflow:scroll;">
-          <div :key="item + index" v-for="(item,index) in dataForm.edBackgroundList" class="row_content">
-            <van-row type="flex" align="bottom" justify="end" style="margin-top:10px;padding-bottom:5px;">
-              <van-col span="17">
-                <van-field v-model="item.monthRangeDate[0]" label="开始时间:" @click="egStartTimeAddEvent(index)"  disabled/>
-                <van-field v-model="item.monthRangeDate[1]" label="结束时间:" @click="egEndTimeAddEvent(index)"  disabled/>
-                <van-field v-model="item.educationBackground" label="学历:"  />
-                <van-field v-model="item.educationSchool" label="学校:"  />
-                <van-field v-model="item.major" label="专业:"  />
-              </van-col>
-              <van-col span="6"><van-button type="danger" size="small" @click="edBackgroundDeleteHandle(item.edId)">删除</van-button></van-col>
-            </van-row>
-          </div>
+        <div :key="item + index" v-for="(item,index) in dataForm.edBackgroundList" class="row_content">
+          <van-row type="flex" align="bottom" justify="end" style="margin-top:10px;padding-bottom:5px;">
+            <van-col span="17">
+              <van-field v-model="item.monthRangeDate[0]" label="开始时间:" @click="egStartTimeAddEvent(index)"  disabled/>
+              <van-field v-model="item.monthRangeDate[1]" label="结束时间:" @click="egEndTimeAddEvent(index)"  disabled/>
+              <van-field v-model="item.educationBackground" label="学历:"  />
+              <van-field v-model="item.educationSchool" label="学校:"  />
+              <van-field v-model="item.major" label="专业:"  />
+            </van-col>
+            <van-col span="6"><van-button type="danger" size="small" @click="edBackgroundDeleteHandle(item.edId)">删除</van-button></van-col>
+          </van-row>
         </div>
         <!--工作经验部分-->
         <div style="margin-top:5px;margin-bottom:5px;">
           <van-button icon="plus" type="info" size="small" @click="workBackgroundAddHandle">添加工作经历</van-button>
         </div>
-        <div style="max-height:300px;overflow:scroll;">
-          <div :key="item + index" v-for="(item,index) in dataForm.workBackgroundList" class="row_content">
-            <van-row type="flex" align="bottom" justify="end" style="margin-top:10px;padding-bottom:5px;">
-              <van-col span="17">
-                <van-field v-model="item.monthRangeDate[0]" label="开始时间:" @click="wxStartTimeAddEvent(index)"  disabled/>
-                <van-field v-model="item.monthRangeDate[1]" label="结束时间:" @click="wxEndTimeAddEvent(index)" disabled/>
-                <van-field v-model="item.company" label="企业:"  />
-                <van-field v-model="item.jobPosition" label="职位:"  />
-                <van-field v-model="item.jobDescription" label="工作描述:"  />
-              </van-col>
-              <van-col span="6"><van-button type="danger" size="small" @click="workBackgroundDeleteHandle(item.wbId)">删除</van-button></van-col>
-            </van-row>
-          </div>
+        <div :key="item + index" v-for="(item,index) in dataForm.workBackgroundList" class="row_content">
+          <van-row type="flex" align="bottom" justify="end" style="margin-top:10px;padding-bottom:5px;">
+            <van-col span="17">
+              <van-field v-model="item.monthRangeDate[0]" label="开始时间:" @click="wxStartTimeAddEvent(index)"  disabled/>
+              <van-field v-model="item.monthRangeDate[1]" label="结束时间:" @click="wxEndTimeAddEvent(index)" disabled/>
+              <van-field v-model="item.company" label="企业:"  />
+              <van-field v-model="item.jobPosition" label="职位:"  />
+              <van-field v-model="item.jobDescription" label="工作描述:"  />
+            </van-col>
+            <van-col span="6"><van-button type="danger" size="small" @click="workBackgroundDeleteHandle(item.wbId)">删除</van-button></van-col>
+          </van-row>
         </div>
         <!---->
       </div>
@@ -109,7 +105,7 @@
         <van-col span="6" v-if="dataForm.isAudit == 1"> <van-button size="small" type="warning" @click="returnAuditHandle()">退回重改</van-button></van-col>
         <van-col span="6" v-if="dataForm.isAudit == 1"><van-button size="small" type="info" @click="dataFormSubmit()">审核确定</van-button></van-col>
         <van-col span="6"  v-if="dataForm.isAudit == 0"><van-button size="small" type="primary" @click="dataFormSubmit()">提交审核</van-button></van-col>
-    </van-row>
+      </van-row>
 
 
     </van-dialog>
@@ -141,7 +137,7 @@
     <!-- 出生时间日历控件-->
     <van-popup v-model="birthdayShow" position="bottom" :style="{ height: '50%' }" ref="birthdayId">
       <van-datetime-picker   type="date" title="选择生日" @cancel="birthdayShow=false" @confirm="onBirthdayConfirm"
-                           :min-date="new Date(1950,0,1)" :max-date="new Date(2030,11,31)"/>
+                             :min-date="new Date(1950,0,1)" :max-date="new Date(2030,11,31)"/>
     </van-popup>
     <!-- 工作类型选择器-->
     <van-popup v-model="jobTypeShow" position="bottom" :style="{ height: '50%' }" ref="jobTypeId">
@@ -176,7 +172,7 @@
     <van-popup v-model="zcLevelShow" position="bottom" :style="{ height: '50%' }" ref="jobTypeId">
       <van-picker title="选择职称等级" show-toolbar @cancel="zcLevelShow=false" value-key="jobTitle" :columns="titleItemList"  @confirm="onZcConfirm" />
     </van-popup>
-        <!--单条教育背景日期选择器-->
+    <!--单条教育背景日期选择器-->
     <van-popup v-model="egStartTimeAddShow" position="bottom" :style="{ height: '50%' }" ref="edTypeId">
       <van-datetime-picker type="year-month" title="开始时间"
                            :min-date="this.egSelectStartTimeList[egTimeAddIndex].selectMin" :max-date="this.egSelectStartTimeList[egTimeAddIndex].selectMax"
@@ -561,7 +557,7 @@
             })
           })
       },
-            // 添加教育背景
+      // 添加教育背景
       edBackgroundAddHandle () {
         this.dataForm.edBackgroundList.push({
           edId: getUUID(),
@@ -764,10 +760,10 @@
               that.dataForm.headImg = rst.base64
             }).catch(function (error) {
             // 失败时执行
-              that.$message.error('上传图片有误，请重新上传！')
-            }).always(function () {
+            that.$message.error('上传图片有误，请重新上传！')
+          }).always(function () {
             // 不管成功或失败，都会执行
-            })
+          })
         }
       },
       // 获取省市名称
@@ -880,7 +876,7 @@
     justify-content: space-between;
   }
 
-   input[type="radio"]#h1:checked + label::before {
+  input[type="radio"]#h1:checked + label::before {
     background-color: #01cd78;
     background-clip: content-box;
     padding: .2em;
