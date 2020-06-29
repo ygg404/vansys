@@ -17,7 +17,7 @@
     <div class="yg_info">员工信息</div>
     <div :style="'max-height: ' + (documentClientHeight - 180).toString() + 'px'" style="overflow: scroll;">
       <div v-for="(item,indexA) in dataList">
-        <van-collapse v-model="activeNames">
+        <van-collapse v-model="activeNames" @change="recordLoadHandle(item)">
           <van-collapse-item :name="item.userId">
             <template slot="title">
               <van-row>
