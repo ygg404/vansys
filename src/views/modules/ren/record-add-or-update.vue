@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-dialog title='编辑个人档案' use-slot show-cancel-button v-model="visible" confirm-button-text="提交"
-                v-if="visible" @cancel="visible = false" @confirm="dataFormSubmit" :beforeClose="beforeClose">
+                v-if="visible" @cancel="canCelDialogEvent" @confirm="dataFormSubmit" :beforeClose="beforeClose">
       <div :style="'max-height: ' + (documentClientHeight - 200).toString() + 'px'" style="overflow-y: auto;" class="record_content">
         <van-form  ref="dataForm">
           <van-field v-model="dataForm.headImg" name="headImg" label="个人头像" disabled>
@@ -32,7 +32,7 @@
                      placeholder="身份证号" :rules="[{ required: true, message: '请填写身份证信息' }]"/>
           <van-field label="生日" v-model="dataForm.birthday" name="birthday" clickable @click="birthdayShow = true" readonly
                      placeholder="出生日期" :rules="[{ required: true, message: '请填写生日信息' }]"/>
-          <van-field label="籍贯" v-model="dataForm.nativePlace" name="nativePlace" clickable @click="areaShow = true" readonly
+          <van-field label="籍贯" v-model="nativePlaceName" name="nativePlace" clickable @click="areaShow = true" readonly
                      placeholder="请选择籍贯" :rules="[{ required: true, message: '请填写籍贯' }]"/>
           <van-field label="婚姻状况" v-model="maritalStatusName" name="maritalStatus" clickable @click="hyShow = true" readonly
                      placeholder="请选择婚姻状况" :rules="[{ required: true, message: '请填写婚姻状况' }]"/>
@@ -52,9 +52,11 @@
           </van-field>
           <van-field v-model="zcLevelName" label="职称等级" name="zcLevelName" @click="zcLevelShow = true" readonly
                      placeholder="请选择职称等级" :rules="[{ required:true, message: '职称等级不能为空' }]"/>
+          <van-field v-model="zcxName" label="职称专业系数" name="zcxName" @click="zcxShow = true" readonly
+                     placeholder="请选择职称专业系数" :rules="[{ required:true, message: '职称专业系数不能为空' }]"/>
           <van-field v-model="jobTypeName" label="工作类型" name="jobType" @click="jobTypeShow = true" readonly
                      placeholder="请选择工作类型" :rules="[{ required:true, message: '工作类型不能为空' }]"/>
-          <van-field v-model="dataForm.dutyName" label="职务"  name="dutyId"  @click="dutyShow = true" readonly
+          <van-field v-model="zwName" label="职务"  name="dutyId"  @click="dutyShow = true" readonly
                      placeholder="请选择职务" :rules="[{ required:true, message: '请填写职务' }]"/>
           <van-field v-model="educationName" label="最高学历"  name="education"  @click="edShow = true" readonly
                      placeholder="最高学历" :rules="[{ required:true, message: '请填写最高学历' }]"/>
@@ -69,7 +71,6 @@
         <div style="margin-top:5px;margin-bottom:5px;">
           <van-button icon="plus" type="info" size="small" @click="edBackgroundAddHandle">添加教育背景</van-button>
         </div>
-        <div style="max-height:300px;overflow:scroll;">
           <div :key="item + index" v-for="(item,index) in dataForm.edBackgroundList" class="row_content">
             <van-row type="flex" align="bottom" justify="end" style="margin-top:10px;padding-bottom:5px;">
               <van-col span="17">
@@ -82,12 +83,10 @@
               <van-col span="6"><van-button type="danger" size="small" @click="edBackgroundDeleteHandle(item.edId)">删除</van-button></van-col>
             </van-row>
           </div>
-        </div>
         <!--工作经验部分-->
         <div style="margin-top:5px;margin-bottom:5px;">
           <van-button icon="plus" type="info" size="small" @click="workBackgroundAddHandle">添加工作经历</van-button>
         </div>
-        <div style="max-height:300px;overflow:scroll;">
           <div :key="item + index" v-for="(item,index) in dataForm.workBackgroundList" class="row_content">
             <van-row type="flex" align="bottom" justify="end" style="margin-top:10px;padding-bottom:5px;">
               <van-col span="17">
@@ -100,7 +99,6 @@
               <van-col span="6"><van-button type="danger" size="small" @click="workBackgroundDeleteHandle(item.wbId)">删除</van-button></van-col>
             </van-row>
           </div>
-        </div>
         <!---->
       </div>
     </van-dialog>
@@ -129,6 +127,10 @@
     <!--职称等级选择器-->
     <van-popup v-model="zcLevelShow" position="bottom" :style="{ height: '50%' }" ref="jobTypeId">
       <van-picker title="选择职称等级" show-toolbar @cancel="zcLevelShow=false" value-key="jobTitle" :columns="titleItemList"  @confirm="onZcConfirm" />
+    </van-popup>
+    <!--职称专业系数选择器-->
+    <van-popup v-model="zcxShow" position="bottom" :style="{ height: '50%' }" ref="jobTypeId">
+      <van-picker title="职称专业系数" show-toolbar @cancel="zcxShow=false" value-key="jobTitle" :columns="titleProList"  @confirm="onZcxConfirm" />
     </van-popup>
     <!-- 职务选择器-->
     <van-popup v-model="dutyShow" position="bottom" :style="{ height: '50%' }" ref="dutyId">
@@ -202,8 +204,11 @@
         educationName: '', // 最高学历
         edTypeName: '', // 学制
         proName: '', // 专业系数
+        zcxName: '', // 职称系数名称
+        zwName: '', // 职务名称
         maritalStatusName: '', // 婚姻状况
         zcLevelName: '', // 职称等级
+        nativePlaceName: '', // 籍贯名称
         visible: false,
         areaShow: false,
         entryTimeShow: false,
@@ -214,6 +219,7 @@
         edTypeShow: false,
         edTimeShow: false,
         proRatioShow: false,
+        zcxShow: false,
         hyShow: false, // 婚姻状况
         zcLevelShow: false,
         areaList: areaList,
@@ -227,6 +233,7 @@
         edTypeItemList: [],
         dutyItemList: [], // 职务列表
         titleItemList: [], // 职称列表
+        titleProList: [],
         placeOptions: provinceAndCityData,
         dataForm: {
           userId: 0,
@@ -242,6 +249,7 @@
           educationType: '',
           educationTime: '',
           titleLever: '',
+          titlePro: '',
           email: '',
           mobile: '',
           trialPeriod: '',
@@ -319,6 +327,7 @@
         this.dataForm.nativeProvince = area[0].code
         this.dataForm.nativeCity = area[1].code
         this.dataForm.nativePlace = area[0].name + area[1].name
+        this.nativePlaceName = area[0].name + area[1].name
         this.areaShow = false
       },
       // 入职时间选择
@@ -335,6 +344,11 @@
         this.zcLevelName = item.jobTitle
         this.dataForm.titleLever = item.id
         this.zcLevelShow = false
+      },
+      onZcxConfirm (item) {
+        this.zcxName = item.jobTitle
+        this.dataForm.titlePro = item.id
+        this.zcxShow = false
       },
       onHyConfirm (item) {
         this.maritalStatusName = item.dateItem
@@ -356,7 +370,7 @@
       // 专业系数
       onProConfirm (item) {
         this.dataForm.proRatio = item.id
-        this.dataForm.proName = item.scoreName
+        this.proName = item.scoreName
         this.proRatioShow = false
       },
       // 工作类型选择
@@ -368,7 +382,7 @@
       // 职务选择
       onDutyConfirm (item) {
         this.dataForm.dutyId = item.id
-        this.dataForm.dutyName = item.duty
+        this.dutyName = item.duty
         this.dutyShow = false
       },
       // 毕业时间选择
@@ -402,99 +416,109 @@
               this.proItemList = proItemList
               this.getScoreEdList(3).then(edList => {
                 this.edItemList = edList
-                this.getJobTypeList().then(titleList => {
+                this.getJobTypeList(1).then(titleList => {
                   this.titleItemList = titleList
-                  this.getScoreDutyList().then(dutyList => {
-                    this.dutyItemList = dutyList
-                    this.loading = true
-                    this.loadingtext = '正在加载中'
-                    if (this.dataForm.userId) {
-                      this.$http({
-                        url: this.$http.adornUrl(`/ren/record/info/${this.dataForm.userId}`),
-                        method: 'get',
-                        params: this.$http.adornParams()
-                      }).then(({data}) => {
-                        this.loading = false
-                        if (data && data.code === 0) {
-                          this.dataForm.username = data.renRecordVo.username
-                          this.dataForm.idNo = data.renRecordVo.idNo
-                          this.dataForm.sex = data.renRecordVo.sex
-                          this.dataForm.birthday = data.renRecordVo.birthday
-                          this.dataForm.entryTime = data.renRecordVo.entryTime
-                          this.dataForm.jobType = data.renRecordVo.jobType
-                          this.dataForm.houseType = data.renRecordVo.houseType
-                          this.dataForm.education = data.renRecordVo.education
-                          this.dataForm.educationType = data.renRecordVo.educationType
-                          this.dataForm.educationTime = data.renRecordVo.educationTime
-                          this.dataForm.proRatio = data.renRecordVo.proRatio
-                          this.dataForm.dutyName = data.renRecordVo.dutyName
-                          this.dataForm.titleLever = data.renRecordVo.titleLever
-                          this.dataForm.dutyId = data.renRecordVo.dutyId
-                          this.dataForm.email = data.renRecordVo.email
-                          this.dataForm.mobile = data.renRecordVo.mobile
-                          this.dataForm.trialPeriod = data.renRecordVo.trialPeriod
-                          this.dataForm.nativeProvince = data.renRecordVo.nativeProvince
-                          this.dataForm.nativeCity = data.renRecordVo.nativeCity
-                          this.dataForm.nativePlace = this.getPlaceName(data.renRecordVo.nativeProvince, data.renRecordVo.nativeCity)
-                          this.dataForm.maritalStatus = data.renRecordVo.maritalStatus
-                          this.dataForm.headImg = data.renRecordVo.headImg
-                          for (let edBackground of data.renRecordVo.edBackgroundList) {
-                            edBackground.edId = getUUID()
-                            edBackground.monthRangeDate = [edBackground.startDate, edBackground.endDate]
-                          }
-                          for (let wBackground of data.renRecordVo.workBackgroundList) {
-                            wBackground.wbId = getUUID()
-                            wBackground.monthRangeDate = [wBackground.startDate, wBackground.endDate]
-                          }
-                          // 职务 回显
-                          for (let item of this.jobItemList) {
-                            if (item.id === this.dataForm.jobType) {
-                              this.jobTypeName = item.jobItem
+                  this.getJobTypeList(2).then(titleProList => {
+                    this.titleProList = titleProList
+                    this.getScoreDutyList().then(dutyList => {
+                      this.dutyItemList = dutyList
+                      this.loading = true
+                      this.loadingtext = '正在加载中'
+                      if (this.dataForm.userId) {
+                        this.$http({
+                          url: this.$http.adornUrl(`/ren/record/info/${this.dataForm.userId}`),
+                          method: 'get',
+                          params: this.$http.adornParams()
+                        }).then(({data}) => {
+                          this.loading = false
+                          if (data && data.code === 0) {
+                            this.dataForm.username = data.renRecordVo.username
+                            this.dataForm.idNo = data.renRecordVo.idNo
+                            this.dataForm.sex = data.renRecordVo.sex
+                            this.dataForm.birthday = data.renRecordVo.birthday
+                            this.dataForm.entryTime = data.renRecordVo.entryTime
+                            this.dataForm.jobType = data.renRecordVo.jobType
+                            this.dataForm.houseType = data.renRecordVo.houseType
+                            this.dataForm.education = data.renRecordVo.education
+                            this.dataForm.educationType = data.renRecordVo.educationType
+                            this.dataForm.educationTime = data.renRecordVo.educationTime
+                            this.dataForm.proRatio = data.renRecordVo.proRatio
+                            this.dataForm.titleLever = data.renRecordVo.titleLever
+                            this.dataForm.titlePro = data.renRecordVo.titlePro
+                            this.dataForm.dutyId = data.renRecordVo.dutyId
+                            this.dataForm.email = data.renRecordVo.email
+                            this.dataForm.mobile = data.renRecordVo.mobile
+                            this.dataForm.trialPeriod = data.renRecordVo.trialPeriod
+                            this.dataForm.nativeProvince = data.renRecordVo.nativeProvince
+                            this.dataForm.nativeCity = data.renRecordVo.nativeCity
+                            this.dataForm.nativePlace = data.renRecordVo.nativeProvince === null ? null : [data.renRecordVo.nativeProvince, data.renRecordVo.nativeCity]
+                            this.dataForm.maritalStatus = data.renRecordVo.maritalStatus
+                            this.dataForm.headImg = data.renRecordVo.headImg
+                            // 籍贯 回显
+                            if (this.dataForm.nativePlace !== null) {
+                              let sprovince = this.dataForm.nativePlace[0]
+                              let scity = this.dataForm.nativePlace[1]
+                              let provincelist = areaList.province_list
+                              let citylist = areaList.city_list
+                              this.nativePlaceName += provincelist[sprovince]
+                              this.nativePlaceName += citylist[scity]
                             }
-                          }
-                          // 最高学历 回显
-                          for (let item of this.edItemList) {
-                            if (item.id === this.dataForm.education) {
-                              this.educationName = item.scoreName
+                            for (let edBackground of data.renRecordVo.edBackgroundList) {
+                              edBackground.edId = getUUID()
+                              edBackground.monthRangeDate = [edBackground.startDate, edBackground.endDate]
                             }
-                          }
-                          // 学制 回显
-                          for (let item of this.edTypeItemList) {
-                            if (item.id === this.dataForm.educationType) {
-                              this.edTypeName = item.scoreName
+                            for (let wBackground of data.renRecordVo.workBackgroundList) {
+                              wBackground.wbId = getUUID()
+                              wBackground.monthRangeDate = [wBackground.startDate, wBackground.endDate]
                             }
-                          }
-                          // 专业系数 回显
-                          for (let item of this.proItemList) {
-                            if (item.id === this.dataForm.proRatio) {
-                              this.proName = item.scoreName
+                            for (let item of this.dutyItemList) {
+                              if (item.id === this.dataForm.dutyId) {
+                                this.zwName = item.duty
+                              }
                             }
-                          }
-                          // 婚姻状况 回显
-                          for (let item of this.maritalItemList) {
-                            if (item.id === this.dataForm.maritalStatus) {
-                              this.maritalStatusName = item.dateItem
+                            for (let item of this.jobItemList) {
+                              if (item.id === this.dataForm.jobType) {
+                                this.jobTypeName = item.jobItem
+                              }
                             }
-                          }
-                          // 职称等级 回显
-                          for (let item of this.titleItemList) {
-                            if (item.id === this.dataForm.titleLever) {
-                              this.zcLevelName = item.jobTitle
+                            // 最高学历 回显
+                            for (let item of this.edItemList) {
+                              if (item.id === this.dataForm.education) {
+                                this.educationName = item.scoreName
+                              }
                             }
-                          }
-                          this.dataForm.edBackgroundList = data.renRecordVo.edBackgroundList
-                          this.dataForm.workBackgroundList = data.renRecordVo.workBackgroundList
-                          if (this.dataForm.edBackgroundList.length === 0) {
-                            this.egSelectStartTimeList.push({
-                              selectMin: new Date(1970, 0, 1),
-                              selectMax: new Date(2080, 11, 31)
-                            })
-                            this.egSelectEndTimeList.push({
-                              selectMin: new Date(1970, 0, 1),
-                              selectMax: new Date(2080, 11, 31)
-                            })
-                          } else {
-                            for (let size = 0; size < this.dataForm.edBackgroundList.length; size++) {
+                            // 学制 回显
+                            for (let item of this.edTypeItemList) {
+                              if (item.id === this.dataForm.educationType) {
+                                this.edTypeName = item.scoreName
+                              }
+                            }
+                            // 专业系数 回显
+                            for (let item of this.proItemList) {
+                              if (item.id === this.dataForm.proRatio) {
+                                this.proName = item.scoreName
+                              }
+                            }
+                            // 婚姻状况 回显
+                            for (let item of this.maritalItemList) {
+                              if (item.id === this.dataForm.maritalStatus) {
+                                this.maritalStatusName = item.dateItem
+                              }
+                            }
+                            // 职称等级 回显
+                            for (let item of this.titleItemList) {
+                              if (item.id === this.dataForm.titleLever) {
+                                this.zcLevelName = item.jobTitle
+                              }
+                            }
+                            for (let item of this.titleProList) {
+                              if (item.id === this.dataForm.titlePro) {
+                                this.zcxName = item.jobTitle
+                              }
+                            }
+                            this.dataForm.edBackgroundList = data.renRecordVo.edBackgroundList
+                            this.dataForm.workBackgroundList = data.renRecordVo.workBackgroundList
+                            if (this.dataForm.edBackgroundList.length === 0) {
                               this.egSelectStartTimeList.push({
                                 selectMin: new Date(1970, 0, 1),
                                 selectMax: new Date(2080, 11, 31)
@@ -503,20 +527,20 @@
                                 selectMin: new Date(1970, 0, 1),
                                 selectMax: new Date(2080, 11, 31)
                               })
+                            } else {
+                              for (let size = 0; size < this.dataForm.edBackgroundList.length; size++) {
+                                this.egSelectStartTimeList.push({
+                                  selectMin: new Date(1970, 0, 1),
+                                  selectMax: new Date(2080, 11, 31)
+                                })
+                                this.egSelectEndTimeList.push({
+                                  selectMin: new Date(1970, 0, 1),
+                                  selectMax: new Date(2080, 11, 31)
+                                })
+                              }
                             }
-                          }
-                          //
-                          if (this.dataForm.workBackgroundList.length === 0) {
-                            this.wxSelectStartTimeList.push({
-                              selectMin: new Date(1970, 0, 1),
-                              selectMax: new Date(2080, 11, 31)
-                            })
-                            this.wxSelectEndTimeList.push({
-                              selectMin: new Date(1970, 0, 1),
-                              selectMax: new Date(2080, 11, 31)
-                            })
-                          } else {
-                            for (let size = 0; size < this.dataForm.workBackgroundList.length; size++) {
+                            //
+                            if (this.dataForm.workBackgroundList.length === 0) {
                               this.wxSelectStartTimeList.push({
                                 selectMin: new Date(1970, 0, 1),
                                 selectMax: new Date(2080, 11, 31)
@@ -525,17 +549,42 @@
                                 selectMin: new Date(1970, 0, 1),
                                 selectMax: new Date(2080, 11, 31)
                               })
+                            } else {
+                              for (let size = 0; size < this.dataForm.workBackgroundList.length; size++) {
+                                this.wxSelectStartTimeList.push({
+                                  selectMin: new Date(1970, 0, 1),
+                                  selectMax: new Date(2080, 11, 31)
+                                })
+                                this.wxSelectEndTimeList.push({
+                                  selectMin: new Date(1970, 0, 1),
+                                  selectMax: new Date(2080, 11, 31)
+                                })
+                              }
                             }
                           }
-                        }
-                      })
-                    }
+                        })
+                      }
+                    })
                   })
                 })
               })
             })
           })
         })
+      },
+      // 关闭对话框事件
+      canCelDialogEvent () {
+        this.visible = false
+        this.maritalStatusName = ' '
+        this.zcLevelName = ' '
+        this.zcxName = ' '
+        this.jobTypeName = ' '
+        this.zwName = ' '
+        this.educationName = ' '
+        this.edTypeName = ' '
+        this.edTypeName = ' '
+        this.proName = ' '
+        this.nativePlaceName = ' '
       },
       // 表单提交
       dataFormSubmit () {
@@ -655,12 +704,14 @@
         })
       },
       // 获取职称表
-      getJobTypeList () {
+      getJobTypeList (cateId) {
         return new Promise((resolve, reject) => {
           this.$http({
             url: this.$http.adornUrl('/set/scoretitle/list'),
             method: 'get',
-            params: this.$http.adornParams({})
+            params: this.$http.adornParams({
+              cateid: cateId
+            })
           }).then(({data}) => {
             if (data && data.code === 0) {
               resolve(data.list)
