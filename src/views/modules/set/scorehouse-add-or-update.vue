@@ -1,27 +1,22 @@
 <template>
-  <el-dialog width="100%"
-    :title="!dataForm.id ? '新增' : '修改'"
-    :close-on-click-modal="false"
-    :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm"  label-width="100px">
-      <el-form-item label="分数下限" prop="lowScore">
-        <el-input v-model="dataForm.lowScore" type="number" placeholder="分数下限"></el-input>
-      </el-form-item>
-      <el-form-item label="分数上限" prop="highScore">
-        <el-input v-model="dataForm.highScore" type="number" placeholder="分数上限"></el-input>
-      </el-form-item>
-      <el-form-item label="职级名称" prop="jobRank">
-        <el-input v-model="dataForm.jobRank" placeholder="职级名称"></el-input>
-      </el-form-item>
-      <el-form-item label="住房补贴" prop="houseAdd">
-        <el-input v-model="dataForm.houseAdd" type="number" placeholder="住房补贴"></el-input>
-      </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
-    </span>
-  </el-dialog>
+ <div>
+   <van-dialog style="width:80%;" :title="!dataForm.id ? '新增' : '修改'"
+               show-cancel-button confirm-button-text="确定"
+               @cancel="visible = false"
+               @confirm="dataFormSubmit"
+               v-model="visible" :beforeClose="beforeClose">
+     <van-form ref="dataForm">
+       <van-field label-align="center" v-model="dataForm.lowScore" name="lowScore" label="分数下限"
+                  :rules="[{ required: true, message: '请填写分数下限' }]" />
+       <van-field label-align="center" v-model="dataForm.highScore" name="highScore" label="分数上限"
+                  :rules="[{ required: true, message: '请填写分数上限' }]" />
+       <van-field label-align="center" v-model="dataForm.jobRank" name="jobRank" label="职级名称"
+                  :rules="[{ required: true, message: '请填写职级名称' }]" />
+       <van-field label-align="center" v-model="dataForm.houseAdd" name="houseAdd" label="住房补贴"
+                  :rules="[{ required: true, message: '请填写住房补贴' }]" />
+     </van-form>
+   </van-dialog>
+ </div>
 </template>
 
 <script>
@@ -36,29 +31,17 @@
           jobRank: '',
           houseAdd: '',
           orderNum: ''
-        },
-        dataRule: {
-          lowScore: [
-            { required: true, message: '分数下限不能为空', trigger: 'blur' }
-          ],
-          highScore: [
-            { required: true, message: '分数上限不能为空', trigger: 'blur' }
-          ],
-          jobRank: [
-            { required: true, message: '职级名称不能为空', trigger: 'blur' }
-          ],
-          houseAdd: [
-            { required: true, message: '住房补贴不能为空', trigger: 'blur' }
-          ]
         }
       }
     },
     methods: {
+      beforeClose (action, done) {
+        done(!this.visible)
+      },
       init (id) {
         this.dataForm.id = id || 0
         this.visible = true
         this.$nextTick(() => {
-          this.$refs['dataForm'].resetFields()
           if (this.dataForm.id) {
             this.$http({
               url: this.$http.adornUrl(`/set/scorehouse/info/${this.dataForm.id}`),
@@ -73,13 +56,19 @@
                 this.dataForm.orderNum = data.renScoreHouse.orderNum
               }
             })
+          } else {
+            this.dataForm.lowScore = ''
+            this.dataForm.highScore = ''
+            this.dataForm.jobRank = ''
+            this.dataForm.houseAdd = ''
+            this.dataForm.orderNum = ''
           }
         })
       },
       // 表单提交
       dataFormSubmit () {
-        this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
+        this.$refs.dataForm.validateAll().then(
+          success => {
             this.$http({
               url: this.$http.adornUrl(`/set/scorehouse/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
@@ -93,7 +82,7 @@
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.$message({
+                this.$notify({
                   message: '操作成功',
                   type: 'success',
                   duration: 1500
@@ -101,11 +90,14 @@
                 this.visible = false
                 this.$emit('refreshDataList')
               } else {
-                this.$message.error(data.msg)
+                this.$notify({
+                  message: data.msg,
+                  type: 'danger',
+                  duration: 1500
+                })
               }
             })
-          }
-        })
+          })
       }
     }
   }

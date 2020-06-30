@@ -1,21 +1,16 @@
 <template>
-  <el-dialog width="99%"
-    :title="!dataForm.id ? '新增' : '修改'"
-    :close-on-click-modal="false"
-    :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="80px">
-      <el-form-item label="职务" prop="duty">
-        <el-input v-model="dataForm.duty" placeholder="职务"></el-input>
-      </el-form-item>
-      <el-form-item label="分数" prop="score">
-        <el-input v-model="dataForm.score" type="number" placeholder="分数"></el-input>
-      </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
-    </span>
-  </el-dialog>
+  <van-dialog style="width:80%;" :title="!dataForm.id ? '新增' : '修改'"
+              show-cancel-button confirm-button-text="确定"
+              @cancel="visible = false"
+              @confirm="dataFormSubmit"
+              v-model="visible" :beforeClose="beforeClose">
+    <van-form  ref="dataForm">
+      <van-field label-align="center" v-model="dataForm.duty" name="jobTitle" label="职务"
+                 :rules="[{ required: true, message: '请填写职务' }]" />
+      <van-field label-align="center" v-model="dataForm.score" name="score" label="分数" type="number"
+                 :rules="[{ required: true, message: '请填写分数' }]" />
+    </van-form>
+  </van-dialog>
 </template>
 
 <script>
@@ -28,23 +23,17 @@
           duty: '',
           score: '',
           orderNum: ''
-        },
-        dataRule: {
-          duty: [
-            { required: true, message: '职务不能为空', trigger: 'blur' }
-          ],
-          score: [
-            { required: true, message: '分数不能为空', trigger: 'blur' }
-          ]
         }
       }
     },
     methods: {
+      beforeClose (action, done) {
+        done(!this.visible)
+      },
       init (id) {
         this.dataForm.id = id || 0
         this.visible = true
         this.$nextTick(() => {
-          this.$refs['dataForm'].resetFields()
           if (this.dataForm.id) {
             this.$http({
               url: this.$http.adornUrl(`/set/scoreduty/info/${this.dataForm.id}`),
@@ -57,13 +46,17 @@
                 this.dataForm.orderNum = data.renScoreDuty.orderNum
               }
             })
+          } else {
+            this.dataForm.duty = ''
+            this.dataForm.score = ''
+            this.dataForm.orderNum = ''
           }
         })
       },
       // 表单提交
       dataFormSubmit () {
-        this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
+        this.$refs.dataForm.validateAll().then(
+          success => {
             this.$http({
               url: this.$http.adornUrl(`/set/scoreduty/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
@@ -83,11 +76,14 @@
                 this.visible = false
                 this.$emit('refreshDataList')
               } else {
-                this.$message.error(data.msg)
+                this.$notify({
+                  message: data.msg,
+                  type: 'danger',
+                  duration: 1500
+                })
               }
             })
-          }
-        })
+          })
       }
     }
   }

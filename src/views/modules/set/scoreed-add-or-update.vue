@@ -1,28 +1,23 @@
 <template>
-  <el-dialog width="100%"
-    :title="!dataForm.id ? '新增' : '修改'"
-    :close-on-click-modal="false"
-    :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="80px">
-      <el-form-item label="类别" prop="cateid">
-        <el-radio-group v-model="dataForm.cateid">
-          <el-radio :label="1">学制系数</el-radio>
-          <el-radio :label="2">专业系数</el-radio>
-          <el-radio :label="3">学历系数</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="对应项" prop="scoreName">
-        <el-input v-model="dataForm.scoreName" placeholder="对应项名称"></el-input>
-      </el-form-item>
-      <el-form-item label="分数" prop="score">
-        <el-input v-model="dataForm.score" placeholder="分数" type="number"></el-input>
-      </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
-    </span>
-  </el-dialog>
+    <van-dialog style="width:95%;" :title="!dataForm.id ? '新增' : '修改'"
+                show-cancel-button confirm-button-text="确定"
+                @cancel="visible = false"
+                @confirm="dataFormSubmit"
+                v-model="visible" :beforeClose="beforeClose">
+      <van-form  ref="dataForm">
+        <van-field label-align="center" v-model="dataForm.cateid" label="类别" name="cateid" :rules="[{ required: true, message: '请选择类别' }]">
+          <template slot="input">
+            <div style="padding-right:7px;"><input type="radio"  v-model="dataForm.cateid" id="s1" value="1"  />学制系数</div>
+            <div style="padding-right:7px;"><input type="radio"  v-model="dataForm.cateid" id="s2" value="2"  />专业系数</div>
+            <div style="padding-right:7px;"><input type="radio"  v-model="dataForm.cateid" id="s3" value="3"  />学历系数</div>
+          </template>
+        </van-field>
+        <van-field label-align="center" v-model="dataForm.scoreName" name="scoreName" label="对应项" disabled
+                   :rules="[{ required: true, message: '请填写对应项名称' }]" />
+        <van-field label-align="center" v-model="dataForm.score" name="score" label="分数"
+                   :rules="[{ required: true, message: '请填写分数' }]" />
+      </van-form>
+    </van-dialog>
 </template>
 
 <script>
@@ -36,29 +31,17 @@
           cateid: '',
           score: '',
           orderNum: ''
-        },
-        dataRule: {
-          scoreName: [
-            { required: true, message: '对应项名称不能为空', trigger: 'blur' }
-          ],
-          cateid: [
-            { required: true, message: '类别（1-学制；2-专业；3-学历）不能为空', trigger: 'blur' }
-          ],
-          score: [
-            { required: true, message: '分数不能为空', trigger: 'blur' }
-          ],
-          orderNum: [
-            { required: true, message: '顺序号不能为空', trigger: 'blur' }
-          ]
         }
       }
     },
     methods: {
+      beforeClose (action, done) {
+        done(!this.visible)
+      },
       init (id) {
         this.dataForm.id = id || 0
         this.visible = true
         this.$nextTick(() => {
-          this.$refs['dataForm'].resetFields()
           if (this.dataForm.id) {
             this.$http({
               url: this.$http.adornUrl(`/set/scoreed/info/${this.dataForm.id}`),
@@ -72,13 +55,18 @@
                 this.dataForm.orderNum = data.setScoreEd.orderNum
               }
             })
+          } else {
+            this.dataForm.scoreName = ''
+            this.dataForm.cateid = ''
+            this.dataForm.score = ''
+            this.dataForm.orderNum = ''
           }
         })
       },
       // 表单提交
       dataFormSubmit () {
-        this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
+        this.$refs.dataForm.validateAll().then(
+          success => {
             this.$http({
               url: this.$http.adornUrl(`/set/scoreed/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
@@ -91,7 +79,7 @@
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.$message({
+                this.$notify({
                   message: '操作成功',
                   type: 'success',
                   duration: 1500
@@ -99,12 +87,23 @@
                 this.visible = false
                 this.$emit('refreshDataList')
               } else {
-                this.$message.error(data.msg)
+                this.$notify({
+                  message: data.msg,
+                  type: 'danger',
+                  duration: 1500
+                })
               }
             })
           }
-        })
+        )
       }
     }
   }
 </script>
+
+<style scoped>
+  .van-cell{
+    padding:5px 5px;
+  }
+
+</style>
