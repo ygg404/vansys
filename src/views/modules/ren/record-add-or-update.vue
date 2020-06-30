@@ -150,7 +150,7 @@
     </van-popup>
     <!-- 毕业时间 -->
     <van-popup v-model="edTimeShow" position="bottom" :style="{ height: '50%' }" ref="edTimeId">
-      <van-datetime-picker type="year-month" title="选择毕业时间" @cancel="edTimeShow=false" @confirm="onEdTimeConfirm"
+      <van-datetime-picker type="date" title="选择毕业时间" @cancel="edTimeShow=false" @confirm="onEdTimeConfirm"
                            :min-date="new Date(1970,0,1)" :max-date="new Date(2080,11,31)" />
     </van-popup>
 
@@ -388,7 +388,8 @@
       // 毕业时间选择
       onEdTimeConfirm (date) {
         console.log(date)
-        this.dataForm.educationTime = moment(date).format('YYYY-MM')
+        this.dataForm.educationTime = moment(date).format('YYYY-MM-DD')
+        console.log(this.dataForm.educationTime)
         this.edTimeShow = false
       },
       // 获取省市名称
@@ -598,6 +599,7 @@
               wBackground.startDate = wBackground.monthRangeDate[0]
               wBackground.endDate = wBackground.monthRangeDate[1]
             }
+            console.log(this.dataForm.educationTime)
             this.loading = true
             this.loadingtext = '正在上传中'
             this.$http({

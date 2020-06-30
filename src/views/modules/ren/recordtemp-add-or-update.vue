@@ -163,7 +163,7 @@
     </van-popup>
     <!-- 毕业时间 -->
     <van-popup v-model="edTimeShow" position="bottom" :style="{ height: '50%' }" ref="edTimeId">
-      <van-datetime-picker type="year-month" title="选择毕业时间" @cancel="edTimeShow=false" @confirm="onEdTimeConfirm"
+      <van-datetime-picker type="date" title="选择毕业时间" @cancel="edTimeShow=false" @confirm="onEdTimeConfirm"
                            :min-date="new Date(1970,0,1)" :max-date="new Date(2080,11,31)" />
     </van-popup>
     <!--婚姻状况选择器-->
@@ -540,7 +540,7 @@
       // 毕业时间选择
       onEdTimeConfirm (date) {
         console.log(date)
-        this.dataForm.educationTime = moment(date).format('YYYY-MM')
+        this.dataForm.educationTime = moment(date).format('YYYY-MM-DD')
         this.edTimeShow = false
       },
       // 表单提交
