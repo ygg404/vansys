@@ -55,10 +55,10 @@
                      :rules="[{ required:true, message: '工作类型不能为空' }]" ></van-field>
           <van-field v-model="dataForm.titleName" label="职称等级" name="zcLevelName" @click="zcLevelShow = true" clickable readonly placeholder="请选择职称等级"
                      :rules="[{ required:true, message: '职称等级不能为空' }]"/>
-          <van-field v-model="zcxName" label="职称专业系数" name="zcxName" @click="zcxShow = true" readonly
-                     placeholder="请选择职称专业系数" :rules="[{ required:true, message: '职称专业系数不能为空' }]"/>
           <van-field v-model="dataForm.dutyName" label="职务" placeholder="职务" name="dutyId"  @click="dutyShow = true" readonly clickable
                      :rules="[{ required:true, message: '职务不能为空' }]"></van-field>
+          <van-field v-model="zcxName" label="职称专业系数" name="zcxName" @click="zcxShow = true" readonly
+                     placeholder="请选择职称专业系数" :rules="[{ required:true, message: '职称专业系数不能为空' }]"/>
           <van-field v-model="dataForm.edName" label="最高学历" placeholder="最高学历" name="education"  @click="edShow = true" readonly clickable
                      :rules="[{ required:true, message: '请填写最高学历' }]"></van-field>
           <van-field v-model="dataForm.edTypeName" label="学制" placeholder="学制" name="educationType"  @click="edTypeShow = true" readonly clickable
@@ -266,18 +266,14 @@
           birthday: '',
           entryTime: '',
           jobType: '',
-          jobTypeName: '',
           houseType: '',
           dutyId: '',
-          dutyName: '',
           proRatio: '',
-          proName: '',
           education: '',
           educationType: '',
           educationTime: '',
-          maritalStatusName: '',
-          titleName: '', // 职称等级
           titleLever: '',
+          titlePro: '',
           email: '',
           mobile: '',
           trialPeriod: '',
@@ -367,6 +363,12 @@
                           this.dataForm.headImg = data.renRecordVo.headImg
                           this.dataForm.isAudit = isaudit
                           this.dataForm.auditMsg = data.renRecordVo.auditMsg
+                          this.dataForm.titlePro = data.renRecordVo.titlePro
+                          for (let item of this.titleProList) {
+                            if (item.id === this.dataForm.titlePro) {
+                              this.zcxName = item.jobTitle
+                            }
+                          }
                           for (let edBackground of data.renRecordVo.edBackgroundList) {
                             edBackground.edId = getUUID()
                             edBackground.monthRangeDate = [edBackground.startDate, edBackground.endDate]
@@ -519,7 +521,7 @@
         this.dataForm.jobTypeName = item.jobItem
         this.jobTypeShow = false
       },
-      // 职务选择
+      // 职务选择npm
       onDutyConfirm (item) {
         this.dataForm.dutyId = item.id
         this.dataForm.dutyName = item.duty

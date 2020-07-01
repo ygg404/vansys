@@ -92,7 +92,7 @@
                 <van-col span="18">
                   <van-tag v-if="item.jobType === 1" type="primary">全职</van-tag>
                   <van-tag v-else-if="item.jobType === 2" type="success">兼职</van-tag>
-                  <van-tag v-else-if="item.jobType === 2" type="info">实习</van-tag>
+                  <van-tag v-else-if="item.jobType === 3" type="info">实习</van-tag>
                 </van-col>
               </van-row>
               <van-row class="card_name_title">
