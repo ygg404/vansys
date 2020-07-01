@@ -2,7 +2,7 @@
   <div class="role_mod" id="rolePanel">
       <div class="role_left" :style=" 'max-height:' + (documentClientHeight -200) + 'px' ">
         <el-card >
-          <div slot="header"><h2>未分组</h2></div>
+          <div slot="header"><div style="font-size:17px;font-weight:600;">未分组</div></div>
           <div>
             <el-input prefix-icon="el-icon-search" placeholder="搜索成员关键字"
                       v-model="keySearch" ></el-input>
@@ -21,7 +21,7 @@
       <div class="role_right" style="width:48%;" :style=" 'max-height:' + (documentClientHeight -140) + 'px' ">
         <div v-for="(item, index) in roleList" style="width: 200px;display:inline-block;" v-if="item.roleId != 0">
           <el-card>
-            <div slot="header"><h1>{{item.roleName}}</h1></div>
+            <div slot="header"><div style="font-size:17px;font-weight:600;">{{item.roleName}}</div></div>
             <div>
                 <draggable v-model="item.userList" :id="item.roleId"  @change="changeDragHandle" @end="endDropEvent" class="role_right_content"
                            v-bind="{animation: 200,  group: 'role', disabled: false,chosenClass: 'choose', ghostClass: 'ghost'}" tag="ul">
@@ -32,8 +32,6 @@
             </div>
           </el-card>
         </div>
-
-
     </div>
   </div>
 </template>

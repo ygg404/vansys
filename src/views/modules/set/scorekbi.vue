@@ -1,7 +1,7 @@
 <template>
-  <div class="mod-config">
+  <div class="scorekbi_table">
     <div style="display:flex">
-      <table class="dataTabble" border="1" cellspacing="0">
+      <table class="dataTabble" border="0" cellspacing="0" cellpadding="0" style="margin-bottom:10px;">
         <thead>
         <tr class="header">
           <th colspan="5">职务效能分计算方法表</th>
@@ -15,9 +15,9 @@
           <td>{{item.standardScore}}</td>
           <td>{{item.assessnoScore}}</td>
           <td>{{item.trialScore}}</td>
-          <td width="100">
+          <td width="70">
             <div class="tabopa">
-              <el-button @click="addOrUpdateDutyHandle(item.dutyId)" size="small" type="primary">修改</el-button>
+              <van-button @click="addOrUpdateDutyHandle(item.dutyId)" size="mini" type="info">修改</van-button>
             </div>
           </td>
         </tr>
@@ -25,7 +25,7 @@
 
     </div>
     <div style="display:flex">
-      <table class="dataTabble" border="1" cellspacing="0">
+      <table class="dataTabble" border="0" cellspacing="0" cellpadding="0" style="margin-bottom:10px;">
         <thead>
         <tr class="header">
           <th colspan="5">职称效能分计算方法表</th>
@@ -41,7 +41,7 @@
           <td>{{item.trialScore}}</td>
           <td width="100">
             <div class="tabopa">
-              <el-button @click="addOrUpdateTitleHandle(item.titleId)" size="small" type="primary">修改</el-button>
+              <van-button @click="addOrUpdateTitleHandle(item.titleId)" size="mini" type="info">修改</van-button>
             </div>
           </td>
         </tr>
@@ -128,6 +128,16 @@
   .addScore {
     padding: 10px;
   }
+  .scorekbi_table table tr th,.scorekbi_table table tr td{
+    border: 1px solid #ccc;
+  }
+  .scorekbi_table table{
+    border-collapse: collapse;
+  }
+  .hl35{
+    height:35px;
+    line-height: 35px;
+  }
   .dataTabble{
     width: 450px;
   }
@@ -137,12 +147,12 @@
     background: #169fe6;
     width: 100%;
     font-weight: 700;
-    font-size: 16pt;
-    line-height: 200%;
+    font-size: 18px;
+    line-height: 36px;
 
   }
   .dataTabble .field{
-    font-size: 12pt;
+    font-size: 13px;
     text-align: center;
     padding: 5px;
     line-height: 150%;

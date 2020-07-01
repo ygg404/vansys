@@ -1,11 +1,9 @@
 <template>
-  <div class="mod-config">
-    <el-form :inline="true" >
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-plus" size="large" @click="addOrUpdateHandle()">新增</el-button>
-      </el-form-item>
-    </el-form>
-    <table class="dataTabble" border="1">
+  <div class="scoretitle_table">
+    <div class="addScore">
+      <van-button type="info" size="small" @click="addOrUpdateHandle()">新增</van-button>
+    </div>
+    <table class="dataTabble" border="0" cellspacing="0" cellpadding="0" style="margin-bottom:10px;">
       <thead>
       <tr class="header">
         <th colspan="5">职称基准分对照表</th>
@@ -152,6 +150,16 @@
 <style scoped>
   .addScore {
     padding: 10px;
+  }
+  .scoretitle_table table tr th,.scoretitle_table table tr td{
+    border: 1px solid #ccc;
+  }
+  .scoretitle_table table{
+    border-collapse: collapse;
+  }
+  .hl35{
+    height:35px;
+    line-height: 35px;
   }
   .dataTabble{
     width: 100%;

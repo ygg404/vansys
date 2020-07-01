@@ -49,4 +49,7 @@
 </script>
 
 <style scoped>
+  .el-tabs__content{
+    padding:0px;
+  }
 </style>

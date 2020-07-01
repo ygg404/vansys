@@ -1,15 +1,11 @@
 <template>
   <div>
-    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item>
-        <el-input v-model="dataForm.roleName" placeholder="岗位名称" @change="getDataListBykey" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="getDataListBykey()">查询</el-button>
-        <el-button v-if="isAuth('sys:role:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('sys:role:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
-      </el-form-item>
-    </el-form>
+    <div class="post_index_btngroup">
+      <van-button size="small" @click="getDataListBykey()">查询</van-button>
+      <van-button size="small" v-if="isAuth('sys:role:save')" type="primary" @click="addOrUpdateHandle()">新增</van-button>
+      <van-button size="small" v-if="isAuth('sys:role:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</van-button>
+    </div>
+    <el-input v-model="dataForm.roleName" placeholder="岗位名称" @change="getDataListBykey" clearable style="width:45%;padding-bottom:10px;"></el-input>
     <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="roleId" header-align="center" align="center" width="80" label="ID"></el-table-column>
@@ -21,15 +17,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      @size-change="sizeChangeHandle"
-      @current-change="currentChangeHandle"
-      :current-page="pageIndex"
-      :page-sizes="[25, 50, 100]"
-      :page-size="pageSize"
-      :total="totalPage"
-      layout="total, sizes, prev, pager, next, jumper">
-    </el-pagination>
+    <van-pagination v-model="pageIndex" items-per-page = "25" :total-items="totalPage" mode="simple" @change="getDataList()" />
 
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
@@ -143,5 +131,7 @@
 </script>
 
 <style scoped>
-
+  .post_index_btngroup {
+    padding-bottom: 5px;
+  }
 </style>

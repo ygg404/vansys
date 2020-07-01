@@ -1,10 +1,10 @@
 <template>
-  <div >
+  <div class="scoreed_table">
     <div class="addScore">
-      <el-button type="primary" size="large" icon="el-icon-plus" @click="addOrUpdateHandle()">新增学历分项</el-button>
+      <van-button type="info" size="small" @click="addOrUpdateHandle()">新增学历分项</van-button>
     </div>
     <div>
-      <table class="dataTabble" border="1">
+      <table class="scoreeddataTabble" border="0" cellspacing="0" cellpadding="0" style="margin-bottom:10px;">
         <thead>
         <tr class="header">
           <th colspan="3">学制系数</th>
@@ -14,18 +14,18 @@
         </tr>
         <draggable v-model="edList" element="tbody" :move="getdata" @update="datadragEnd">
           <tr v-for="(item,id) in edList" :key="item.id" class="content" v-if="item.cateid == 1">
-            <td>{{item.scoreName}}</td>
-            <td>{{item.score}}</td>
+            <td class="hl35">{{item.scoreName}}</td>
+            <td class="hl35">{{item.score}}</td>
             <td width="150">
               <div class="tabopa">
-                <el-button @click="addOrUpdateHandle(item.id)" size="small" type="primary">修改</el-button>
-                <el-button @click="deleteHandle(item)" size="small" type="danger">删除</el-button>
+                <van-button @click="addOrUpdateHandle(item.id)" size="small" type="info">修改</van-button>
+                <van-button @click="deleteHandle(item)" size="small" type="danger">删除</van-button>
               </div>
             </td>
           </tr>
         </draggable>
       </table>
-      <table class="dataTabble" border="1">
+      <table class="scoreeddataTabble" border="0" cellspacing="0" cellpadding="0" style="margin-bottom:10px;">
         <thead>
         <tr class="header">
           <th colspan="3">专业系数</th>
@@ -35,18 +35,18 @@
         </tr>
         <draggable v-model="edList" element="tbody" :move="getdata" @update="datadragEnd">
           <tr v-for="(item,id) in edList" :key="id" class="content" v-if="item.cateid == 2">
-            <td>{{item.scoreName}}</td>
-            <td>{{item.score}}</td>
+            <td class="hl35">{{item.scoreName}}</td>
+            <td class="hl35">{{item.score}}</td>
             <td width="150">
               <div class="tabopa">
-                <el-button @click="addOrUpdateHandle(item.id)" size="small" type="primary">修改</el-button>
-                <el-button @click="deleteHandle(item)" size="small" type="danger">删除</el-button>
+                <van-button @click="addOrUpdateHandle(item.id)" size="small" type="info">修改</van-button>
+                <van-button @click="deleteHandle(item)" size="small" type="danger">删除</van-button>
               </div>
             </td>
           </tr>
         </draggable>
       </table>
-      <table class="dataTabble" border="1">
+      <table class="scoreeddataTabble" border="0" cellspacing="0" cellpadding="0" style="margin-bottom:10px;">
         <thead>
         <tr class="header">
           <th colspan="3">学历系数</th>
@@ -56,12 +56,12 @@
         </tr>
         <draggable v-model="edList" element="tbody" :move="getdata" @update="datadragEnd">
           <tr v-for="(item,id) in edList" :key="item.id" class="content" v-if="item.cateid == 3">
-            <td>{{item.scoreName}}</td>
-            <td>{{item.score}}</td>
+            <td class="hl35">{{item.scoreName}}</td>
+            <td class="hl35">{{item.score}}</td>
             <td width="150">
               <div class="tabopa">
-                <el-button @click="addOrUpdateHandle(item.id)" size="small" type="primary">修改</el-button>
-                <el-button @click="deleteHandle(item)" size="small" type="danger">删除</el-button>
+                <van-button @click="addOrUpdateHandle(item.id)" size="small" type="info">修改</van-button>
+                <van-button @click="deleteHandle(item)" size="small" type="danger">删除</van-button>
               </div>
             </td>
           </tr>
@@ -195,35 +195,46 @@
 
 <style scoped>
   .addScore {
-    padding: 10px;
+    padding: 5px;
   }
-  .dataTabble{
+
+ .scoreed_table table tr th,.scoreed_table table tr td{
+    border: 1px solid #ccc;
+  }
+ .scoreed_table table{
+   border-collapse: collapse;
+ }
+  .hl35{
+    height:35px;
+    line-height: 35px;
+  }
+  .scoreeddataTabble{
     width: 320px;
   }
 
-  .dataTabble .header{
+  .scoreeddataTabble .header{
     color: white;
     background: #169fe6;
     width: 100%;
     font-weight: 700;
-    font-size: 16pt;
+    font-size: 16px;
     line-height: 200%;
 
   }
-  .dataTabble .field{
-    font-size: 12pt;
+  .scoreeddataTabble .field{
+    font-size: 14px;
     text-align: center;
-    padding: 5px;
+    /*padding: 5px;*/
     line-height: 150%;
     font-weight: 700;
   }
-  .dataTabble .content{
-    font-size: 10pt;
+  .scoreeddataTabble .content{
+    font-size: 13px;
     text-align: center;
     cursor: Move;
     line-height: 150%;
   }
-  .dataTabble .content .tabopa{
-    padding: 3px;
+  .scoreeddataTabble .content .tabopa{
+    /*padding: 3px;*/
   }
 </style>

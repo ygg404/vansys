@@ -1,34 +1,36 @@
 <template>
-  <div class="mod-config">
-    <el-form :inline="true" >
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-plus" size="large" @click="addOrUpdateHandle()">新增</el-button>
-      </el-form-item>
-    </el-form>
-    <table class="dataTabble" border="1">
-      <thead>
-      <tr class="header">
-        <th colspan="5">职级认定及其房补对照表</th>
-      </tr>
-      </thead>
-      <tr class="field">
-        <td>分数下限(>=)</td><td>分数上限(<)</td><td>职级</td><td>房补</td><td>操作</td>
-      </tr>
-      <draggable v-model="dataList" element="tbody" :move="getdata" @update="datadragEnd">
-        <tr v-for="(item,id) in dataList" :key="item.id" class="content">
-          <td>{{item.lowScore}}</td>
-          <td>{{item.highScore}}</td>
-          <td>{{item.jobRank}}</td>
-          <td>{{item.houseAdd}}</td>
-          <td width="150">
-            <div class="tabopa">
-              <el-button @click="addOrUpdateHandle(item.id)" size="small" type="primary">修改</el-button>
-              <el-button @click="deleteHandle(item)" size="small" type="danger">删除</el-button>
-            </div>
-          </td>
+  <div class="scorehouse_table">
+    <div class="addScore">
+      <van-button type="info" size="small" @click="addOrUpdateHandle()">新增</van-button>
+    </div>
+    <div style="overflow-y:scroll;">
+      <table class="dataTabble" border="0" cellspacing="0" cellpadding="0" style="margin-bottom:10px;height:500px;">
+        <thead>
+        <tr class="header">
+          <th colspan="5">职级认定及其房补对照表</th>
         </tr>
-      </draggable>
-    </table>
+        </thead>
+        <tr class="field">
+          <td>分数下限(>=)</td><td>分数上限(<)</td><td>职级</td><td>房补</td><td>操作</td>
+        </tr>
+        <draggable v-model="dataList" element="tbody" :move="getdata" @update="datadragEnd">
+          <tr v-for="(item,id) in dataList" :key="item.id" class="content">
+            <td class="hl35">{{item.lowScore}}</td>
+            <td class="hl35">{{item.highScore}}</td>
+            <td class="hl35">{{item.jobRank}}</td>
+            <td class="hl35">{{item.houseAdd}}</td>
+            <td width="80">
+              <div style="padding-top:2px;padding-bottom:3px;">
+                <van-button @click="addOrUpdateHandle(item.id)" size="mini" type="info">修改</van-button>
+              </div>
+              <div style="padding-bottom:2px;">
+                <van-button @click="deleteHandle(item)" size="mini" type="danger">删除</van-button>
+              </div>
+            </td>
+          </tr>
+        </draggable>
+      </table>
+    </div>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
   </div>
@@ -150,6 +152,16 @@
   .addScore {
     padding: 10px;
   }
+  .scorehouse_table table tr th,.scorehouse_table table tr td{
+    border: 1px solid #ccc;
+  }
+  .scorehouse_table table{
+    border-collapse: collapse;
+  }
+  .hl35{
+    height:35px;
+    line-height: 35px;
+  }
   .dataTabble{
     width: 100%;
   }
@@ -164,11 +176,11 @@
 
   }
   .dataTabble .field{
-    font-size: 12pt;
+    font-size: 13px;
     text-align: center;
     padding: 5px;
     line-height: 150%;
-    font-weight: 700;
+    font-weight: 600;
   }
   .dataTabble .content{
     font-size: 10pt;
@@ -176,7 +188,5 @@
     cursor: Move;
     line-height: 150%;
   }
-  .dataTabble .content .tabopa{
-    padding: 3px;
-  }
+
 </style>
