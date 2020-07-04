@@ -12,7 +12,6 @@
         </thead>
         <tr class="field"><td>对应项</td><td>分数</td><td>操作</td>
         </tr>
-        <draggable v-model="edList" element="tbody" :move="getdata" @update="datadragEnd">
           <tr v-for="(item,id) in edList" :key="item.id" class="content" v-if="item.cateid == 1">
             <td class="hl35">{{item.scoreName}}</td>
             <td class="hl35">{{item.score}}</td>
@@ -23,7 +22,6 @@
               </div>
             </td>
           </tr>
-        </draggable>
       </table>
       <table class="scoreeddataTabble" border="0" cellspacing="0" cellpadding="0" style="margin-bottom:10px;">
         <thead>
@@ -33,7 +31,6 @@
         </thead>
         <tr class="field"><td>对应项</td><td>分数</td><td>操作</td>
         </tr>
-        <draggable v-model="edList" element="tbody" :move="getdata" @update="datadragEnd">
           <tr v-for="(item,id) in edList" :key="id" class="content" v-if="item.cateid == 2">
             <td class="hl35">{{item.scoreName}}</td>
             <td class="hl35">{{item.score}}</td>
@@ -44,7 +41,6 @@
               </div>
             </td>
           </tr>
-        </draggable>
       </table>
       <table class="scoreeddataTabble" border="0" cellspacing="0" cellpadding="0" style="margin-bottom:10px;">
         <thead>
@@ -54,7 +50,6 @@
         </thead>
         <tr class="field"><td>对应项</td><td>分数</td><td>操作</td>
         </tr>
-        <draggable v-model="edList" element="tbody" :move="getdata" @update="datadragEnd">
           <tr v-for="(item,id) in edList" :key="item.id" class="content" v-if="item.cateid == 3">
             <td class="hl35">{{item.scoreName}}</td>
             <td class="hl35">{{item.score}}</td>
@@ -65,7 +60,6 @@
               </div>
             </td>
           </tr>
-        </draggable>
       </table>
     </div>
 

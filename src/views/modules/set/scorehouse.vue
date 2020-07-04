@@ -13,7 +13,6 @@
         <tr class="field">
           <td>分数下限(>=)</td><td>分数上限(<)</td><td>职级</td><td>房补</td><td>操作</td>
         </tr>
-        <draggable v-model="dataList" element="tbody" :move="getdata" @update="datadragEnd">
           <tr v-for="(item,id) in dataList" :key="item.id" class="content">
             <td class="hl35">{{item.lowScore}}</td>
             <td class="hl35">{{item.highScore}}</td>
@@ -28,7 +27,6 @@
               </div>
             </td>
           </tr>
-        </draggable>
       </table>
     </div>
     <!-- 弹窗, 新增 / 修改 -->

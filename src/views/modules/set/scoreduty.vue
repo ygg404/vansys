@@ -12,7 +12,6 @@
       <tr class="field">
         <td>职务</td><td>分数</td><td>操作</td>
       </tr>
-      <draggable v-model="dataList" element="tbody" :move="getdata" @update="datadragEnd">
         <tr v-for="(item,id) in dataList" :key="item.id" class="content">
           <td>{{item.duty}}</td>
           <td>{{item.score}}</td>
@@ -23,7 +22,6 @@
             </div>
           </td>
         </tr>
-      </draggable>
     </table>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
