@@ -20,7 +20,7 @@
       <div style="text-align: center;margin-bottom:3px;font-size:17px;font-weight:600;">
        {{dataForm.curYear.getFullYear() + '年' + (dataForm.updown == 0 ? '上半年':'下半年') + '效能考核明细'}}
       </div>
-      
+
       <div style="display: flex">
         <el-table :data="checkUserList" border style="margin-left: 10px;" :header-cell-style="{background:'#F4F5F6',color:'#131D34',padding: '5px 0'}">
           <el-table-column type="expand" v-if="isAuth('ren:kbi:detial')" >
