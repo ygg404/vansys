@@ -1,24 +1,29 @@
 <template>
-  <div>
-    <div class="span_header">参评人数:<span>{{person}}</span>/<sapn style="color: #3b97d7">{{count}}</sapn></div>
-    <div class="user_card">
-      <el-table :data="uRoleList" border>
-        <el-table-column label="用户名" prop="userName"></el-table-column>
-        <el-table-column label="是否提交">
-          <template slot-scope="scope">
-            <el-tag v-if="scope.row.isAssess" type="primary">已提交</el-tag>
-            <el-tag v-else type="info">未提交</el-tag>
-          </template>
-        </el-table-column>
-      </el-table>
+  <van-dialog v-model="visible">
+    <template slot="title">
+      <div class="span_header">参评人数:<span>{{person}}</span>/<sapn style="color: #3b97d7">{{count}}</sapn></div>
+    </template>
+    <div style="max-height:300px;overflow-y:auto;">
+      <div class="user_card">
+        <el-table :data="uRoleList" border>
+          <el-table-column label="用户名" prop="userName"></el-table-column>
+          <el-table-column label="是否提交">
+            <template slot-scope="scope">
+              <el-tag v-if="scope.row.isAssess" type="primary">已提交</el-tag>
+              <el-tag v-else type="info">未提交</el-tag>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
-  </div>
+  </van-dialog>
 </template>
 
 <script>
   export default {
     data () {
       return {
+        visible: false,
         uRoleList: [],
         dataForm: {
           curYear: '',
@@ -30,6 +35,7 @@
     },
     methods: {
       init (dataForm) {
+        this.visible = true
         this.dataForm = dataForm
 
         this.getUaccessList().then(list => {
@@ -95,13 +101,12 @@
   .user_card {
     max-height: 500px;
     overflow-y: auto;
-    box-shadow: 5px 5px 3px #1fd3e9;
-    border: 1px solid #1fd3e9;
+    border: 1px solid #b9babb;
   }
   .span_header {
     font-weight: 700;
-    padding: 5px;
-    font-size: 11pt;
+    padding-bottom: 3px;
+    font-size: 14px;
   }
   .span_header span{
     color: green;

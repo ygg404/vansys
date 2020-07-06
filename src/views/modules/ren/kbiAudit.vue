@@ -13,17 +13,15 @@
           </div>
       <div style="margin-top:5px;margin-bottom:5px;">
         <van-button type="info" size="small" @click="editPersonHandle()">编辑参评人员</van-button>
-        <van-button type="info" size="small"  @click="auditScoreHandle()">审定效能分</van-button>
+        <van-button type="info" size="small" @click="auditScoreHandle()">审定效能分</van-button>
+        <van-button type="info" size="small" v-if="isAuth('ren:kbi:person')" @click="detailUserShowEvent">参选情况</van-button>
       </div>
-      </el-form>
-      <div style="text-align: center;margin-bottom:5px;font-size:17px;font-weight:600;">
+
+      <div style="text-align: center;margin-bottom:3px;font-size:17px;font-weight:600;">
        {{dataForm.curYear.getFullYear() + '年' + (dataForm.updown == 0 ? '上半年':'下半年') + '效能考核明细'}}
       </div>
+      
       <div style="display: flex">
-        <div style="width: 200px" v-if="isAuth('ren:kbi:person')">
-          <detailUser ref="detailUser"></detailUser>
-        </div>
-
         <el-table :data="checkUserList" border style="margin-left: 10px;" :header-cell-style="{background:'#F4F5F6',color:'#131D34',padding: '5px 0'}">
           <el-table-column type="expand" v-if="isAuth('ren:kbi:detial')" >
             <template slot-scope="props">
@@ -86,6 +84,7 @@
       </div>
     </el-card>
 
+    <detailUser ref="detailUser"></detailUser>
     <!--    效能考核分数审定-->
     <kbi-audit-add-or-update ref="kbiAuditAddOrUpdate" v-if="auditVisible" @refreshDataList="init()" ></kbi-audit-add-or-update>
     <!--    参评人数编辑-->
@@ -104,9 +103,10 @@
   export default {
     data () {
       return {
+        detailUserFlag: false,
         dataLoading: false,
         dataForm: {
-          curYear: new Date(2020 , 1 ,1),   // 当前年份
+          curYear: new Date(2020, 1, 1),   // 当前年份
           updown: 0 // 上下半年
         },
         yearItemList: getYearItem(),
@@ -118,11 +118,11 @@
         branchChildList: [],
         isAudit: false,
         auditVisible: false,
-        personVisible: false,
+        personVisible: false
       }
     },
     activated () {
-      this.dataForm.curYear = new Date(new Date().getFullYear() , new Date().getMonth() - 3, 1)
+      this.dataForm.curYear = new Date(new Date().getFullYear(), new Date().getMonth() - 3, 1)
       this.dataForm.updown = this.dataForm.curYear.getMonth() <= 6 ? 0 : 1
       this.init()
     },
@@ -132,7 +132,7 @@
       kbiPersonAddOrUpdate
     },
     methods: {
-      objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      objectSpanMethod ({ row, column, rowIndex, columnIndex }) {
         if (columnIndex === 0) {
           if (row.isFirst || rowIndex === 0) {
             return {
@@ -159,7 +159,7 @@
                   let checkUserList = this.acceessListInit(list)
                   for (let checkUser of checkUserList) {
                     // 设置每个人的效能基准分
-                    checkUser.standardScore = uRoleList.find( item => item.userId === checkUser.checkUserId).standardScore
+                    checkUser.standardScore = uRoleList.find(item => item.userId === checkUser.checkUserId).standardScore
                     checkUser.scoreList = this.extraScoreInit(checkUser, extraList, scoreList)
                     // 计算每个人的总加减分
                     let allScore = 0
@@ -169,7 +169,7 @@
                     checkUser.allScore = allScore
                   }
                   // 设置每成员的部门 并获取部门的最高分
-                  checkUserList = this.setBranchScoreFun(checkUserList,branchList)
+                  checkUserList = this.setBranchScoreFun(checkUserList, branchList)
                   this.checkUserList = this.setKbiScore(checkUserList)
                   this.dataLoading = false
                 })
@@ -177,7 +177,13 @@
             })
           })
         })
-        this.$refs.detailUser.init(this.dataForm)
+        // this.$refs.detailUser.init(this.dataForm)
+      },
+      detailUserShowEvent () {
+        this.detailUserFlag = true
+        this.$nextTick(() => {
+          this.$refs.detailUser.init(this.dataForm)
+        })
       },
       renderheader (h, { column, $index }) {
         return h('span', {}, [
@@ -278,8 +284,8 @@
             let kbiItem = {
               userId: access.userId,
               userName: access.userName,
-              isGuider: this.isGuiderHandle(access.userId,access.checkUserId),
-              isSameBranch: this.isSameBranch(access.userId,access.checkUserId)
+              isGuider: this.isGuiderHandle(access.userId, access.checkUserId),
+              isSameBranch: this.isSameBranch(access.userId, access.checkUserId)
             }
             userId = access.userId
             checkUserList[checkUserList.length - 1].kbiList.push(kbiItem)
@@ -290,7 +296,7 @@
         return checkUserList
       },
       // 是否为部门领导
-      isGuiderHandle (userId,checkUserId) {
+      isGuiderHandle (userId, checkUserId) {
         let isGuider = false
         // 被考核人所在的所有部门
         let inBranchList = []
@@ -313,16 +319,16 @@
         return isGuider
       },
       // 获取部门的父部门
-      getParentBranchList (parentList = [] , branchId) {
-        this.branchList.map( branch => {
+      getParentBranchList (parentList = [], branchId) {
+        this.branchList.map(branch => {
           if (branch.id === branchId && branch.parentId !== 0) {
             parentList.push(branch.parentId)
-            this.getParentBranchList(parentList,branch.parentId)
+            this.getParentBranchList(parentList, branch.parentId)
           }
         })
       },
       // 判断 考核人与被考核人 是否为同一个部门
-      isSameBranch (userId,checkUserId) {
+      isSameBranch (userId, checkUserId) {
         let isSame = false
         let userBranchId = []     // 考核人的部门
         let checkBranchId = []    // 被考核人的部门
@@ -377,7 +383,7 @@
         })
       },
       // 评分列表初始化
-      extraScoreInit (checkUser,extraList,scoreList) {
+      extraScoreInit (checkUser, extraList, scoreList) {
         let uScoreList = []
         for (let scoreItem of scoreList) {
           if (scoreItem.checkUserId === checkUser.checkUserId) {
@@ -434,7 +440,7 @@
         }
         // 统计每个部门的最高分
         let branchMaxScoreList = []
-        for (let checkUser of checkUserList ) {
+        for (let checkUser of checkUserList) {
           let branch = branchMaxScoreList.find(branch => branch.brandId === checkUser.branchId)
           let branchScore = {
             branchId: checkUser.branchId,
@@ -447,9 +453,9 @@
           }
         }
         // 计算加减分最终的结果
-        for (let checkUser of checkUserList ) {
+        for (let checkUser of checkUserList) {
           let branch = branchMaxScoreList.find(branch => branch.branchId === checkUser.branchId)
-          if ( branch === undefined ) {
+          if (branch === undefined) {
             checkUser.maxScore = 0
           } else {
             checkUser.maxScore = branch.maxScore
@@ -467,7 +473,7 @@
             let score = 0
             for (var prop in scoreItem) {
               if (prop.indexOf('kbiId') >= 0) {
-                let propItem = checkUser.kbiItemList.find(kbi => kbi.kbiId === parseInt(prop.replace('kbiId','')))
+                let propItem = checkUser.kbiItemList.find(kbi => kbi.kbiId === parseInt(prop.replace('kbiId', '')))
                 if (propItem !== undefined && (!stringIsNull(scoreItem[prop]))) {
                   score += parseFloat(propItem.kbiRatio * scoreItem[prop] / 100)
                 }
@@ -507,9 +513,9 @@
               }
             }
           }
-          checkUser.kbiAllScore = parseFloat(kbiScoreOther / (kbiOhterNum === 0 ? 1 : kbiOhterNum)
-            + kbiScoreGuider / (kbiGuiderNum === 0 ? 1 : kbiGuiderNum)
-            + kbiScoreBranch / (kbiBranchNum === 0 ? 1 : kbiBranchNum)).toFixed(2)
+          checkUser.kbiAllScore = parseFloat(kbiScoreOther / (kbiOhterNum === 0 ? 1 : kbiOhterNum) +
+          kbiScoreGuider / (kbiGuiderNum === 0 ? 1 : kbiGuiderNum) +
+          kbiScoreBranch / (kbiBranchNum === 0 ? 1 : kbiBranchNum)).toFixed(2)
         }
         return checkUserList
       },

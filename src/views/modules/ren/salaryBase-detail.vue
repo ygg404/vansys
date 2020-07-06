@@ -11,7 +11,7 @@
         </van-row>
         <van-row>
           <van-col span="12">学制:{{person.edTypename}}</van-col>
-          <van-col span="12">系数:{{person.edProscore}}</van-col>
+          <van-col span="12">系数:{{person.edTypescore}}</van-col>
         </van-row>
         <van-row>
           <van-col span="12">专业性质:{{person.edProname}}</van-col>

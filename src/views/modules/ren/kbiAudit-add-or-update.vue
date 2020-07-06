@@ -1,8 +1,6 @@
 <template>
-  <el-dialog
-    :title="title"
-    :close-on-click-modal="false"
-    :visible.sync="visible">
+  <van-dialog :title="title" v-model="visible" @confirm="dataFormSubmit" @cancel="visible = false"
+              showCancelButton="true" confirmButtonText="审核确定">
     <el-table border :data="kbiAuditList">
       <el-table-column prop="username" label="姓名"></el-table-column>
       <el-table-column prop="kbiScore" label="效能基准分"></el-table-column>
@@ -13,11 +11,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">审核确定</el-button>
-    </span>
-  </el-dialog>
+  </van-dialog>
 </template>
 
 <script>
