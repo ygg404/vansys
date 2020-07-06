@@ -21,7 +21,7 @@
     </div>
     <div class="about">
       <div class="header">关于杰信</div>
-      <div>
+      <div style="margin-bottom: 60px;">
         <p>公司于2012年06月21日在汕头市工商行政管理局注册成立 现办公地点位于杰思信息大厦902</p>
         <p>主要经营测绘技术、计算机系统的研究、开发;仪器仪表、测绘产品及软件、计算机软硬件、电子产品、数码产品的研发、销售、维修及维护；货物进出口、技术进出口。
           我们有好的产品和专业的销售和技术团队 始终为客户提供好的产品和技术支持、健全的售后服务</p>
@@ -77,8 +77,14 @@
     font-size: 14pt;
     font-weight: 700;
     background: #3b97d7;
+    position: fixed;
+    width: 100%;
+    height: 46px;
+    top:0;
+    z-index: 1000;
   }
   .swipe_img{
+    margin-top: 47px;
     border: 1px solid #e6e9eb;
     height: 200px;
     width: 100%;

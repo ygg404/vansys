@@ -29,7 +29,7 @@
     </div>
   </van-dialog>
   <van-dialog title="编辑回复"  v-model="noteVisible" width="90%" show-cancel-button @confirm="dataFormSubmit" confirm-button-text="提交回复">
-    <wang-editor  :id="editorId" :content="ueContent" :projectNo="dataForm.projectNo" @refreshContent="getReportHandle"></wang-editor>
+    <wang-editor  :key="Math.random()" :content="ueContent" :projectNo="dataForm.projectNo" @refreshContent="getReportHandle"></wang-editor>
   </van-dialog>
 </div>
 </template>

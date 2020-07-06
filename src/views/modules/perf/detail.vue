@@ -94,7 +94,7 @@
                      <div class="coll_title">加减分评分表</div>
                    </template>
                    <div style="overflow-x: auto;max-height:300px;" >
-                     <table class="bs" cellspacing="10px" border="1" cellpadding="0">
+                     <table class="bs" border="1" cellspacing="0" cellpadding="0">
                        <thead>
                        <tr class="score_title">
                          <td class="tac detail_td_style" >类型</td>
