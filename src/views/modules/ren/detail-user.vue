@@ -1,5 +1,5 @@
 <template>
-  <van-dialog v-model="visible">
+  <van-dialog v-model="visible" width="60%;" confirmButtonText="返回">
     <template slot="title">
       <div class="span_header">参评人数:<span>{{person}}</span>/<sapn style="color: #3b97d7">{{count}}</sapn></div>
     </template>
