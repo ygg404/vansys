@@ -13,11 +13,8 @@
     </el-form>
     <div style="width: 95%;margin: 5px auto 10px;">
       <van-row type="flex" align="center" style="padding-bottom:5px;border-bottom:1px dotted black;">
-        <van-col span="6">
-          <van-button size="small" type="info" icon="coupon-o" @click="showduEvent">参选情况</van-button>
-        </van-col>
-        <van-col span="18">
-          <div class="f17dt">
+        <van-col span="24">
+          <div class="f17dt tac">
             {{dataForm.curYear.getFullYear() + '年' + (dataForm.updown == 0 ? '上半年':'下半年') + '效能考核明细'}}
           </div>
         </van-col>
@@ -54,7 +51,6 @@
                      <table class="bs" border="1" cellspacing="0">
                        <thead>
                        <tr>
-                         <td class="tac detail_td_style" style="min-width:60px;">评分人</td>
                          <td v-for="(kbiItem,indexB) in checkUser.kbiItemList" v-if="kbiItem.kbiRatio != 0" class="tac detail_td_style" style="min-width:150px;">
                            {{kbiItem.kbiName}} {{kbiItem.kbiRatio}}%
                          </td>
@@ -65,7 +61,6 @@
                        </thead>
                        <tbody>
                        <tr v-for="(kbi,indexB) in checkUser.kbiList">
-                         <td class="tac f14cb">{{kbi.userName}}</td>
                          <td v-for="(kbiItem,indexB) in checkUser.kbiItemList" v-if="kbiItem.kbiRatio != 0">
                            <table-solt :List="kbi" :num="kbiItem.kbiId">
                              <template slot-scope="slotProps">
@@ -75,7 +70,7 @@
                              </template>
                            </table-solt>
                          </td>
-                         <td class="tac">
+                         <td class="tac" style="color:red;">
                            {{kbi.everyAllScore}}
                          </td>
                          <td class="tac">
@@ -210,11 +205,11 @@
         this.$refs.detailUser.init(this.dataForm)
       },
       // 展示参选人数情况
-      showduEvent () {
-        this.$nextTick(() => {
-          this.$refs.detailUser.init(this.dataForm)
-        })
-      },
+      // showduEvent () {
+      //   this.$nextTick(() => {
+      //     this.$refs.detailUser.init(this.dataForm)
+      //   })
+      // },
       // 获取部门列表
       getBranchList () {
         return new Promise((resolve, reject) => {
