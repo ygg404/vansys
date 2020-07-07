@@ -104,7 +104,7 @@
                        </tr>
                        </thead>
                        <tbody>
-                       <tr v-for="(score,indexB) in checkUser.scoreList" class="scorestyle" >
+                       <tr v-for="(score,indexB) in checkUser.scoreList" class="detail_score_style" >
                          <td class="tac" style="min-width:70px;" v-if="score.isFirst" :rowspan="score.isFirst?score.size:1" colspan="1">
                            <div v-if="score.extraType == 0 && score.isFirst" class="f14cb">加分项</div>
                            <div v-if="score.extraType == 1 && score.isFirst" class="f14cb">减分项</div>
@@ -618,11 +618,13 @@
   .bs td{
     padding-bottom:5px;
   }
-  .scorestyle td{
+  .
+
+  td{
     padding-top:5px;
     padding-bottom:7px;
   }
-  .scorestyle td:nth-child(2){
+  .detail_score_style td:nth-child(2){
     letter-spacing:1px;
     line-height:16px;
   }
