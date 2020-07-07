@@ -1,88 +1,134 @@
 <template>
-  <div class="mod-config" >
-    <el-card  v-loading="dataLoading">
-          <span class="time_title">考核时间:</span>
-          <el-date-picker v-model="dataForm.curYear" type="year" placeholder="选择年" style="width: 100px;" @change="init"></el-date-picker>
-          <el-select v-model="dataForm.updown" placeholder="时间类型" style="width: 110px;" @change="init">
-            <el-option v-for="item in yearItemList" :label="item.yearItem" :key="item.id" :value="item.id"></el-option>
-          </el-select>
-          <div style="margin-top:5px;">
-            <span class="time_title">审定状态:</span>
-            <van-tag type="danger" v-if="isAudit == false">未审定</van-tag>
-            <van-tag type="primary" v-else>已审定</van-tag>
+  <div class="mod-config" v-loading="dataLoading">
+ <div class="w95" style="margin-bottom:5px;">
+   <span class="time_title">考核时间:</span>
+   <el-date-picker v-model="dataForm.curYear" type="year" placeholder="选择年" style="width: 100px;" @change="init"></el-date-picker>
+   <el-select v-model="dataForm.updown" placeholder="时间类型" style="width: 110px;" @change="init">
+     <el-option v-for="item in yearItemList" :label="item.yearItem" :key="item.id" :value="item.id"></el-option>
+   </el-select>
+   <div style="margin-top:5px;">
+     <span class="time_title">审定状态:</span>
+     <van-tag type="danger" v-if="isAudit == false">未审定</van-tag>
+     <van-tag type="primary" v-else>已审定</van-tag>
+   </div>
+   <div style="margin-top:5px;margin-bottom:5px;">
+     <van-button type="info" size="small" @click="editPersonHandle()">编辑参评人员</van-button>
+     <van-button type="info" size="small" @click="auditScoreHandle()">审定效能分</van-button>
+     <van-button type="info" size="small" v-if="isAuth('ren:kbi:person')" @click="detailUserShowEvent">参选情况</van-button>
+   </div>
+ </div>
+
+      <div style="width: 95%;margin: 5px auto 10px;">
+        <van-row type="flex" align="center" style="padding-bottom:5px;border-bottom:1px dotted black;">
+          <van-col span="24">
+            <div class="f17dt tac">
+              {{dataForm.curYear.getFullYear() + '年' + (dataForm.updown == 0 ? '上半年':'下半年') + '效能考核明细'}}
+            </div>
+          </van-col>
+        </van-row>
+        <!---->
+        <!--标题-->
+        <van-row class="data_title">
+          <van-col span="4" class="tar">被考核人</van-col>
+          <van-col span="5" class="tac">效能评价分</van-col>
+          <van-col span="4" class="tac">加减得分</van-col>
+          <van-col span="5" class="tac">效能基准分</van-col>
+          <van-col span="6">最终效能得分</van-col>
+        </van-row>
+        <!--数据-->
+        <div :style="'max-height: ' + (documentClientHeight - 270).toString() + 'px'" class="os">
+          <div v-for="(checkUser,indexA) in checkUserList">
+            <van-collapse v-model="activeName"  class="detailcoll"   :key="indexA">
+              <van-collapse-item :name="checkUser.checkUserId" :is-link="isAuth('perf:assess:detial')" border >
+                <template slot="title">
+                  <van-row style="color: #3b97d7">
+                    <van-col span="5">{{checkUser.checkUserName}}</van-col>
+                    <van-col span="5">{{checkUser.kbiAllScore}}</van-col>
+                    <van-col span="5">{{checkUser.finalExtra}}</van-col>
+                    <van-col span="5">{{checkUser.standardScore}}</van-col>
+                    <van-col span="4" >{{getFinalKbiScore(checkUser)}}</van-col>
+                  </van-row>
+                </template>
+                <van-collapse v-model="activeKbi" class="detailcoll" v-if="isAuth('perf:assess:detial')">
+                  <van-collapse-item name="1">
+                    <template slot="title">
+                      <div class="coll_title">效能评分表</div>
+                    </template>
+                    <div style="overflow-x: auto; max-height:300px;">
+                      <table class="bs" border="1" cellspacing="0">
+                        <thead>
+                        <tr>
+                          <td v-for="(kbiItem,indexB) in checkUser.kbiItemList" v-if="kbiItem.kbiRatio != 0" class="tac detail_td_style" style="min-width:150px;">
+                            {{kbiItem.kbiName}} {{kbiItem.kbiRatio}}%
+                          </td>
+                          <td style="min-width:90px;" class="detail_td_style">个人效能评分</td>
+                          <td style="min-width:90px;" class="detail_td_style">是否其领导</td>
+                          <td style="min-width:110px;" class="detail_td_style">是否为同一部门</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(kbi,indexB) in checkUser.kbiList">
+                          <td v-for="(kbiItem,indexB) in checkUser.kbiItemList" v-if="kbiItem.kbiRatio != 0">
+                            <table-solt :List="kbi" :num="kbiItem.kbiId">
+                              <template slot-scope="slotProps">
+                                <div class="tac f14cb">
+                                  {{slotProps.itemValue}}
+                                </div>
+                              </template>
+                            </table-solt>
+                          </td>
+                          <td class="tac" style="color:red;">
+                            {{kbi.everyAllScore}}
+                          </td>
+                          <td class="tac">
+                            <van-tag type="primary" v-if="kbi.isGuider">是</van-tag>
+                            <van-tag  v-else>否</van-tag>
+                          </td>
+                          <td class="tac">
+                            <van-tag type="primary" v-if="kbi.isSameBranch">是</van-tag>
+                            <van-tag v-else>否</van-tag>
+                          </td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </van-collapse-item>
+                </van-collapse>
+                <van-collapse v-model="activePlus" class="detailcoll" v-if="isAuth('perf:assess:detial')">
+                  <van-collapse-item name="1">
+                    <template slot="title">
+                      <div class="coll_title">加减分评分表</div>
+                    </template>
+                    <div style="overflow-x: auto;max-height:300px;" >
+                      <table class="bs" border="1" cellspacing="0" cellpadding="0">
+                        <thead>
+                        <tr class="score_title">
+                          <td class="tac detail_td_style" >类型</td>
+                          <td class="tac detail_td_style">加减分项</td>
+                          <td class="tac detail_td_style">计分标准</td>
+                          <td class="tac detail_td_style">分数</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(score,indexB) in checkUser.scoreList" class="detail_score_style" >
+                          <td class="tac" style="min-width:70px;" v-if="score.isFirst" :rowspan="score.isFirst?score.size:1" colspan="1">
+                            <div v-if="score.extraType == 0 && score.isFirst" class="f14cb">加分项</div>
+                            <div v-if="score.extraType == 1 && score.isFirst" class="f14cb">减分项</div>
+                          </td>
+                          <td class="f14cb" style="min-width:250px;">{{score.extraItem}}</td>
+                          <td class="f14cb" style="min-width:150px;">{{score.standard}}</td>
+                          <td class="tac f14cb" style="min-width:90px;">{{score.extraNum}}</td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </van-collapse-item>
+                </van-collapse>
+              </van-collapse-item>
+            </van-collapse>
           </div>
-      <div style="margin-top:5px;margin-bottom:5px;">
-        <van-button type="info" size="small" @click="editPersonHandle()">编辑参评人员</van-button>
-        <van-button type="info" size="small" @click="auditScoreHandle()">审定效能分</van-button>
-        <van-button type="info" size="small" v-if="isAuth('ren:kbi:person')" @click="detailUserShowEvent">参选情况</van-button>
+        </div>
       </div>
-
-      <div style="text-align: center;margin-bottom:3px;font-size:17px;font-weight:600;">
-       {{dataForm.curYear.getFullYear() + '年' + (dataForm.updown == 0 ? '上半年':'下半年') + '效能考核明细'}}
-      </div>
-
-      <div style="display: flex">
-        <el-table :data="checkUserList" border style="margin-left: 10px;" :header-cell-style="{background:'#F4F5F6',color:'#131D34',padding: '5px 0'}">
-          <el-table-column type="expand" v-if="isAuth('ren:kbi:detial')" >
-            <template slot-scope="props">
-              <div>
-                <el-collapse>
-                  <el-collapse-item name="1" >
-                    <template slot="title">
-                      <div class="extra_item_title">效能评分表</div>
-                    </template>
-                    <el-table  :data="props.row.kbiList" :key="props.row.checkUserId"
-                               style="width: 98%;margin-left: 2%;"  border>
-                      <el-table-column label="评分人" prop="userName" width="110"></el-table-column>
-                      <el-table-column v-for="(kbiItem,index) in props.row.kbiItemList" v-if="kbiItem.kbiRatio != 0"
-                                       :label="kbiItem.kbiName + '/(' + kbiItem.kbiRatio + '%)'"
-                                       :prop="'kbiId' + kbiItem.kbiId" :key="index" :render-header="renderheader"></el-table-column>
-                      <el-table-column label="是否其领导" width="120">
-                        <template slot-scope="scope">
-                          <el-tag type="primary" v-if="scope.row.isGuider">是</el-tag>
-                          <el-tag type="info" v-else>否</el-tag>
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="是否为同一部门">
-                        <template slot-scope="scope">
-                          <el-tag type="primary" v-if="scope.row.isSameBranch">是</el-tag>
-                          <el-tag type="info" v-else>否</el-tag>
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                  </el-collapse-item>
-                  <el-collapse-item name="2">
-                    <template slot="title">
-                      <div class="extra_item_title">加减分评分表</div>
-                    </template>
-                    <el-table :data="props.row.scoreList" border :span-method="objectSpanMethod" show-summary style="max-height: 400px;overflow-y:auto">
-                      <el-table-column prop="extraType" label="类型" width="40">
-                        <template slot-scope="scope">
-                          <div v-if="scope.row.extraType == 0">加分项</div>
-                          <div v-if="scope.row.extraType == 1">减分项</div>
-                        </template>
-                      </el-table-column>
-                      <el-table-column prop="extraItem" label="加减分项"></el-table-column>
-                      <el-table-column prop="standard" label="计分标准"></el-table-column>
-                      <el-table-column prop="extraNum" label="分数" width="80"></el-table-column>
-                    </el-table>
-                  </el-collapse-item>
-                </el-collapse>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="checkUserName" label="被考核人"></el-table-column>
-          <el-table-column prop="kbiAllScore" label="效能评价分"></el-table-column>
-          <el-table-column prop="finalExtra" label="加减得分"></el-table-column>
-          <el-table-column prop="standardScore" label="效能基准分"></el-table-column>
-          <el-table-column label="最终效能得分">
-            <template slot-scope="scope">
-              <span style="color: #3b97d7">{{getFinalKbiScore(scope.row)}}</span>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-    </el-card>
 
     <detailUser ref="detailUser"></detailUser>
     <!--    效能考核分数审定-->
@@ -99,10 +145,13 @@
   import detailUser from './detail-user'
   import kbiAuditAddOrUpdate from './kbiAudit-add-or-update'
   import kbiPersonAddOrUpdate from './kbiPerson-add-or-update'
-
+  import tableSolt from '@/components/table-solt'
   export default {
     data () {
       return {
+        activePlus: [],
+        activeKbi: [],
+        activeName: [],
         detailUserFlag: false,
         dataLoading: false,
         dataForm: {
@@ -121,7 +170,7 @@
         personVisible: false
       }
     },
-    activated () {
+    created () {
       this.dataForm.curYear = new Date(new Date().getFullYear(), new Date().getMonth() - 3, 1)
       this.dataForm.updown = this.dataForm.curYear.getMonth() <= 6 ? 0 : 1
       this.init()
@@ -129,7 +178,15 @@
     components: {
       detailUser,
       kbiAuditAddOrUpdate,
-      kbiPersonAddOrUpdate
+      kbiPersonAddOrUpdate,
+      tableSolt
+    },
+    computed: {
+      documentClientHeight: {
+        get () {
+          return this.$store.state.common.documentClientHeight
+        }
+      }
     },
     methods: {
       objectSpanMethod ({ row, column, rowIndex, columnIndex }) {
@@ -159,7 +216,7 @@
                   let checkUserList = this.acceessListInit(list)
                   for (let checkUser of checkUserList) {
                     // 设置每个人的效能基准分
-                    checkUser.standardScore = uRoleList.find(item => item.userId === checkUser.checkUserId).standardScore
+                    checkUser.standardScore = uRoleList.find( item => item.userId === checkUser.checkUserId).standardScore
                     checkUser.scoreList = this.extraScoreInit(checkUser, extraList, scoreList)
                     // 计算每个人的总加减分
                     let allScore = 0
@@ -169,15 +226,15 @@
                     checkUser.allScore = allScore
                   }
                   // 设置每成员的部门 并获取部门的最高分
-                  checkUserList = this.setBranchScoreFun(checkUserList, branchList)
+                  checkUserList = this.setBranchScoreFun(checkUserList,branchList)
                   this.checkUserList = this.setKbiScore(checkUserList)
+                  console.log(this.checkUserList)
                   this.dataLoading = false
                 })
               })
             })
           })
         })
-        // this.$refs.detailUser.init(this.dataForm)
       },
       detailUserShowEvent () {
         this.detailUserFlag = true
@@ -579,5 +636,8 @@
   }
   .extra_item_title:hover {
     color: #0BB2D4;
+  }
+  .w95{
+    width:95%;margin: 10px auto 0;
   }
 </style>
