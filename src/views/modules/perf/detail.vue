@@ -56,8 +56,9 @@
                        <tr>
                          <td class="tac detail_td_style" style="min-width:60px;">评分人</td>
                          <td v-for="(kbiItem,indexB) in checkUser.kbiItemList" v-if="kbiItem.kbiRatio != 0" class="tac detail_td_style" style="min-width:150px;">
-                           {{kbiItem.kbiName}}/{{kbiItem.kbiRatio}}%
+                           {{kbiItem.kbiName}} {{kbiItem.kbiRatio}}%
                          </td>
+                         <td style="min-width:90px;" class="detail_td_style">个人效能评分</td>
                          <td style="min-width:90px;" class="detail_td_style">是否其领导</td>
                          <td style="min-width:110px;" class="detail_td_style">是否为同一部门</td>
                        </tr>
@@ -73,6 +74,9 @@
                                </div>
                              </template>
                            </table-solt>
+                         </td>
+                         <td class="tac">
+                           {{kbi.everyAllScore}}
                          </td>
                          <td class="tac">
                            <van-tag type="primary" v-if="kbi.isGuider">是</van-tag>
@@ -498,6 +502,7 @@
                 }
               }
             }
+            scoreItem.everyAllScore = score
             let sItem = {
               score: score,
               ratio: 0.2
