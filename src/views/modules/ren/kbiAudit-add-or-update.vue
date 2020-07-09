@@ -1,7 +1,7 @@
 <template>
   <van-dialog :title="title" v-model="visible" @confirm="dataFormSubmit" @cancel="visible = false"
               showCancelButton="true" confirmButtonText="审核确定">
-    <el-table border :data="kbiAuditList">
+    <el-table border :data="kbiAuditList" :style="'max-height: ' + (documentClientHeight - 270).toString() + 'px'" class="os">
       <el-table-column prop="username" label="姓名"></el-table-column>
       <el-table-column prop="kbiScore" label="效能基准分"></el-table-column>
       <el-table-column prop="kbiAllScore" label="效能评分"></el-table-column>
@@ -25,24 +25,37 @@
         kbiAuditList: []
       }
     },
+    computed: {
+      documentClientHeight: {
+        get () {
+          return this.$store.state.common.documentClientHeight
+        }
+      }
+    },
     methods: {
       init (item) {
         this.visible = true
         this.year = item.checkYear
         this.updown = item.checkUpdown
         this.title = item.checkYear + '年' + (item.checkUpdown === 0 ? '上半年' : '下半年') + '   效能考核审核'
-        console.log(item.checkUserList)
         this.getDataList().then(list => {
           let kbiAuditList = []
           // 获取审定后的效能考核表
           for (let checkUser of item.checkUserList) {
             kbiAuditList.push({
-              'userId': checkUser.userId,
-              'username': checkUser.username,
-              'kbiScore': checkUser.kbiScore,  // 效能基准分
+              'userId': checkUser.checkUserId,
+              'username': checkUser.checkUserName,
+              'kbiScore': checkUser.standardScore,  // 效能基准分
               'kbiAllScore': checkUser.kbiAllScore,   // 效能评分
-              'kbiAuditScore': (checkUser.kbiAllScore > checkUser.kbiScore) ? checkUser.kbiAllScore: checkUser.kbiScore
+              'kbiAuditScore': parseInt((checkUser.kbiAllScore > checkUser.standardScore) ? checkUser.kbiAllScore: checkUser.standardScore)
             })
+          }
+          for (let dat of list) {
+            for (let audit of kbiAuditList) {
+              if (!stringIsNull(audit.kbiAuditScore) && dat.userId === audit.userId) {
+                audit.kbiAuditScore = dat.kbiAuditScore
+              }
+            }
           }
           this.kbiAuditList = kbiAuditList
         })
@@ -94,5 +107,7 @@
 </script>
 
 <style scoped>
-
+  .os {
+    overflow: scroll;
+  }
 </style>

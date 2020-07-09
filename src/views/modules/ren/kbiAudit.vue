@@ -28,12 +28,12 @@
         </van-row>
         <!---->
         <!--标题-->
-        <van-row class="data_title">
-          <van-col span="4" class="tar">被考核人</van-col>
-          <van-col span="5" class="tac">效能评价分</van-col>
-          <van-col span="4" class="tac">加减得分</van-col>
-          <van-col span="5" class="tac">效能基准分</van-col>
-          <van-col span="6">最终效能得分</van-col>
+        <van-row class="kbiaudit_data_title">
+          <van-col span="4" class="tac" style="font-size:13px;">被考核人</van-col>
+          <van-col span="5" class="tac" style="font-size:13px;">效能评价分</van-col>
+          <van-col span="4" class="tac" style="font-size:13px;">加减得分</van-col>
+          <van-col span="5" class="tac" style="font-size:13px;">效能基准分</van-col>
+          <van-col span="6" style="font-size:13px;">最终效能得分</van-col>
         </van-row>
         <!--数据-->
         <div :style="'max-height: ' + (documentClientHeight - 270).toString() + 'px'" class="os">
@@ -234,6 +234,9 @@
               })
             })
           })
+        })
+        this.getAuditList().then(list => {
+          this.isAudit = list.length > 0 ? true : false
         })
       },
       detailUserShowEvent () {
@@ -593,7 +596,7 @@
         if (stringIsNull(item.standardScore)) {
           return ''
         } else {
-          return Math.round(parseInt((1 + (item.kbiAllScore + item.extraScore - 75) * 0.6 / 75) * 100) * item.standardScore / 100)
+          return Math.round(parseInt((1 + (parseFloat(item.kbiAllScore) + parseFloat(item.finalExtra) - 75) * 0.6 / 75) * 100) * item.standardScore / 100)
         }
       },
       // 考核分数审定
@@ -617,6 +620,25 @@
           item.checkUpdown = this.dataForm.updown
           this.$refs.kbiPersonAddOrUpdate.init(item)
         })
+      },
+      getAuditList () {
+        return new Promise((resolve, reject) => {
+          this.$http({
+            url: this.$http.adornUrl(`/ren/kbiaudit/list`),
+            method: 'get',
+            params: this.$http.adornParams({
+              year: this.dataForm.curYear,
+              updown: this.dataForm.updown
+            })
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              resolve(data.list)
+            } else {
+              this.$message.error(data.msg)
+              reject(data.msg)
+            }
+          })
+        })
       }
     }
   }
@@ -639,5 +661,16 @@
   }
   .w95{
     width:95%;margin: 10px auto 0;
+  }
+  .f17dt{
+    font-size:17px;
+    font-weight:600;
+  }
+  .tac{
+    text-align:center;
+  }
+  .kbiaudit_data_title{
+    padding-top:2px;
+    padding-bottom:2px;
   }
 </style>
