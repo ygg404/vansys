@@ -46,8 +46,8 @@
               'userId': checkUser.checkUserId,
               'username': checkUser.checkUserName,
               'kbiScore': checkUser.standardScore,  // 效能基准分
-              'kbiAllScore': checkUser.kbiAllScore,   // 效能评分
-              'kbiAuditScore': parseInt((checkUser.kbiAllScore > checkUser.standardScore) ? checkUser.kbiAllScore: checkUser.standardScore)
+              'kbiAllScore': this.getFinalKbiScore(checkUser),   // 效能评分
+              'kbiAuditScore': parseInt((this.getFinalKbiScore(checkUser) > checkUser.standardScore) ? this.getFinalKbiScore(checkUser): checkUser.standardScore)
             })
           }
           for (let dat of list) {
@@ -101,6 +101,13 @@
             this.$message.error(data.msg)
           }
         })
+      },
+      getFinalKbiScore (item) {
+        if (stringIsNull(item.standardScore)) {
+          return ''
+        } else {
+          return Math.round(parseInt((1 + (parseFloat(item.kbiAllScore) + parseFloat(item.finalExtra) - 75) * 0.6 / 75) * 100) * item.standardScore / 100)
+        }
       }
     }
   }
