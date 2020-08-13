@@ -99,7 +99,12 @@
         </tr>
         <tr v-if="workBackgroundList.length === 0"><td colspan="4">暂无信息</td></tr>
         <tr v-for="(v,i) in workBackgroundList" :key="i">
-          <td><span>{{v.startDate}}至{{v.endDate}}</span></td><td><span>{{v.company}}</span></td><td><span>{{v.jobPosition}}</span></td><td><span>{{v.jobDescription}}</span></td>
+          <td>
+            <span>{{v.startDate}}至</span>
+            <span v-if="v.endDate !== null">{{v.endDate}}</span>
+            <span v-else>今</span>
+          </td>
+          <td><span>{{v.company}}</span></td><td><span>{{v.jobPosition}}</span></td><td><span>{{v.jobDescription}}</span></td>
         </tr>
       </table>
     </div>

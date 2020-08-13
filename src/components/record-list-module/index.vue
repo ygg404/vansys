@@ -30,7 +30,10 @@
         <div :key="item + index" v-for="(item,index) in dataList" class="btb">
           <van-row class="mtb3">
             <van-col span="6" class="tac bc">{{titleList[0]}}:</van-col>
-            <van-col span="18" class="zwfs f14">{{item.startDate}}至 {{item.endDate}}</van-col>
+            <van-col span="18" class="zwfs f14">{{item.startDate}}至
+            <span v-if="item.endDate !== null">{{item.endDate}}</span>
+              <span v-else>今</span>
+            </van-col>
           </van-row>
           <van-row class="mtb3">
             <van-col span="6" class="tac bc">{{titleList[1]}}:</van-col>

@@ -92,7 +92,13 @@
           <van-row type="flex" align="bottom" justify="end" style="margin-top:10px;padding-bottom:5px;">
             <van-col span="17">
               <van-field v-model="item.monthRangeDate[0]" label="开始时间:" @click="wxStartTimeAddEvent(index)"  disabled/>
-              <van-field v-model="item.monthRangeDate[1]" label="结束时间:" @click="wxEndTimeAddEvent(index)" disabled/>
+              <div style="line-height: 24px;" prop="item.monthRangeDate[1]">
+                <span class="wc_date_span_style">结束时间:</span>
+                <input class="wc_date_input_style" placeholder="至今" readonly="readonly" v-model="item.monthRangeDate[1]" @click="wxEndTimeAddEvent(index)"/>
+                <div style="float:left;" @click="Cancel_wb_EDate_Event(index)"><img  width="15" height="15" src="~@/assets/img/error.png" alt/></div>
+              </div>
+              </van-field>
+              <!--<img  width="15" height="15" src="~@/assets/img/error.png" alt/>-->
               <van-field v-model="item.company" label="企业:"  />
               <van-field v-model="item.jobPosition" label="职位:"  />
               <van-field v-model="item.jobDescription" label="工作描述:"  />
@@ -423,6 +429,13 @@
                             })
                           }
                         }
+                        console.log("初始化的时候----------------------------------------------")
+                        console.log(this.egSelectStartTimeList)
+                        console.log(this.egSelectEndTimeList)
+                        console.log(this.wxSelectStartTimeList)
+                        console.log(this.wxSelectEndTimeList)
+                        console.log("-----------------------------------------------------------")
+
                       })
                     }
                   })
@@ -521,7 +534,7 @@
         this.dataForm.jobTypeName = item.jobItem
         this.jobTypeShow = false
       },
-      // 职务选择npm
+      // 职务选择
       onDutyConfirm (item) {
         this.dataForm.dutyId = item.id
         this.dataForm.dutyName = item.duty
@@ -544,6 +557,10 @@
         console.log(date)
         this.dataForm.educationTime = moment(date).format('YYYY-MM-DD')
         this.edTimeShow = false
+      },
+      Cancel_wb_EDate_Event(index){
+        this.dataForm.workBackgroundList[index].monthRangeDate[1] = ''
+        this.$forceUpdate()
       },
       // 表单提交
       dataFormSubmit () {
@@ -589,11 +606,11 @@
           edId: getUUID(),
           userId: this.dataForm.userId,
           monthRangeDate: ['', ''],
-          // monthRangeDate: [''],
           educationBackground: '',
           educationSchool: '',
           major: ''
         })
+        // 添加时间范围
         this.egSelectStartTimeList.push({
           selectMin: new Date(1970, 0, 1),
           selectMax: new Date(2080, 11, 31)
@@ -602,7 +619,6 @@
           selectMin: new Date(1970, 0, 1),
           selectMax: new Date(2080, 11, 31)
         })
-        console.log(this.dataForm.edBackgroundList)
       },
       // 删除教育背景
       edBackgroundDeleteHandle (edId) {
@@ -738,18 +754,6 @@
           })
         })
       },
-      // 添加教育背景
-      edBackgroundAddHandle () {
-        this.dataForm.edBackgroundList.push({
-          edId: getUUID(),
-          userId: this.dataForm.userId,
-          monthRangeDate: ['', ''],
-          educationBackground: '',
-          educationSchool: '',
-          major: ''
-        })
-        console.log(this.dataForm.edBackgroundList)
-      },
       // 删除教育背景
       edBackgroundDeleteHandle (edId) {
         let edTmpeList = []
@@ -786,10 +790,10 @@
               that.dataForm.headImg = rst.base64
             }).catch(function (error) {
             // 失败时执行
-              that.$message.error('上传图片有误，请重新上传！')
-            }).always(function () {
+            that.$message.error('上传图片有误，请重新上传！')
+          }).always(function () {
             // 不管成功或失败，都会执行
-            })
+          })
         }
       },
       // 获取省市名称
@@ -811,6 +815,13 @@
 </script>
 
 <style scoped>
+  .wc_date_span_style{
+    float:left;width:6.2em;color:#c8c9cc;font-size:14px;margin-right:12px;
+  }
+  .wc_date_input_style{
+    float:left;width:100px;color:#c8c9cc;font-size:14px; border:0;
+  }
+
   .person_img {
     width: 100%;
     text-align: center;
@@ -916,6 +927,19 @@
   }
   .row_content .van-cell{
     padding:2px;
+  }
+
+  ::-webkit-input-placeholder {
+    color: #c8c9cc;
+  }
+  :-moz-placeholder {
+    color: #c8c9cc;
+  }
+  ::-moz-placeholder {
+    color:#c8c9cc;
+  }
+  :-ms-input-placeholder {
+    color:#c8c9cc;
   }
 </style>
 

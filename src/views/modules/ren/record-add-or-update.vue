@@ -91,7 +91,12 @@
             <van-row type="flex" align="bottom" justify="end" style="margin-top:10px;padding-bottom:5px;">
               <van-col span="17">
                 <van-field v-model="item.monthRangeDate[0]" label="开始时间:" @click="wxStartTimeAddEvent(index)"  disabled/>
-                <van-field v-model="item.monthRangeDate[1]" label="结束时间:" @click="wxEndTimeAddEvent(index)" disabled/>
+                <div style="line-height: 24px;">
+                  <span class="wc_date_span_style">结束时间:</span>
+                  <input class="wc_date_input_style" placeholder="至今" readonly="readonly" v-model="item.monthRangeDate[1]" @click="wxEndTimeAddEvent(index)"/>
+                  <div style="float:left;" @click="Cancel_wb_EDate_Event(index)"><img  width="15" height="15" src="~@/assets/img/error.png" alt/></div>
+                </div>
+                <!--<van-field v-model="item.monthRangeDate[1]" label="结束时间:" @click="wxEndTimeAddEvent(index)" disabled/>-->
                 <van-field v-model="item.company" label="企业:"  />
                 <van-field v-model="item.jobPosition" label="职位:"  />
                 <van-field v-model="item.jobDescription" label="工作描述:"  />
@@ -269,6 +274,11 @@
       }
     },
     methods: {
+      Cancel_wb_EDate_Event(index){
+        this.dataForm.workBackgroundList[index].monthRangeDate[1] = ''
+        this.$forceUpdate()
+      },
+
       egStartTimeAddEvent (index) {
         this.egTimeAddIndex = index
         this.egStartTimeAddShow = true
@@ -562,6 +572,12 @@
                                 })
                               }
                             }
+                            console.log("初始化的时候----------------------------------------------")
+                            console.log(this.egSelectStartTimeList)
+                            console.log(this.egSelectEndTimeList)
+                            console.log(this.wxSelectStartTimeList)
+                            console.log(this.wxSelectEndTimeList)
+                            console.log("-----------------------------------------------------------")
                           }
                         })
                       }
@@ -768,6 +784,12 @@
 </script>
 
 <style scoped>
+  .wc_date_span_style{
+    float:left;width:6.2em;color:#c8c9cc;font-size:14px;margin-right:12px;
+  }
+  .wc_date_input_style{
+    float:left;width:100px;color:#c8c9cc;font-size:14px; border:0;
+  }
   .person_img {
     width: 100%;
     text-align: center;
@@ -883,4 +905,16 @@
     padding:2px;
   }
 
+  ::-webkit-input-placeholder {
+    color: #c8c9cc;
+  }
+  :-moz-placeholder {
+    color: #c8c9cc;
+  }
+  ::-moz-placeholder {
+    color:#c8c9cc;
+  }
+  :-ms-input-placeholder {
+    color:#c8c9cc;
+  }
 </style>
