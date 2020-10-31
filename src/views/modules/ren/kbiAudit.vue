@@ -2,10 +2,7 @@
   <div class="mod-config" v-loading="dataLoading">
  <div class="w95" style="margin-bottom:5px;">
    <span class="time_title">考核时间:</span>
-   <el-date-picker v-model="dataForm.curYear" type="year" placeholder="选择年" style="width: 100px;" @change="init"></el-date-picker>
-   <el-select v-model="dataForm.updown" placeholder="时间类型" style="width: 110px;" @change="init">
-     <el-option v-for="item in yearItemList" :label="item.yearItem" :key="item.id" :value="item.id"></el-option>
-   </el-select>
+    <el-date-picker v-model="dataForm.curTime" type="month" placeholder="选择年月" @change="init"></el-date-picker>
    <div style="margin-top:5px;">
      <span class="time_title">审定状态:</span>
      <van-tag type="danger" v-if="isAudit == false">未审定</van-tag>
@@ -22,7 +19,7 @@
         <van-row type="flex" align="center" style="padding-bottom:5px;border-bottom:1px dotted black;">
           <van-col span="24">
             <div class="f17dt tac">
-              {{dataForm.curYear.getFullYear() + '年' + (dataForm.updown == 0 ? '上半年':'下半年') + '效能考核明细'}}
+              {{dataForm.curTime.getFullYear() + '年' + (dataForm.curTime.getMonth() + 1) + '月效能考核明细'}}
             </div>
           </van-col>
         </van-row>
@@ -155,8 +152,7 @@
         detailUserFlag: false,
         dataLoading: false,
         dataForm: {
-          curYear: new Date(2020, 1, 1),   // 当前年份
-          updown: 0 // 上下半年
+         curTime: new Date()  // 当前年月
         },
         yearItemList: getYearItem(),
         checkUserList: [],
@@ -171,8 +167,7 @@
       }
     },
     created () {
-      this.dataForm.curYear = new Date(new Date().getFullYear(), new Date().getMonth() - 3, 1)
-      this.dataForm.updown = this.dataForm.curYear.getMonth() <= 6 ? 0 : 1
+     this.dataForm.curTime = new Date()
       this.init()
     },
     components: {
@@ -276,8 +271,8 @@
             url: this.$http.adornUrl(`/perf/access/list`),
             method: 'get',
             params: this.$http.adornParams({
-              year: this.dataForm.curYear.getFullYear(),
-              updown: this.dataForm.updown
+               year: this.dataForm.curTime.getFullYear(),
+              month: this.dataForm.curTime.getMonth() + 1
             })
           }).then(({data}) => {
             if (data && data.code === 0) {
@@ -296,8 +291,8 @@
             url: this.$http.adornUrl(`/perf/access/uAssessList`),
             method: 'get',
             params: this.$http.adornParams({
-              year: this.dataForm.curYear.getFullYear(),
-              updown: this.dataForm.updown
+               year: this.dataForm.curTime.getFullYear(),
+              month: this.dataForm.curTime.getMonth() + 1
             })
           }).then(({data}) => {
             if (data && data.code === 0) {
@@ -429,8 +424,8 @@
             url: this.$http.adornUrl('/perf/extrascoring/list'),
             method: 'get',
             params: this.$http.adornParams({
-              year: this.dataForm.curYear.getFullYear(),
-              updown: this.dataForm.updown
+               year: this.dataForm.curTime.getFullYear(),
+              month: this.dataForm.curTime.getMonth() + 1
             })
           }).then(({data}) => {
             if (data && data.code === 0) {
@@ -600,35 +595,35 @@
         }
       },
       // 考核分数审定
-      auditScoreHandle () {
+     auditScoreHandle () {
         this.auditVisible = true
         this.$nextTick(() => {
           let item = {}
-          console.log(this.dataForm.curYear)
           item.checkUserList = this.checkUserList
-          item.checkYear = this.dataForm.curYear.getFullYear()
-          item.checkUpdown = this.dataForm.updown
+          item.checkYear = this.dataForm.curTime.getFullYear()
+          item.checkMonth = this.dataForm.curTime.getMonth() + 1
           this.$refs.kbiAuditAddOrUpdate.init(item)
         })
       },
       // 编辑参评人数
-      editPersonHandle () {
+       editPersonHandle () {
         this.personVisible = true
         this.$nextTick(() => {
           let item = {}
-          item.checkYear = this.dataForm.curYear.getFullYear()
-          item.checkUpdown = this.dataForm.updown
+          item.checkYear = this.dataForm.curTime.getFullYear()
+          item.checkMonth = this.dataForm.curTime.getMonth() + 1
           this.$refs.kbiPersonAddOrUpdate.init(item)
         })
       },
+           // 获取审定的结果
       getAuditList () {
         return new Promise((resolve, reject) => {
           this.$http({
             url: this.$http.adornUrl(`/ren/kbiaudit/list`),
             method: 'get',
             params: this.$http.adornParams({
-              year: this.dataForm.curYear,
-              updown: this.dataForm.updown
+              year: this.dataForm.curTime.getFullYear(),
+              month: this.dataForm.curTime.getMonth() + 1
             })
           }).then(({data}) => {
             if (data && data.code === 0) {
@@ -639,7 +634,7 @@
             }
           })
         })
-      }
+      },
     }
   }
 </script>

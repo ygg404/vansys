@@ -4,7 +4,7 @@
     <span class="nav_span">{{menuName}}</span>
     <van-icon name="wap-home-o" size="40" color="white" style="padding: 3px;" @click="logoutHandle"/>
     <!--菜单列表-->
-    <van-popup v-model="menushow" position="left" style="width: 50%;height: 100%;background-color: #19678e">
+    <van-popup v-model="menushow" position="left" class="menu_popup">
       <main-sider @refreshRoute="closeMenuHandle" />
     </van-popup>
   </div>
@@ -151,10 +151,10 @@
   }
 </script>
 
-<style>
+<style lang="less">
   .main-navbar{
     width: 100%;
-    background-color: #1989fa;
+    background-color: @stylecolor;
     min-height: 47px;
     display: flex;
     justify-content: space-between;
@@ -165,5 +165,10 @@
     color: white;
     font-weight: 700;
     font-size: 13pt;
+  }
+  .menu_popup{
+    width: 50%;
+    height: 100%;
+    background-color: @sidebarcolor;
   }
 </style>

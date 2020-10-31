@@ -1,6 +1,6 @@
 <template>
   <div style="width: 98%;">
-    <van-tabs v-model="roleradio" class="roletab" title-active-color="#ff0000">
+    <van-tabs v-model="roleradio" class="roletab">
       <van-tab title="安排" :disabled="!isAuth('project:project:plan')"/>
       <van-tab title="作业" :disabled="!isAuth('project:work:list')"/>
       <van-tab title="质检" :disabled="!isAuth('project:quality:list')"/>
@@ -829,10 +829,13 @@
   }
 </script>
 
-<style>
+<style lang="less">
   .roletab .van-tab {
     font-size: 16px;
     padding: 0px;
+  }
+  .van-tabs__line{
+    background-color:@stylecolor;
   }
   .van-search {
     display: -webkit-box;
@@ -847,16 +850,6 @@
     background-color: #fff;
     border: 1px solid #9b9a9a;
     border-radius: 14px;
-  }
-
-  .van-search__content {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-box-flex: 1;
-    -webkit-flex: 1;
-    flex: 1;
-    background-color: #f7f8fa;
   }
 
   .searchCon .van-cell {
@@ -998,7 +991,7 @@
     cursor: pointer;
     transition: opacity .2s;
     -webkit-appearance: none;
-    color: #1989fa;
+    color:@stylecolor;
     background-color: #fff;
     width: 50%;
     height: 50px;

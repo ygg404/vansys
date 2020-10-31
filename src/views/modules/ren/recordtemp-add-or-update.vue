@@ -217,7 +217,6 @@
   import {getUUID, stringIsNull} from '@/utils'
   import {areaList} from '@/utils/areaList'
   import {getJobItem, getMaritalItem} from '@/utils/selectedItem'
-
   export default {
     data () {
       return {

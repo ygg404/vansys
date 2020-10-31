@@ -1,9 +1,4 @@
-.cell_item {
-  color: white;
-  width: 100%;
-  background: #19678e;
-  z-index: 2;
-}
+
 .cell_item svg{
   vertical-align: middle;
 }
@@ -11,17 +6,25 @@
   vertical-align: middle;
 }
 
+.cell_item {
+  color: white;
+  width: 100%;
+  /*子项部分*/
+  /*background: #19678e;*/
+  z-index: 2;
+}
 .cell_item_sub{
   color: white;
   width: 100%;
-  background: #114661;
+  /*选项部分*/
+  /*background: #114661;*/
   z-index: 1;
 }
-
 .cell_item_select{
   color: white;
   width: 100%;
-  background: #81c7ff;
+  /*被选中部分*/
+  /*background: #81c7ff;*/
   z-index: 1;
 }
 

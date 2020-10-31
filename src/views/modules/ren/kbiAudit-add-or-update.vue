@@ -1,6 +1,6 @@
 <template>
-  <van-dialog :title="title" v-model="visible" @confirm="dataFormSubmit" @cancel="visible = false"
-              showCancelButton="true" confirmButtonText="审核确定">
+  <van-dialog :title="title" v-model="visible" @confirm="dataFormSubmit" @cancel="visible = false" showCancelButton="true" cancelButtonText="返回"
+               confirmButtonText="审核确定">
     <el-table border :data="kbiAuditList" :style="'max-height: ' + (documentClientHeight - 270).toString() + 'px'" class="os">
       <el-table-column prop="username" label="姓名"></el-table-column>
       <el-table-column prop="kbiScore" label="效能基准分"></el-table-column>
@@ -15,13 +15,15 @@
 </template>
 
 <script>
+  import {stringIsNull} from '@/utils'
+
   export default {
     data () {
       return {
         visible: false,
         title: '',
         year: '',
-        updown: '',
+        month: '',
         kbiAuditList: []
       }
     },
@@ -36,10 +38,11 @@
       init (item) {
         this.visible = true
         this.year = item.checkYear
-        this.updown = item.checkUpdown
-        this.title = item.checkYear + '年' + (item.checkUpdown === 0 ? '上半年' : '下半年') + '   效能考核审核'
+        this.month = item.checkMonth
+        this.title = item.checkYear + '年' + (item.checkMonth) + '月   效能考核审核'
         this.getDataList().then(list => {
           let kbiAuditList = []
+          console.log(item)
           // 获取审定后的效能考核表
           for (let checkUser of item.checkUserList) {
             kbiAuditList.push({
@@ -47,7 +50,7 @@
               'username': checkUser.checkUserName,
               'kbiScore': checkUser.standardScore,  // 效能基准分
               'kbiAllScore': this.getFinalKbiScore(checkUser),   // 效能评分
-              'kbiAuditScore': parseInt((this.getFinalKbiScore(checkUser) > checkUser.standardScore) ? this.getFinalKbiScore(checkUser): checkUser.standardScore)
+              'kbiAuditScore': parseInt(this.getFinalKbiScore(checkUser))
             })
           }
           for (let dat of list) {
@@ -67,7 +70,7 @@
             method: 'get',
             params: this.$http.adornParams({
               year: this.year,
-              updown: this.updown
+              month: this.month
             })
           }).then(({data}) => {
             if (data && data.code === 0) {
@@ -85,7 +88,7 @@
           method: 'post',
           data: this.$http.adornData({
             'year': this.year,
-            'updown': this.updown,
+            'month': this.month,
             'kbiAuditList': this.kbiAuditList,
           })
         }).then(({data}) => {
@@ -108,10 +111,11 @@
         } else {
           return Math.round(parseInt((1 + (parseFloat(item.kbiAllScore) + parseFloat(item.finalExtra) - 75) * 0.6 / 75) * 100) * item.standardScore / 100)
         }
-      }
+      },
     }
   }
 </script>
+
 
 <style scoped>
   .os {

@@ -364,7 +364,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less">
 .date_type {
   max-width: 140px;
 }
@@ -408,7 +408,8 @@ export default {
   font-size: 15px;
 }
 .table_class .item_footer {
-  color: #00b7ee;
+  /*color: #00b7ee;*/
+  color:@sidebarcolor;
 }
 .tac {
   text-align: center;

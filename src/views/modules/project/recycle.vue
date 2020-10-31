@@ -71,9 +71,9 @@
           <van-col span="10">项目启动时间:</van-col>
           <van-col span="14" style="font-size:14px;">{{detailItem.projectStartDateTime != null?detailItem.projectStartDateTime.replace('00:00:00',''):detailItem.projectStartDateTime}}</van-col>
         </van-row>
-        <van-row style="padding-bottom:5px;">
-          <van-col span="12" class="footerbtngroup"><van-button type="info" size="small" @click="restoreHandle(detailItem)">恢复项目</van-button></van-col>
-          <van-col span="12" class="footerbtngroup"><van-button type="danger" size="small" @click="deleteHandle(detailItem.projectNo)">删除</van-button></van-col>
+        <van-row type="flex" justify="center" style="padding-bottom:5px;">
+          <van-col span="12" class="tac"> <van-button type="info" size="small" @click="restoreHandle(detailItem)">恢复项目</van-button></van-col>
+          <van-col span="12" class="tac"> <van-button type="danger" size="small" @click="deleteHandle(detailItem.projectNo)">删除</van-button></van-col>
         </van-row>
       </div>
 
@@ -262,7 +262,7 @@
   }
 </script>
 
-<style scoped>
+<style lang="less">
   .recycle_title{
     font-size:14px; padding-bottom:5px;
   }
@@ -359,12 +359,12 @@
     -webkit-text-size-adjust: 100%;
     border-radius: 8px;
   }
-  .footerbtngroup .van-button {
-    height: 30px;
-    font-size: 14px;
-    line-height: 30px;
-    border-radius: 2px;
-  }
+  /*.footerbtngroup .van-button {*/
+  /*height: 30px;*/
+  /*font-size: 14px;*/
+  /*line-height: 30px;*/
+  /*border-radius: 2px;*/
+  /*}*/
   .vancoltinfotitlestyle {
     text-align: right;
     font-size: 15px;
@@ -412,7 +412,7 @@
     padding: 5px;
     color: #6f7180;
     line-height: 300%;
-    border: 1px solid #1989faaf;
+    border: 1px solid @stylecolor;
   }
   .table_detail_info {
     min-height:320px;
@@ -444,9 +444,9 @@
     border-radius: 2px;
     cursor: pointer;
   }
-  .footerbtngroup{
-    display: flex;align-items: center;justify-content: center;
-  }
+  /*.footerbtngroup{*/
+  /*display: flex;align-items: center;justify-content: center;*/
+  /*}*/
   .table_excuse{
     width: 100%;
     text-align: center;

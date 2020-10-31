@@ -1,13 +1,13 @@
 <template>
   <van-dialog v-model="visible" width="60%;" confirmButtonText="返回">
     <template slot="title">
-      <div class="span_header">参评人数:<span>{{person}}</span>/<sapn style="color: #3b97d7">{{count}}</sapn></div>
+      <div class="span_header">参评人数:<span>{{person}}</span>/<span style="color: #3b97d7">{{count}}</span></div>
     </template>
     <div style="max-height:300px;overflow-y:auto;">
       <div class="user_card">
-        <el-table :data="uRoleList" border>
-          <el-table-column label="用户名" prop="userName"></el-table-column>
-          <el-table-column label="是否提交">
+        <el-table :data="uRoleList" border >
+          <el-table-column label="用户名" prop="username" align="center"></el-table-column>
+          <el-table-column label="是否提交" align="center">
             <template slot-scope="scope">
               <el-tag v-if="scope.row.isAssess" type="primary">已提交</el-tag>
               <el-tag v-else type="info">未提交</el-tag>
@@ -23,11 +23,10 @@
   export default {
     data () {
       return {
-        visible: false,
+        visible:false,
         uRoleList: [],
         dataForm: {
-          curYear: '',
-          updown: 0
+          curTime: ''
         },
         person: 0,
         count: 0
@@ -50,15 +49,21 @@
       getUaccessList () {
         return new Promise((resolve, reject) => {
           this.$http({
-            url: this.$http.adornUrl(`/perf/access/uAssessList`),
+            url: this.$http.adornUrl(`/ren/kbicheck/getUcheckList`),
             method: 'get',
             params: this.$http.adornParams({
-              year: this.dataForm.curYear.getFullYear(),
-              updown: this.dataForm.updown
+              year: this.dataForm.curTime.getFullYear(),
+              month: this.dataForm.curTime.getMonth() + 1
             })
           }).then(({data}) => {
             if (data && data.code === 0) {
-              resolve(data.list)
+              let list = []
+              for (let dat of data.list) {
+                if (dat.isAttend === 1) {
+                  list.push(dat)
+                }
+              }
+              resolve(list)
             } else {
               this.$message.error(data.msg)
               reject(data.msg)
@@ -78,11 +83,11 @@
       getAttendCount () {
         return new Promise((resolve, reject) => {
           this.$http({
-            url: this.$http.adornUrl(`/ren/kbiperson/getCount`),
+            url: this.$http.adornUrl(`/ren/kbicheck/getCount`),
             method: 'get',
             params: this.$http.adornParams({
-              year: this.dataForm.curYear.getFullYear(),
-              updown: this.dataForm.updown
+              year: this.dataForm.curTime.getFullYear(),
+              month: this.dataForm.curTime.getMonth() + 1
             })
           }).then(({data}) => {
             if (data && data.code === 0) {

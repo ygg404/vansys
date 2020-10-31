@@ -362,7 +362,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less">
 .month_type {
   width: 150px;
 }
@@ -401,7 +401,7 @@ export default {
   font-size: 15px;
 }
 .table_class .item_footer {
-  color: #00b7ee;
+  color: @sidebarcolor;
 }
 .wgns .van-cell {
   padding: 10px 0px;

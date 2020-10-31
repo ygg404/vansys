@@ -3,12 +3,12 @@
     <van-col span="12" >
       <van-cell   center title="开始日期"  :value="startDateVal" @click="startDateshow = true" />
       <van-calendar title="开始日期选择" v-model="startDateshow" @confirm="startDateConfirm" :default-date="startDate"
-                    :min-date="minStartDate" :max-date="maxStartDate" color="#1989fa"/>
+                    :min-date="minStartDate" :max-date="maxStartDate" />
     </van-col>
     <van-col span="12">
       <van-cell  center  title="结束日期"  :value="endDateVal" @click="endDateshow = true" />
       <van-calendar title="结束日期选择" v-model="endDateshow" @confirm="endDateConfirm" :default-date="endDate"
-                    :min-date="minEndDate" :max-date="maxEndDate"   color="#1989fa"/>
+                    :min-date="minEndDate" :max-date="maxEndDate"  color="@stylecolor"/>
     </van-col>
   </van-row>
 </template>
@@ -57,8 +57,13 @@
   }
 </script>
 
-<style scoped>
-  .van-cell__value span{
-    color: #1989fa;
-  }
+<!--<style scoped>-->
+  <!--.van-cell__value span{-->
+    <!--color: #1989fa;-->
+  <!--}-->
+<!--</style>-->
+<style lang="less">
+.calendar_color{
+  background-color:@stylecolor;
+}
 </style>

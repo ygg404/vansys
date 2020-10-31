@@ -46,7 +46,7 @@
           <van-col span="5" class="tac" style="font-size:15px;">{{item.projectActuallyReceipts}}</van-col>
           <van-col span="5" class="tac" style="font-size:15px;">{{item.projectNotReceipts}}</van-col>
           <van-col span="5" class="tac" style="font-size:15px;">{{item.projectExpenditure}}</van-col>
-          <van-col span="4" class="tac" style="font-size:15px;"><button class="btn" @click="addOrUpdateHandle(item.contractNo)">操作</button></van-col>
+          <van-col span="4" class="tac" style="font-size:15px;"><button class="oper_btn" @click="addOrUpdateHandle(item.contractNo)">操作</button></van-col>
         </van-row>
       </div>
     </div>
@@ -226,7 +226,7 @@
   }
 </script>
 
-<style scoped>
+<style lang="less">
   .month_type {
     width: 150px;
   }
@@ -276,7 +276,7 @@
 .tac{
   text-align:center;
 }
-  .btn{
+  .oper_btn{
     position: relative;
     display: inline-block;
     box-sizing: border-box;
@@ -294,8 +294,8 @@
     border: 1px solid #ebedf0;
     padding:0 10px;
     font-size:12px;
-    color:#1989fa;
-    border-color: #1989fa;
+    color: @stylecolor;
+    border-color: @stylecolor;
   }
   .os {
     overflow: scroll;

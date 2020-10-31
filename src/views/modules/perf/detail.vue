@@ -4,10 +4,7 @@
       <div class="w95">
         <el-form-item>
           <span style="font-size:15px;">考核时间:</span>
-          <el-date-picker v-model="dataForm.curYear" type="year" placeholder="选择年" style="width: 35%;margin-right:10px;" @change="init"></el-date-picker>
-          <el-select v-model="dataForm.updown" placeholder="时间类型" style="width: 35%;" @change="init">
-            <el-option v-for="item in yearItemList" :label="item.yearItem" :key="item.id" :value="item.id"></el-option>
-          </el-select>
+         <el-date-picker v-model="dataForm.curTime" type="month" placeholder="选择年月"  @change="init"></el-date-picker>
         </el-form-item>
       </div>
     </el-form>
@@ -15,7 +12,7 @@
       <van-row type="flex" align="center" style="padding-bottom:5px;border-bottom:1px dotted black;">
         <van-col span="24">
           <div class="f17dt tac">
-            {{dataForm.curYear.getFullYear() + '年' + (dataForm.updown == 0 ? '上半年':'下半年') + '效能考核明细'}}
+           {{dataForm.curTime.getFullYear() + '年' + (dataForm.curTime.getMonth() + 1) + '月  效能考核明细'}}
           </div>
         </van-col>
       </van-row>
@@ -142,8 +139,7 @@
         activeName: [],
         dataLoading:false,
         dataForm: {
-          curYear: new Date(2020, 1, 1),   // 当前年份
-          updown: 0 // 上下半年
+          curTime: new Date()
         },
         yearItemList: getYearItem(),
         checkUserList: [],
@@ -162,8 +158,7 @@
       }
     },
     created () {
-      this.dataForm.curYear = new Date(new Date().getFullYear(), new Date().getMonth() - 3, 1)
-      this.dataForm.updown = this.dataForm.curYear.getMonth() <= 6 ? 0 : 1
+      this.dataForm.curYear = new Date()
       this.init()
     },
     components: {
@@ -202,14 +197,9 @@
             })
           })
         })
-        this.$refs.detailUser.init(this.dataForm)
+        // this.$refs.detailUser.init(this.dataForm)
       },
-      // 展示参选人数情况
-      // showduEvent () {
-      //   this.$nextTick(() => {
-      //     this.$refs.detailUser.init(this.dataForm)
-      //   })
-      // },
+ 
       // 获取部门列表
       getBranchList () {
         return new Promise((resolve, reject) => {
@@ -234,8 +224,8 @@
             url: this.$http.adornUrl(`/perf/access/list`),
             method: 'get',
             params: this.$http.adornParams({
-              year: this.dataForm.curYear.getFullYear(),
-              updown: this.dataForm.updown
+                year: this.dataForm.curTime.getFullYear(),
+              month: this.dataForm.curTime.getMonth() + 1
             })
           }).then(({data}) => {
             if (data && data.code === 0) {
@@ -254,8 +244,8 @@
             url: this.$http.adornUrl(`/perf/access/uAssessList`),
             method: 'get',
             params: this.$http.adornParams({
-              year: this.dataForm.curYear.getFullYear(),
-              updown: this.dataForm.updown
+                year: this.dataForm.curTime.getFullYear(),
+              month: this.dataForm.curTime.getMonth() + 1
             })
           }).then(({data}) => {
             if (data && data.code === 0) {
@@ -387,8 +377,8 @@
             url: this.$http.adornUrl('/perf/extrascoring/list'),
             method: 'get',
             params: this.$http.adornParams({
-              year: this.dataForm.curYear.getFullYear(),
-              updown: this.dataForm.updown
+                year: this.dataForm.curTime.getFullYear(),
+              month: this.dataForm.curTime.getMonth() + 1
             })
           }).then(({data}) => {
             if (data && data.code === 0) {

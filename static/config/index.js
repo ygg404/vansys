@@ -4,11 +4,12 @@
 ;(function () {
   window.SITE_CONFIG = {};
 
-  // 根域名
-  window.SITE_CONFIG['indexUrl'] = 'http://localhost:19445/';
-  // api接口请求地址
-  window.SITE_CONFIG['baseUrl'] = 'http://localhost:19433/htsys';
-
+  window.SITE_CONFIG['indexUrl'] = 'http://192.168.0.241:19445/';
+  window.SITE_CONFIG['baseUrl'] = 'http://192.168.0.241:19433/htsys';
+  // // 根域名
+  // window.SITE_CONFIG['indexUrl'] = 'https://web.gdjxch.cn/';
+  // // api接口请求地址
+  // window.SITE_CONFIG['baseUrl'] = 'https://ren.gdjxch.cn/rensys';
   // cdn地址 = 域名 + 版本号
   window.SITE_CONFIG['domain']  = './'; // 域名
   window.SITE_CONFIG['version'] = '';   // 版本号(年月日时分)

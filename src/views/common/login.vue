@@ -184,7 +184,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="less">
   .site-main{
     position: absolute;
     top: 0;
@@ -193,7 +193,7 @@
     left: 0;
     width:100%;
     text-align: center;
-    background-color: rgba(38, 50, 56, .6);
+    background-color: @logincolor;
     overflow: hidden;
     &:before {
       position: fixed;
@@ -203,7 +203,7 @@
       width: 100%;
       height: 100%;
       content: "";
-      background-color: #0BB2D4;
+      background-color: @loginbeforecolor;
       background-size:100% 100%;
       -moz-background-size:100% 100%;
       background-repeat:no-repeat;

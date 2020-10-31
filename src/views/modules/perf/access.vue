@@ -5,10 +5,7 @@
       <div style="width:95%;margin:0 auto;">
         <el-form-item>
           <span style="font-size:15px;">考核时间:</span>
-          <el-date-picker v-model="dataForm.curYear" type="year" placeholder="选择年" style="width:35%;" @change="init"></el-date-picker>
-          <el-select v-model="dataForm.updown" placeholder="时间类型" style="width:35%;" @change="init">
-            <el-option v-for="item in yearItemList" :label="item.yearItem" :key="item.id" :value="item.id"></el-option>
-          </el-select>
+          <el-date-picker v-model="dataForm.curTime" type="month" placeholder="选择年月" @change="init"></el-date-picker>
         </el-form-item>
       </div>
       <div style="width:95%;margin:0 auto;">
@@ -20,10 +17,12 @@
       </div>
     </el-form>
 
-    <div class="accesscchart_title">{{dataForm.curYear.getFullYear() + '年' + (dataForm.updown == 0 ? '上半年':'下半年') + '效能考核'}}</div>
+    <div class="accesscchart_title">
+      {{dataForm.curTime.getFullYear() + '年' + (dataForm.curTime.getMonth() + 1) + '月' + '效能考核'}}
+    </div>
 
     <div :style="'max-height: ' + (documentClientHeight - 270).toString() + 'px'" class="access_table_content">
-      <div  v-for="(kbiRole,indexA) in kbiRoleList" style="margin-bottom: 10px;" :key="kbiRole.roleId">
+      <div  v-for="(kbiRole,indexA) in kbiRoleList" style="margin-bottom: 10px;" :key="kbiRole.roleId" v-if="isAttend">
         <div style="font-size: 15px;color: #3b97d7;">
           <span>{{kbiRole.roleName + ':'}}</span>
         </div>
@@ -57,6 +56,9 @@
           </tbody>
         </table>
       </div>
+       <div v-if="isAttend === false">
+        <span style="color:red;font-weight:700;font-size: 15px;"> 当前年度此用户没有参评的权限！请联系管理员设置！</span>
+      </div>
     </div>
 
     <div class="btn_line">
@@ -79,6 +81,7 @@
   export default {
     data () {
       return {
+        isAttend:false,
         // 评分弹窗标题
         scoretitle: '',
         scorePickerShow: false,
@@ -87,8 +90,7 @@
         partC: '',
         dataForm: {
           key: '',
-          curYear: new Date(2020, 1, 1),   // 当前年份
-          updown: 0 // 上下半年
+          curTime: ''
         },
         yearItemList: getYearItem(),
         dataList: [],
@@ -121,8 +123,7 @@
       }
     },
     created () {
-      this.dataForm.curYear = new Date(new Date().getFullYear(), new Date().getMonth() - 3, 1)
-      this.dataForm.updown = this.dataForm.curYear.getMonth() <= 6 ? 0 : 1
+      this.dataForm.curTime = new Date()
       this.init()
     },
     methods: {
@@ -155,6 +156,13 @@
         this.getPerfAccessVoList().then(accessList => {
           this.kbiRoleList = this.kbiRoleInit(accessList)
           this.initItem()
+          this.getUserIsAttend().then(data =>{
+            if(stringIsNull(data)){
+              this.isAttend = false
+            }else{
+              this.isAttend = true
+            }
+          })
           this.dataListLoading = false
         })
       },
@@ -165,9 +173,9 @@
             url: this.$http.adornUrl(`/perf/access/volist`),
             method: 'get',
             params: this.$http.adornParams({
-              year: this.dataForm.curYear.getFullYear(),
-              updown: this.dataForm.updown,
-              userId: this.userId
+             year: this.dataForm.curTime.getFullYear(),
+             month: this.dataForm.curTime.getMonth() + 1,
+             userId: this.userId
             })
           }).then(({data}) => {
             if (data && data.code === 0) {
@@ -256,6 +264,26 @@
         console.log(kbiRoleList)
         return (kbiRoleList)
       },
+        // 获取当前用户是否有参评资格
+      getUserIsAttend () {
+        return new Promise((resolve, reject) => {
+          this.$http({
+            url: this.$http.adornUrl(`/ren/kbicheck/info`),
+            method: 'get',
+            params: this.$http.adornParams({
+              year: this.dataForm.curTime.getFullYear(),
+              month: this.dataForm.curTime.getMonth() + 1
+            })
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              resolve(data.renKbiCheck)
+            } else {
+              this.$message.error(data.msg)
+              reject(data.msg)
+            }
+          })
+        })
+      },
       // 获取统计方法
       getSummaryMethod (param) {
         const { columns, data } = param
@@ -292,8 +320,8 @@
               let accessItem = {
                 userId: this.userId,
                 userName: this.userName,
-                year: this.dataForm.curYear.getFullYear(),
-                updown: this.dataForm.updown,
+                year: this.dataForm.curTime.getFullYear(),
+                month: this.dataForm.curTime.getMonth() + 1,
                 kbiId: item.kbiId,
                 kbiName: item.kbiName,
                 kbiRatio: item.kbiRatio

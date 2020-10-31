@@ -114,7 +114,8 @@
           })
         })
       },
-      // 获取该年度用户的加减分的数据列表
+
+    // 获取该年度用户的加减分的数据列表
       getExtraScoreList (item) {
         console.log(item)
         return new Promise((resolve, reject) => {
@@ -123,7 +124,7 @@
             method: 'get',
             params: this.$http.adornParams({
               year: item.year,
-              updown: item.updown,
+              month: item.month,
               checkUserId: item.userId
             })
           }).then(({data}) => {

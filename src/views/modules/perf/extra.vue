@@ -3,44 +3,42 @@
     <el-form :inline="true" :model="dataForm" style="display:flex;justify-content: space-between;">
       <div class="w95">
         <el-form-item>
-          <span style="font-size:15px;">考核时间:</span>
-          <el-date-picker v-model="dataForm.curYear" type="year" placeholder="选择年" style="width: 35%;margin-right:10px;" @change="init"></el-date-picker>
-          <el-select v-model="dataForm.updown" placeholder="时间类型" style="width: 35%;" @change="init">
-            <el-option v-for="item in yearItemList" :label="item.yearItem" :key="item.id" :value="item.id"></el-option>
-          </el-select>
+          <span class="time_title">考核时间:</span>
+          <el-date-picker v-model="dataForm.curTime" type="month" placeholder="选择年月"  @change="init"></el-date-picker>
         </el-form-item>
       </div>
     </el-form>
 
     <div class="w95">
-      <div class="estra_title">{{dataForm.curYear.getFullYear() + '年' + (dataForm.updown == 0 ? '上半年': '下半年') + '加减分'}}</div>
+      <div class="estra_title">{{dataForm.curTime.getFullYear() + '年' + (dataForm.curTime.getMonth() + 1) + '月加减分'}}</div>
       <div :style="'max-height: ' + (documentClientHeight - 270).toString() + 'px'">
-        <el-table :data="userBranchList" border @cell-click="extraColClickHandle"
-                  :header-cell-style="{background:'#eef1f6',color:'#606266'}" :span-method="objectSpanMethod">
-          <el-table-column label="部门" prop="branchName" ></el-table-column>
-          <el-table-column label="用户名" prop="userName"></el-table-column>
-          <el-table-column label="个人加减分" prop="extraScore" min-width="100px;" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.extraScore + 10 }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="最终加减分" prop="finalScore" min-width="100px;" align="center"></el-table-column>
-          <el-table-column label="加减分编辑" min-width="100px;" fixed="right">
-            <template slot-scope="scope">
-              <el-button type="primary" size="small" @click="editExtraHandle(scope.row)">编辑</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+    
+          <el-table :data="userBranchList" border @cell-click="extraColClickHandle"
+                      :header-cell-style="{background:'#eef1f6',color:'#606266'}" :span-method="objectSpanMethod">
+              <el-table-column label="部门" prop="branchName"></el-table-column>
+              <el-table-column label="用户名" prop="userName"></el-table-column>
+              <el-table-column label="个人加减分" prop="extraScore">
+                <template slot-scope="scope">
+                  <span>{{ scope.row.extraScore + 10 }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="最终加减分" prop="finalScore"></el-table-column>
+              <el-table-column label="加减分编辑">
+                <template slot-scope="scope">
+                  <el-button type="primary" size="small" @click="editExtraHandle(scope.row)">编辑</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
       </div>
     </div>
     <van-dialog v-model="infoShow" :closeOnClickOverlay="infoShow" confirm-button-text="返回">
       <template slot="title">
         <div style="margin-bottom:10px;text-align:center;font-size:16px;font-weight:600;">个人加减分明细
-          <span v-if="extraScoreItem.userName !== undefined" style="padding: 10px;font-size: 12pt;color: #3b97d7">
-      {{'(' + extraScoreItem.userName + ')'}}</span>
+         <span v-if="extraScoreItem.userName !== undefined" style="padding: 10px;font-size: 12pt;color: #3b97d7">
+                  {{'(' + extraScoreItem.userName + ')'}}</span>
         </div>
       </template>
-        <div style="overflow-y: auto;max-height: 450px;">
+        <!-- <div style="overflow-y: auto;max-height: 450px;">
         <el-table :data="extraScoreItem.extraScoreList" border :span-method="objectSpanMethod" show-summary>
         <el-table-column prop="extraType" label="类型" width="40">
         <template slot-scope="scope">
@@ -52,7 +50,20 @@
         <el-table-column prop="standard" label="计分标准"></el-table-column>
         <el-table-column prop="extraNum" label="分数" width="80"></el-table-column>
         </el-table>
-        </div>
+        </div> -->
+          <div style="overflow-y: auto;max-height: 500px;">
+              <el-table :data="extraScoreItem.extraScoreList" border :span-method="objectSpanMethod" show-summary>
+                <el-table-column prop="extraType" label="类型" width="40">
+                  <template slot-scope="scope">
+                    <div v-if="scope.row.extraType == 0">加分项</div>
+                    <div v-if="scope.row.extraType == 1">减分项</div>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="extraItem" label="加减分项"></el-table-column>
+                <el-table-column prop="standard" label="计分标准"></el-table-column>
+                <el-table-column prop="extraNum" label="分数" width="80"></el-table-column>
+              </el-table>
+            </div>
     </van-dialog>
 
 
@@ -66,14 +77,13 @@
   import {treeDataTranslate,stringIsNull} from '@/utils'
   import addOrUpdate from './extra-add-or-update'
 
-  export default {
+export default {
     data () {
       return {
         infoShow:false,
         dataForm: {
           key: '',
-          curYear: new Date(2020 , 1 ,1),   // 当前年份
-          updown: 0 // 上下半年
+          curTime: new Date()
         },
         yearItemList: getYearItem(),
         dataList: [],
@@ -91,13 +101,13 @@
       addOrUpdate
     },
     computed: {
-      documentClientHeight: {
-        get () {
-          return this.$store.state.common.documentClientHeight
-        }
+    documentClientHeight: {
+      get () {
+        return this.$store.state.common.documentClientHeight
       }
-    },
-    created () {
+    }
+  },
+    created() {
       this.init()
     },
     methods: {
@@ -116,14 +126,6 @@
           }
         }
       },
-      extraColClickHandle(row, event, column){
-        if(column.innerText === '编辑') {
-         return
-        }else{
-          this.infoShow = true
-          this.extraScoreItem = row
-        }
-      },
       init () {
         this.dataListLoading = true
         this.extraScoreItem = {
@@ -134,6 +136,7 @@
             this.getUserList().then(userList => {
               this.getBranchList().then(branchList => {
                 this.userBranchList = this.userBranchInit(branchList,userList,extraList,scoreList)
+                console.log(this.userBranchList)
                 this.dataListLoading = false
               })
             })
@@ -207,6 +210,7 @@
               userBranchList.push(userItem)
             }
           })
+          console.log(userBranchList)
         }
         let brandId = 0
         let sizeList = []
@@ -283,7 +287,9 @@
         return extrascoreList
       },
       // 点击查看一行 加减分明细
-
+      extraRowClickHandle (row, event, column) {
+        this.extraScoreItem = row
+      },
       // 获取加减分项列表
       getExtralist () {
         return new Promise((resolve, reject) => {
@@ -308,8 +314,8 @@
             url: this.$http.adornUrl('/perf/extrascoring/list'),
             method: 'get',
             params: this.$http.adornParams({
-              year: this.dataForm.curYear.getFullYear(),
-              updown: this.dataForm.updown
+              year: this.dataForm.curTime.getFullYear(),
+              month: this.dataForm.curTime.getMonth()
             })
           }).then(({data}) => {
             if (data && data.code === 0) {
@@ -323,12 +329,20 @@
       },
       // 个人加减分编辑
       editExtraHandle (item) {
-        item.year = this.dataForm.curYear.getFullYear()
-        item.updown = this.dataForm.updown
+         item.year = this.dataForm.curTime.getFullYear()
+        item.month = this.dataForm.curTime.getMonth()
         this.addOrUpdateVisible = true
         this.$nextTick(() => {
           this.$refs.extraAddOrUpdate.init(item)
         })
+      },
+         extraColClickHandle(row, event, column){
+        if(column.innerText === '编辑') {
+         return
+        }else{
+          this.infoShow = true
+          this.extraScoreItem = row
+        }
       }
     }
   }

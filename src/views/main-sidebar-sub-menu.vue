@@ -69,7 +69,31 @@
   }
 </script>
 
-<style scoped>
+<style lang="less">
+  .cell_item {
+    /*color: white;*/
+    width: 100%;
+    /*子项部分*/
+    background: @sidebarcolor;
+    z-index: 2;
+  }
+
+  .cell_item_select{
+    /*color: white;*/
+    width: 100%;
+    /*被选中部分*/
+    background: @cell_item_select_color;
+    z-index: 1;
+  }
+
+  .cell_item_sub{
+    color: white;
+    width: 100%;
+    /*选项部分*/
+    background: @cell_item_sub_color;
+    z-index: 1;
+  }
+
   /* 下拉动画 */
   /* @keyframes Css3 新标签，循环动画 */
   @keyframes slidown{

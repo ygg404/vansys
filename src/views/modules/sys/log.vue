@@ -1,14 +1,14 @@
 <template>
   <div class="mod-log">
-    <el-form :inline="true" :model="dataForm" style="margin-top: 4px;">
-      <el-form-item>
+    <el-form :inline="true" :model="dataForm" style="margin-top: 4px;margin-left:20px;">
+      <el-form-item >
         <el-input v-model="dataForm.key" placeholder="用户名／用户操作" @change="getDataListbefore()" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="pageIndex=1,getDataListbefore()" >查询</el-button>
       </el-form-item>
     </el-form>
-    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 150).toString() + 'px'" class="table_van_div">
+    <div ref="dataBox" :style="'max-height: ' + (documentClientHeight - 220).toString() + 'px'" class="os">
       <el-table
         :data="dataList"
         border
@@ -78,15 +78,8 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination
-      @size-change="sizeChangeHandle"
-      @current-change="currentChangeHandle"
-      :current-page="pageIndex"
-      :page-sizes="[25, 50, 100]"
-      :page-size="pageSize"
-      :total="totalPage"
-      layout="prev, pager, next, total">
-    </el-pagination>
+    <!--分页控件-->
+    <van-pagination v-model="pageIndex" items-per-page = "25" :total-items="totalPage" mode="simple" @change="getDataList()" />
   </div>
 </template>
 
@@ -95,7 +88,10 @@
     data () {
       return {
         dataForm: {
-          key: ''
+          key: '',
+          operation: '',
+          params: '',
+          order: 'desc'
         },
         dataList: [],
         pageIndex: 1,
@@ -110,7 +106,9 @@
     },
     computed: {
       documentClientHeight: {
-        get () { return this.$store.state.common.documentClientHeight }
+        get () {
+          return this.$store.state.common.documentClientHeight
+        }
       }
     },
     methods: {
@@ -123,7 +121,10 @@
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'key': this.dataForm.key
+            'key': this.dataForm.key,
+            'operation': this.dataForm.operation,
+            'params': this.dataForm.params,
+            'order': this.dataForm.order
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
@@ -136,8 +137,18 @@
           this.dataListLoading = false
         })
       },
-      getDataListbefore () {
-        this.pageIndex = 1
+      // 排序字段改变
+      changeSort (val) {
+        switch (val.order) {
+          case 'ascending':
+            this.dataForm.order = 'asc'
+            break
+          case 'descending':
+            this.dataForm.order = 'desc'
+            break
+          default:
+            this.dataForm.order = 'desc'
+        }
         this.getDataList()
       },
       // 每页数
@@ -154,3 +165,8 @@
     }
   }
 </script>
+<style>
+  .os {
+    overflow: scroll;
+  }
+</style>

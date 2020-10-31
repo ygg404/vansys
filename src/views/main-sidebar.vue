@@ -121,7 +121,15 @@
   }
 </script>
 
-<style scoped>
+<style lang="less">
+  .cell_item {
+    color: white;
+    /*width: 100%;*/
+    /*子项部分*/
+    background: @sidebarcolor;
+    z-index: 2;
+  }
+
   .head_image {
     width: 35%;
     padding: 10px;

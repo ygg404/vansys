@@ -59,7 +59,7 @@
 
      <!---->
      <van-row type="flex" align="center" class="sclall">
-       <van-col :span="10" class="f15"><div >总共合计<span style="color:#1989fa;">{{totalProjectSum}}</span>个项目</div></van-col>
+       <van-col :span="10" class="f15"><div >总共合计<span class="theme_color">{{totalProjectSum}}</span>个项目</div></van-col>
        <van-col :span="14">
          <van-row>
            <van-col :span="8" class="tac f15">应收</van-col>
@@ -67,9 +67,9 @@
            <van-col :span="8" class="tac f15">未收</van-col>
          </van-row>
          <van-row>
-           <van-col :span="8" class="tac" style="color:#1989fa;">{{totalProjectShould}}</van-col>
-           <van-col :span="8" class="tac" style="color:#1989fa;">{{totalProjectAct}}</van-col>
-           <van-col :span="8" class="tac" style="color:#1989fa;">{{totalProjectNot}}</van-col>
+           <van-col :span="8" class="tac theme_color" >{{totalProjectShould}}</van-col>
+           <van-col :span="8" class="tac theme_color">{{totalProjectAct}}</van-col>
+           <van-col :span="8" class="tac theme_color" >{{totalProjectNot}}</van-col>
          </van-row>
        </van-col>
      </van-row>
@@ -263,7 +263,10 @@
   }
 </script>
 
-<style scoped>
+<style lang="less">
+  .theme_color{
+    color:@stylecolor;
+  }
   .tac {
     text-align: center;
   }

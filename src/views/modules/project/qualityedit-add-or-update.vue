@@ -7,6 +7,8 @@
     <div>
       <wang-editor :content="ueContent" :id='id' :projectNo="projectNo" @refreshContent="getReportHandle" class="toolbar"></wang-editor>
     </div>
+
+
   </van-dialog>
 </template>
 
@@ -76,7 +78,7 @@
             this.$message.error(data.msg)
           }
         })
-      }
+      },
     }
   }
 </script>
