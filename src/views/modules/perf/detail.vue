@@ -4,7 +4,7 @@
       <div class="w95">
         <el-form-item>
           <span style="font-size:15px;">考核时间:</span>
-         <el-date-picker v-model="dataForm.curTime" type="month" placeholder="选择年月"  @change="init"></el-date-picker>
+          <el-date-picker v-model="dataForm.curTime" type="month" placeholder="选择年月" @change="init"></el-date-picker>
         </el-form-item>
       </div>
     </el-form>
@@ -12,112 +12,114 @@
       <van-row type="flex" align="center" style="padding-bottom:5px;border-bottom:1px dotted black;">
         <van-col span="24">
           <div class="f17dt tac">
-           {{dataForm.curTime.getFullYear() + '年' + (dataForm.curTime.getMonth() + 1) + '月  效能考核明细'}}
+            {{dataForm.curTime.getFullYear() + '年' + (dataForm.curTime.getMonth() + 1) + '月 效能考核明细'}}
           </div>
         </van-col>
       </van-row>
       <!---->
-       <!--标题-->
-       <van-row class="data_title">
-         <van-col span="4" class="tar">被考核人</van-col>
-         <van-col span="5" class="tac">效能评价分</van-col>
-         <van-col span="4" class="tac">加减得分</van-col>
-         <van-col span="5" class="tac">效能基准分</van-col>
-         <van-col span="6">最终效能得分</van-col>
-       </van-row>
-       <!--数据-->
-       <div :style="'max-height: ' + (documentClientHeight - 220).toString() + 'px'" class="os">
-         <div v-for="(checkUser,indexA) in checkUserList">
-           <van-collapse v-model="activeName"  class="detailcoll"   :key="indexA">
-             <van-collapse-item :name="checkUser.checkUserId" :is-link="isAuth('perf:assess:detial')" border >
-               <template slot="title">
-                 <van-row style="color: #3b97d7">
-                   <van-col span="5">{{checkUser.checkUserName}}</van-col>
-                   <van-col span="5">{{checkUser.kbiAllScore}}</van-col>
-                   <van-col span="5">{{checkUser.finalExtra}}</van-col>
-                   <van-col span="5">{{checkUser.standardScore}}</van-col>
-                   <van-col span="4" >{{getFinalKbiScore(checkUser)}}</van-col>
-                 </van-row>
-               </template>
-               <van-collapse v-model="activeKbi" class="detailcoll" v-if="isAuth('perf:assess:detial')">
-                 <van-collapse-item name="1">
-                   <template slot="title">
-                     <div class="coll_title">效能评分表</div>
-                   </template>
-                   <div style="overflow-x: auto; max-height:300px;">
-                     <table class="bs" border="1" cellspacing="0">
-                       <thead>
-                       <tr>
-                         <td v-for="(kbiItem,indexB) in checkUser.kbiItemList" v-if="kbiItem.kbiRatio != 0" class="tac detail_td_style" style="min-width:150px;">
-                           {{kbiItem.kbiName}} {{kbiItem.kbiRatio}}%
-                         </td>
-                         <td style="min-width:90px;" class="detail_td_style">个人效能评分</td>
-                         <td style="min-width:90px;" class="detail_td_style">是否其领导</td>
-                         <td style="min-width:110px;" class="detail_td_style">是否为同一部门</td>
-                       </tr>
-                       </thead>
-                       <tbody>
-                       <tr v-for="(kbi,indexB) in checkUser.kbiList">
-                         <td v-for="(kbiItem,indexB) in checkUser.kbiItemList" v-if="kbiItem.kbiRatio != 0">
-                           <table-solt :List="kbi" :num="kbiItem.kbiId">
-                             <template slot-scope="slotProps">
-                               <div class="tac f14cb">
-                                 {{slotProps.itemValue}}
-                               </div>
-                             </template>
-                           </table-solt>
-                         </td>
-                         <td class="tac" style="color:red;">
-                           {{kbi.everyAllScore}}
-                         </td>
-                         <td class="tac">
-                           <van-tag type="primary" v-if="kbi.isGuider">是</van-tag>
-                           <van-tag  v-else>否</van-tag>
-                         </td>
-                         <td class="tac">
-                           <van-tag type="primary" v-if="kbi.isSameBranch">是</van-tag>
-                           <van-tag v-else>否</van-tag>
-                         </td>
-                       </tr>
-                       </tbody>
-                     </table>
-                   </div>
-                 </van-collapse-item>
-               </van-collapse>
-               <van-collapse v-model="activePlus" class="detailcoll" v-if="isAuth('perf:assess:detial')">
-                 <van-collapse-item name="1">
-                   <template slot="title">
-                     <div class="coll_title">加减分评分表</div>
-                   </template>
-                   <div style="overflow-x: auto;max-height:300px;" >
-                     <table class="bs" border="1" cellspacing="0" cellpadding="0">
-                       <thead>
-                       <tr class="score_title">
-                         <td class="tac detail_td_style" >类型</td>
-                         <td class="tac detail_td_style">加减分项</td>
-                         <td class="tac detail_td_style">计分标准</td>
-                         <td class="tac detail_td_style">分数</td>
-                       </tr>
-                       </thead>
-                       <tbody>
-                       <tr v-for="(score,indexB) in checkUser.scoreList" class="detail_score_style" >
-                         <td class="tac" style="min-width:70px;" v-if="score.isFirst" :rowspan="score.isFirst?score.size:1" colspan="1">
-                           <div v-if="score.extraType == 0 && score.isFirst" class="f14cb">加分项</div>
-                           <div v-if="score.extraType == 1 && score.isFirst" class="f14cb">减分项</div>
-                         </td>
-                         <td class="f14cb" style="min-width:250px;">{{score.extraItem}}</td>
-                         <td class="f14cb" style="min-width:150px;">{{score.standard}}</td>
-                         <td class="tac f14cb" style="min-width:90px;">{{score.extraNum}}</td>
-                       </tr>
-                       </tbody>
-                     </table>
-                   </div>
-                 </van-collapse-item>
-               </van-collapse>
-             </van-collapse-item>
-           </van-collapse>
-         </div>
-       </div>
+      <!--标题-->
+      <van-row class="data_title">
+        <van-col span="4" class="tar">被考核人</van-col>
+        <van-col span="5" class="tac">效能评价分</van-col>
+        <van-col span="4" class="tac">加减得分</van-col>
+        <van-col span="5" class="tac">效能基准分</van-col>
+        <van-col span="6">最终效能得分</van-col>
+      </van-row>
+      <!--数据-->
+      <div :style="'max-height: ' + (documentClientHeight - 220).toString() + 'px'" class="os">
+        <div v-for="(checkUser,indexA) in checkUserList">
+          <van-collapse v-model="activeName" class="detailcoll" :key="indexA">
+            <van-collapse-item :name="checkUser.checkUserId" :is-link="isAuth('perf:assess:detial')" border>
+              <template slot="title">
+                <van-row style="color: #3b97d7">
+                  <van-col span="5">{{checkUser.checkUserName}}</van-col>
+                  <van-col span="5">{{checkUser.kbiAllScore}}</van-col>
+                  <van-col span="5">{{checkUser.finalExtra}}</van-col>
+                  <van-col span="5">{{checkUser.standardScore}}</van-col>
+                  <van-col span="4">{{getFinalKbiScore(checkUser)}}</van-col>
+                </van-row>
+              </template>
+              <van-collapse v-model="activeKbi" class="detailcoll" v-if="isAuth('perf:assess:detial')">
+                <van-collapse-item name="1">
+                  <template slot="title">
+                    <div class="coll_title">效能评分表</div>
+                  </template>
+                  <div style="overflow-x: auto; max-height:300px;">
+                    <table class="bs" border="1" cellspacing="0">
+                      <thead>
+                      <tr>
+                        <td v-for="(kbiItem,indexB) in checkUser.kbiItemList" v-if="kbiItem.kbiRatio != 0"
+                            class="tac detail_td_style" style="min-width:150px;">
+                          {{kbiItem.kbiName}} {{kbiItem.kbiRatio}}%
+                        </td>
+                        <td style="min-width:90px;" class="detail_td_style">个人效能评分</td>
+                        <td style="min-width:90px;" class="detail_td_style">是否其领导</td>
+                        <td style="min-width:110px;" class="detail_td_style">是否为同一部门</td>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr v-for="(kbi,indexB) in checkUser.kbiList">
+                        <td v-for="(kbiItem,indexB) in checkUser.kbiItemList" v-if="kbiItem.kbiRatio != 0">
+                          <table-solt :List="kbi" :num="kbiItem.kbiId">
+                            <template slot-scope="slotProps">
+                              <div class="tac f14cb">
+                                {{slotProps.itemValue}}
+                              </div>
+                            </template>
+                          </table-solt>
+                        </td>
+                        <td class="tac" style="color:red;">
+                          {{kbi.everyAllScore}}
+                        </td>
+                        <td class="tac">
+                          <van-tag type="primary" v-if="kbi.isGuider">是</van-tag>
+                          <van-tag v-else>否</van-tag>
+                        </td>
+                        <td class="tac">
+                          <van-tag type="primary" v-if="kbi.isSameBranch">是</van-tag>
+                          <van-tag v-else>否</van-tag>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </van-collapse-item>
+              </van-collapse>
+              <van-collapse v-model="activePlus" class="detailcoll" v-if="isAuth('perf:assess:detial')">
+                <van-collapse-item name="1">
+                  <template slot="title">
+                    <div class="coll_title">加减分评分表</div>
+                  </template>
+                  <div style="overflow-x: auto;max-height:300px;">
+                    <table class="bs" border="1" cellspacing="0" cellpadding="0">
+                      <thead>
+                      <tr class="score_title">
+                        <td class="tac detail_td_style">类型</td>
+                        <td class="tac detail_td_style">加减分项</td>
+                        <td class="tac detail_td_style">计分标准</td>
+                        <td class="tac detail_td_style">分数</td>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr v-for="(score,indexB) in checkUser.scoreList" class="detail_score_style">
+                        <td class="tac" style="min-width:70px;" v-if="score.isFirst"
+                            :rowspan="score.isFirst?score.size:1" colspan="1">
+                          <div v-if="score.extraType == 0 && score.isFirst" class="f14cb">加分项</div>
+                          <div v-if="score.extraType == 1 && score.isFirst" class="f14cb">减分项</div>
+                        </td>
+                        <td class="f14cb" style="min-width:250px;">{{score.extraItem}}</td>
+                        <td class="f14cb" style="min-width:150px;">{{score.standard}}</td>
+                        <td class="tac f14cb" style="min-width:90px;">{{score.extraNum}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </van-collapse-item>
+              </van-collapse>
+            </van-collapse-item>
+          </van-collapse>
+        </div>
+      </div>
 
     </div>
 
@@ -127,17 +129,18 @@
 
 <script>
   import {getYearItem, getRateItem} from '@/utils/selectedItem'
-  import { treeDataTranslate } from '@/utils'
+  import {treeDataTranslate} from '@/utils'
   import {stringIsNull} from '../../../utils'
   import detailUser from './detail-user'
   import tableSolt from '@/components/table-solt'
+
   export default {
-    data () {
+    data() {
       return {
         activePlus: [],
         activeKbi: [],
         activeName: [],
-        dataLoading:false,
+        dataLoading: false,
         dataForm: {
           curTime: new Date()
         },
@@ -152,12 +155,12 @@
     },
     computed: {
       documentClientHeight: {
-        get () {
+        get() {
           return this.$store.state.common.documentClientHeight
         }
       }
     },
-    created () {
+    created() {
       this.dataForm.curYear = new Date()
       this.init()
     },
@@ -179,7 +182,7 @@
                   let checkUserList = this.acceessListInit(list)
                   for (let checkUser of checkUserList) {
                     // 设置每个人的效能基准分
-                    checkUser.standardScore = uRoleList.find( item => item.userId === checkUser.checkUserId).standardScore
+                    checkUser.standardScore = uRoleList.find(item => item.userId === checkUser.checkUserId).standardScore
                     checkUser.scoreList = this.extraScoreInit(checkUser, extraList, scoreList)
                     // 计算每个人的总加减分
                     let allScore = 0
@@ -189,9 +192,8 @@
                     checkUser.allScore = allScore
                   }
                   // 设置每成员的部门 并获取部门的最高分
-                  checkUserList = this.setBranchScoreFun(checkUserList,branchList)
+                  checkUserList = this.setBranchScoreFun(checkUserList, branchList)
                   this.checkUserList = this.setKbiScore(checkUserList)
-                  console.log(checkUserList)
                 })
               })
             })
@@ -199,7 +201,7 @@
         })
         // this.$refs.detailUser.init(this.dataForm)
       },
- 
+
       // 获取部门列表
       getBranchList () {
         return new Promise((resolve, reject) => {
@@ -224,7 +226,7 @@
             url: this.$http.adornUrl(`/perf/access/list`),
             method: 'get',
             params: this.$http.adornParams({
-                year: this.dataForm.curTime.getFullYear(),
+              year: this.dataForm.curTime.getFullYear(),
               month: this.dataForm.curTime.getMonth() + 1
             })
           }).then(({data}) => {
@@ -244,7 +246,7 @@
             url: this.$http.adornUrl(`/perf/access/uAssessList`),
             method: 'get',
             params: this.$http.adornParams({
-                year: this.dataForm.curTime.getFullYear(),
+              year: this.dataForm.curTime.getFullYear(),
               month: this.dataForm.curTime.getMonth() + 1
             })
           }).then(({data}) => {
@@ -377,7 +379,7 @@
             url: this.$http.adornUrl('/perf/extrascoring/list'),
             method: 'get',
             params: this.$http.adornParams({
-                year: this.dataForm.curTime.getFullYear(),
+              year: this.dataForm.curTime.getFullYear(),
               month: this.dataForm.curTime.getMonth() + 1
             })
           }).then(({data}) => {
@@ -461,16 +463,15 @@
           }
         }
         // 计算加减分最终的结果
-        for (let checkUser of checkUserList ) {
+        for (let checkUser of checkUserList) {
           let branch = branchMaxScoreList.find(branch => branch.branchId === checkUser.branchId)
-          if ( branch === undefined ) {
+          if (branch === undefined) {
             checkUser.maxScore = 0
           } else {
             checkUser.maxScore = branch.maxScore
           }
           checkUser.finalExtra = parseFloat((checkUser.allScore + 10) * 9 / (checkUser.maxScore + 10)).toFixed(2)
         }
-        console.log(branchMaxScoreList)
         return checkUserList
       },
       // 计算每用户的效能评价得分
@@ -490,29 +491,48 @@
             scoreItem.everyAllScore = score
             let sItem = {
               score: score,
-              ratio: 0.2
+              ratio: 0.2,
+              isGuider: false,
+              isSameBranch: false
             }
-            if (scoreItem.isGuider || scoreItem.isSameBranch) {
+            if (scoreItem.isGuider) {
+              sItem.isGuider = true
+              sItem.ratio = 0.4
+            }
+            if (scoreItem.isSameBranch) {
+              sItem.isSameBranch = true
               sItem.ratio = 0.4
             }
             scoreItemList.push(sItem)
           }
           checkUser.scoreItemList = scoreItemList
-          let kbiScore02 = 0
-          let kbiScore2Num = 0
-          let kbiScore04 = 0
-          let kbiScore4Num = 0
+          let kbiScoreOther = 0   // 其他成员总分数
+          let kbiOhterNum = 0
+          let kbiScoreGuider = 0  // 领导成员总分数
+          let kbiGuiderNum = 0
+          let kbiScoreBranch = 0  // 同部门成员总分数
+          let kbiBranchNum = 0
           for (let scoreItem of checkUser.scoreItemList) {
+            // 其他成员总分数
             if (scoreItem.ratio === 0.2) {
-              kbiScore02 += parseFloat(scoreItem.score * scoreItem.ratio)
-              kbiScore2Num += 1
+              kbiScoreOther += parseFloat(scoreItem.score * scoreItem.ratio)
+              kbiOhterNum += 1
             } else {
-              kbiScore04 += parseFloat(scoreItem.score * scoreItem.ratio)
-              kbiScore4Num += 1
+              // 领导成员总分数
+              if (scoreItem.isGuider) {
+                kbiScoreGuider += parseFloat(scoreItem.score * scoreItem.ratio)
+                kbiGuiderNum += 1
+              }
+              // 同部门成员总分数
+              if (scoreItem.isSameBranch) {
+                kbiScoreBranch += parseFloat(scoreItem.score * scoreItem.ratio)
+                kbiBranchNum += 1
+              }
             }
           }
-          checkUser.kbiAllScore = parseFloat(kbiScore02 / (kbiScore2Num === 0 ? 1 : kbiScore2Num)
-            + kbiScore04 / (kbiScore4Num === 0 ? 1 : kbiScore4Num)).toFixed(2)
+          checkUser.kbiAllScore = parseFloat(kbiScoreOther / (kbiOhterNum === 0 ? 1 : kbiOhterNum)
+            + kbiScoreGuider / (kbiGuiderNum === 0 ? 1 : kbiGuiderNum)
+            + kbiScoreBranch / (kbiBranchNum === 0 ? 1 : kbiBranchNum)).toFixed(2)
         }
         return checkUserList
       },
@@ -532,7 +552,7 @@
         if (stringIsNull(item.standardScore)) {
           return ''
         } else {
-          return Math.round(parseInt((1 + (item.kbiAllScore + item.extraScore - 75) * 0.6 / 75) * 100) * item.standardScore / 100)
+          return Math.round(parseInt((1 + (parseFloat(item.kbiAllScore) * 0.9 + parseFloat(item.finalExtra) - 75) * 0.6 / 75) * 100) * item.standardScore / 100)
         }
       }
     }
@@ -540,61 +560,84 @@
 </script>
 
 <style>
-  .extra_item_title{
+  .extra_item_title {
     width: 99%;
     padding: 5px;
     font-size: 11pt;
     font-weight: 700;
-    -webkit-user-select:none;
-    -moz-user-select:none;
-    -ms-user-select:none;
-    user-select:none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     cursor: pointer;
   }
+
   .extra_item_title:hover {
     color: #0BB2D4;
   }
-  .el-table__expanded-cell{
-    padding:0px;
+
+  .el-table__expanded-cell {
+    padding: 0px;
   }
-  .van-collapse-item__content{
-    padding:0px;
+
+  .van-collapse-item__content {
+    padding: 0px;
   }
-  .el-form-item{
+
+  .el-form-item {
     margin-bottom: 2px;
   }
-  .f17dt{
+
+  .f17dt {
     font-size: 17px;
     font-weight: 700;
   }
-  .tac{
+
+  .tac {
     text-align: center;
   }
-  .tar{
-    text-align:right;
+
+  .tar {
+    text-align: right;
   }
-  .w95{
-    width:95%;margin: 10px auto 0;
+
+  .w95 {
+    width: 95%;
+    margin: 10px auto 0;
   }
+
   .os {
     overflow: scroll;
   }
-  .van-collapse-item__content{
-    line-height:1;
+
+  .van-collapse-item__content {
+    line-height: 1;
   }
-  .coll_title{
-    width:100px;font-size:15px;color:#0c0c0d;padding-top:5px;
+
+  .coll_title {
+    width: 100px;
+    font-size: 15px;
+    color: #0c0c0d;
+    padding-top: 5px;
   }
-  .bs{
-    border-top:1px dotted black;border-bottom:1px dotted black;
+
+  .bs {
+    border-top: 1px dotted black;
+    border-bottom: 1px dotted black;
   }
-  .detail_td_style
-  {
-    font-weight:600;overflow:hidden;font-size:14px;color:black;
+
+  .detail_td_style {
+    font-weight: 600;
+    overflow: hidden;
+    font-size: 14px;
+    color: black;
   }
-  .f14cb{
-    font-size:14px;color:#666262;
+
+  .f14cb {
+    font-size: 14px;
+    color: #666262;
   }
+
   .qkbtn {
     display: inline-block;
     border: 1px solid #DCDFE6;
@@ -602,25 +645,31 @@
     font-size: 14px;
     background-color: #409EFF;
   }
-  .data_title{
-    font-weight:600;padding-top:10px;padding-bottom:10px;
-  }
-  .bs td{
-    padding-bottom:5px;
-  }
-  .
 
-  td{
-    padding-top:5px;
-    padding-bottom:7px;
+  .data_title {
+    font-weight: 600;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
-  .detail_score_style td:nth-child(2){
-    letter-spacing:1px;
-    line-height:16px;
+
+  .bs td {
+    padding-bottom: 5px;
   }
-  .score_title td{
-    padding-top:7px;
-    font-weight:600;
-    padding-bottom:7px;
+
+  .
+  td {
+    padding-top: 5px;
+    padding-bottom: 7px;
+  }
+
+  .detail_score_style td:nth-child(2) {
+    letter-spacing: 1px;
+    line-height: 16px;
+  }
+
+  .score_title td {
+    padding-top: 7px;
+    font-weight: 600;
+    padding-bottom: 7px;
   }
 </style>

@@ -30,7 +30,7 @@
         uRoleList: [],
         dataForm: {
           curYear: '',
-          updown: 0
+          month: ''
         },
         person: 0
       }

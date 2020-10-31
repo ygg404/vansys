@@ -271,7 +271,7 @@
             url: this.$http.adornUrl(`/perf/access/list`),
             method: 'get',
             params: this.$http.adornParams({
-               year: this.dataForm.curTime.getFullYear(),
+              year: this.dataForm.curTime.getFullYear(),
               month: this.dataForm.curTime.getMonth() + 1
             })
           }).then(({data}) => {
@@ -291,7 +291,7 @@
             url: this.$http.adornUrl(`/perf/access/uAssessList`),
             method: 'get',
             params: this.$http.adornParams({
-               year: this.dataForm.curTime.getFullYear(),
+              year: this.dataForm.curTime.getFullYear(),
               month: this.dataForm.curTime.getMonth() + 1
             })
           }).then(({data}) => {
@@ -335,12 +335,15 @@
             kbiId = access.kbiId
           }
           // 评分人明细
+          if (checkUserId === 31) {
+            console.log(access)
+          }
           if (access.userId !== userId) {
             let kbiItem = {
               userId: access.userId,
               userName: access.userName,
-              isGuider: this.isGuiderHandle(access.userId, access.checkUserId),
-              isSameBranch: this.isSameBranch(access.userId, access.checkUserId)
+              isGuider: this.isGuiderHandle(access.userId,access.checkUserId),
+              isSameBranch: this.isSameBranch(access.userId,access.checkUserId)
             }
             userId = access.userId
             checkUserList[checkUserList.length - 1].kbiList.push(kbiItem)
@@ -351,7 +354,7 @@
         return checkUserList
       },
       // 是否为部门领导
-      isGuiderHandle (userId, checkUserId) {
+      isGuiderHandle (userId,checkUserId) {
         let isGuider = false
         // 被考核人所在的所有部门
         let inBranchList = []
@@ -374,16 +377,16 @@
         return isGuider
       },
       // 获取部门的父部门
-      getParentBranchList (parentList = [], branchId) {
-        this.branchList.map(branch => {
+      getParentBranchList (parentList = [] , branchId) {
+        this.branchList.map( branch => {
           if (branch.id === branchId && branch.parentId !== 0) {
             parentList.push(branch.parentId)
-            this.getParentBranchList(parentList, branch.parentId)
+            this.getParentBranchList(parentList,branch.parentId)
           }
         })
       },
       // 判断 考核人与被考核人 是否为同一个部门
-      isSameBranch (userId, checkUserId) {
+      isSameBranch (userId,checkUserId) {
         let isSame = false
         let userBranchId = []     // 考核人的部门
         let checkBranchId = []    // 被考核人的部门
@@ -424,7 +427,7 @@
             url: this.$http.adornUrl('/perf/extrascoring/list'),
             method: 'get',
             params: this.$http.adornParams({
-               year: this.dataForm.curTime.getFullYear(),
+              year: this.dataForm.curTime.getFullYear(),
               month: this.dataForm.curTime.getMonth() + 1
             })
           }).then(({data}) => {
@@ -438,7 +441,7 @@
         })
       },
       // 评分列表初始化
-      extraScoreInit (checkUser, extraList, scoreList) {
+      extraScoreInit (checkUser,extraList,scoreList) {
         let uScoreList = []
         for (let scoreItem of scoreList) {
           if (scoreItem.checkUserId === checkUser.checkUserId) {
@@ -495,7 +498,7 @@
         }
         // 统计每个部门的最高分
         let branchMaxScoreList = []
-        for (let checkUser of checkUserList) {
+        for (let checkUser of checkUserList ) {
           let branch = branchMaxScoreList.find(branch => branch.brandId === checkUser.branchId)
           let branchScore = {
             branchId: checkUser.branchId,
@@ -508,16 +511,15 @@
           }
         }
         // 计算加减分最终的结果
-        for (let checkUser of checkUserList) {
+        for (let checkUser of checkUserList ) {
           let branch = branchMaxScoreList.find(branch => branch.branchId === checkUser.branchId)
-          if (branch === undefined) {
+          if ( branch === undefined ) {
             checkUser.maxScore = 0
           } else {
             checkUser.maxScore = branch.maxScore
           }
           checkUser.finalExtra = parseFloat((checkUser.allScore + 10) * 9 / (checkUser.maxScore + 10)).toFixed(2)
         }
-        console.log(branchMaxScoreList)
         return checkUserList
       },
       // 计算每用户的效能评价得分
@@ -528,17 +530,25 @@
             let score = 0
             for (var prop in scoreItem) {
               if (prop.indexOf('kbiId') >= 0) {
-                let propItem = checkUser.kbiItemList.find(kbi => kbi.kbiId === parseInt(prop.replace('kbiId', '')))
+                let propItem = checkUser.kbiItemList.find(kbi => kbi.kbiId === parseInt(prop.replace('kbiId','')))
                 if (propItem !== undefined && (!stringIsNull(scoreItem[prop]))) {
                   score += parseFloat(propItem.kbiRatio * scoreItem[prop] / 100)
                 }
               }
             }
+            scoreItem.everyAllScore = score
             let sItem = {
               score: score,
-              ratio: 0.2
+              ratio: 0.2,
+              isGuider: false,
+              isSameBranch: false
             }
-            if (scoreItem.isGuider || scoreItem.isSameBranch) {
+            if (scoreItem.isGuider) {
+              sItem.isGuider = true
+              sItem.ratio = 0.4
+            }
+            if (scoreItem.isSameBranch) {
+              sItem.isSameBranch = true
               sItem.ratio = 0.4
             }
             scoreItemList.push(sItem)
@@ -568,9 +578,9 @@
               }
             }
           }
-          checkUser.kbiAllScore = parseFloat(kbiScoreOther / (kbiOhterNum === 0 ? 1 : kbiOhterNum) +
-          kbiScoreGuider / (kbiGuiderNum === 0 ? 1 : kbiGuiderNum) +
-          kbiScoreBranch / (kbiBranchNum === 0 ? 1 : kbiBranchNum)).toFixed(2)
+          checkUser.kbiAllScore = parseFloat(kbiScoreOther / (kbiOhterNum === 0 ? 1 : kbiOhterNum)
+            + kbiScoreGuider / (kbiGuiderNum === 0 ? 1 : kbiGuiderNum)
+            + kbiScoreBranch / (kbiBranchNum === 0 ? 1 : kbiBranchNum)).toFixed(2)
         }
         return checkUserList
       },
@@ -587,15 +597,14 @@
         return childList
       },
       getFinalKbiScore (item) {
-        console.log(item)
         if (stringIsNull(item.standardScore)) {
           return ''
         } else {
-          return Math.round(parseInt((1 + (parseFloat(item.kbiAllScore) + parseFloat(item.finalExtra) - 75) * 0.6 / 75) * 100) * item.standardScore / 100)
+          return Math.round(parseInt((1 + (parseFloat(item.kbiAllScore) * 0.9 + parseFloat(item.finalExtra) - 75) * 0.6 / 75) * 100) * item.standardScore / 100)
         }
       },
       // 考核分数审定
-     auditScoreHandle () {
+      auditScoreHandle () {
         this.auditVisible = true
         this.$nextTick(() => {
           let item = {}
@@ -606,7 +615,7 @@
         })
       },
       // 编辑参评人数
-       editPersonHandle () {
+      editPersonHandle () {
         this.personVisible = true
         this.$nextTick(() => {
           let item = {}
@@ -615,7 +624,7 @@
           this.$refs.kbiPersonAddOrUpdate.init(item)
         })
       },
-           // 获取审定的结果
+      // 获取审定的结果
       getAuditList () {
         return new Promise((resolve, reject) => {
           this.$http({

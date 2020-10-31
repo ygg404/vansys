@@ -349,8 +349,8 @@
           method: 'post',
           data: this.$http.adornData({
             'userId': this.userId,
-            'year': this.dataForm.curYear.getFullYear(),
-            'updown': this.dataForm.updown,
+            'year': this.dataForm.curTime.getFullYear(),
+            'month': this.dataForm.curTime.getMonth() + 1,
             'accessList': perfAccessList
           })
         }).then(({data}) => {
