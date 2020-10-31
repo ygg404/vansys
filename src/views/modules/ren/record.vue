@@ -191,6 +191,7 @@
     },
     created () {
       this.getDataList()
+      // this.wxParams()
     },
     methods: {
       // 排序字段改变
