@@ -80,7 +80,7 @@
           data: this.$http.adornData({
             'checkUserId': this.checkUserItem.userId,
             'year': this.checkUserItem.year,
-            'updown': this.checkUserItem.updown,
+            'month': this.checkUserItem.month,
             'scoreList': scoreList
           })
         }).then(({data}) => {
@@ -152,7 +152,7 @@
             remark: extra.remark,
             extraType: extra.extraType,
             year: this.checkUserItem.year,
-            updown: this.checkUserItem.updown,
+            month: this.checkUserItem.month,
             checkUserId: this.checkUserItem.userId,
             checkUserName: this.checkUserItem.userName,
             isFirst: false
