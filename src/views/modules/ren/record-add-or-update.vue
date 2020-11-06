@@ -484,7 +484,7 @@
                             }
                             for (let item of this.dutyItemList) {
                               if (item.id === this.dataForm.dutyId) {
-                                this.zwName = item.duty
+                                this.dutyName = item.duty
                               }
                             }
                             for (let item of this.jobItemList) {
@@ -527,6 +527,7 @@
                                 this.zcxName = item.jobTitle
                               }
                             }
+                      
                             this.dataForm.edBackgroundList = data.renRecordVo.edBackgroundList
                             this.dataForm.workBackgroundList = data.renRecordVo.workBackgroundList
                             if (this.dataForm.edBackgroundList.length === 0) {
