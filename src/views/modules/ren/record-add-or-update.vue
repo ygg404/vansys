@@ -56,7 +56,7 @@
                      placeholder="请选择职称专业系数" :rules="[{ required:true, message: '职称专业系数不能为空' }]"/>
           <van-field v-model="jobTypeName" label="工作类型" name="jobType" @click="jobTypeShow = true" readonly
                      placeholder="请选择工作类型" :rules="[{ required:true, message: '工作类型不能为空' }]"/>
-          <van-field v-model="zwName" label="职务"  name="dutyId"  @click="dutyShow = true" readonly
+          <van-field v-model="dutyName" label="职务"  name="dutyId"  @click="dutyShow = true" readonly
                      placeholder="请选择职务" :rules="[{ required:true, message: '请填写职务' }]"/>
           <van-field v-model="educationName" label="最高学历"  name="education"  @click="edShow = true" readonly
                      placeholder="最高学历" :rules="[{ required:true, message: '请填写最高学历' }]"/>
@@ -210,7 +210,7 @@
         edTypeName: '', // 学制
         proName: '', // 专业系数
         zcxName: '', // 职称系数名称
-        zwName: '', // 职务名称
+        dutyName: '', // 职务名称
         maritalStatusName: '', // 婚姻状况
         zcLevelName: '', // 职称等级
         nativePlaceName: '', // 籍贯名称
