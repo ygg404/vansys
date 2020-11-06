@@ -132,9 +132,9 @@
       <record-list-module typeNum = "2" :dataList = "passDataList" :titleList = "titleList[1]"/>
     </van-dialog>
     <!-- 弹窗, 新增 / 修改 个人资料 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="refreshData"></add-or-update>
+    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshdataList="refreshdata"></add-or-update>
     <!--审核 个人资料 -->
-    <rencord-temp-add-or-update v-if="rencordTempVisible" ref="rencordTempAddOrUpdate" @refreshDataList="getDataList"></rencord-temp-add-or-update>
+    <rencord-temp-add-or-update v-if="rencordTempVisible" ref="rencordTempAddOrUpdate" @refreshdataList="getDataList"></rencord-temp-add-or-update>
   </div>
 </template>
 
@@ -193,7 +193,7 @@
       this.getDataList()
     },
     methods: {
-      refreshData(){
+      refreshdata(){
         this.getDataList()
         this.activeNames = []
       },
