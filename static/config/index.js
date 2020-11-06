@@ -4,8 +4,10 @@
 ;(function () {
   window.SITE_CONFIG = {};
 
-  window.SITE_CONFIG['indexUrl'] = 'http://192.168.0.241:19445/';
-  window.SITE_CONFIG['baseUrl'] = 'http://192.168.0.241:19433/htsys';
+  // api接口请求地址
+  window.SITE_CONFIG['baseUrl'] = 'http://localhost:19433/htsys';
+  // 文件地址
+  window.SITE_CONFIG['uploadUrl'] = 'http://localhost:19433/uploadFile/';
   // // 根域名
   // window.SITE_CONFIG['indexUrl'] = 'https://web.gdjxch.cn/';
   // // api接口请求地址
