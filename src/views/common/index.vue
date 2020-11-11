@@ -8,7 +8,7 @@
     </van-swipe>
     <div  class="about">
       <div class="header">功能</div>
-      <van-grid :column-num="2" :gutter="15" style="padding: 12px;">
+      <van-grid :column-num="3" :gutter="8" style="margin-bottom: 10px;margin-top: 10px;">
         <van-grid-item @click="gotoUrl('https://m.gdjxch.cn/#/login')" class="item_url">
           <img src="~@/assets/img/project.png" :style="'height: ' + (documentClientHeight / 14).toString() + 'px'"/>
           <div>项目管理</div>
@@ -16,6 +16,10 @@
         <van-grid-item @click="gotoUrl('https://mren.gdjxch.cn/#/login')" class="item_url">
           <img src="~@/assets/img/ren.png" :style="'height: ' + (documentClientHeight / 12).toString() + 'px'"/>
           <div>人事管理</div>
+        </van-grid-item>
+        <van-grid-item @click="gotoUrl('https://mdop.gdjxch.cn/#/login')" class="item_url">
+          <img src="~@/assets/img/dop.png" :style="'height: ' + (documentClientHeight / 12).toString() + 'px'"/>
+          <div>仪器档案</div>
         </van-grid-item>
       </van-grid>
     </div>
@@ -95,7 +99,7 @@
     object-fit:cover;
   }
   .item_url {
-    width: 30%;
+    width: 33%;
     max-width: 220px;
     text-align: center;
     color: #3b97d7;
@@ -138,8 +142,9 @@
     color: #6f7180;
   }
   .about .header{
+    color: #437acb;
     font-size: 14pt;
     font-weight: 700;
-    border-bottom: 1px solid #6f7180;
+    border-bottom: 2px solid #437acb;
   }
 </style>

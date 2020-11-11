@@ -139,7 +139,6 @@
 </template>
 
 <script>
-  import wx from 'weixin-js-sdk'
   import AddOrUpdate from './record-add-or-update'
   import RencordTempAddOrUpdate from './recordtemp-add-or-update'
   import {provinceAndCityData} from 'element-china-area-data'

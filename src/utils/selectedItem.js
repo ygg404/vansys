@@ -5,18 +5,18 @@ import Vue from 'vue'
  */
 export function getMaritalItem () {
   return [{'id': 0, 'dateItem': '未婚'},
-            {'id': 1, 'dateItem': '已婚'},
-            {'id': 2, 'dateItem': '离异'},
-            {'id': 3, 'dateItem': '丧偶'}]
+    {'id': 1, 'dateItem': '已婚'},
+    {'id': 2, 'dateItem': '离异'},
+    {'id': 3, 'dateItem': '丧偶'}]
 }
 
 /**
  * 获取职称等级选项
  */
 export function getJobItem () {
-  return [{'id': 1, 'jobItem': '全职'},
-            {'id': 2, 'jobItem': '兼职'},
-            {'id': 3, 'jobItem': '实习'}]
+  return [{'id': 1, 'dateItem': '全职'},
+    {'id': 2, 'dateItem': '兼职'},
+    {'id': 3, 'dateItem': '实习'}]
 }
 
 /**
@@ -72,5 +72,31 @@ export function getRateItem () {
     {'id': 45, 'rateItem': '45(较少)'},
     {'id': 30, 'rateItem': '30(很少)'},
     {'id': 0, 'rateItem': '0(没有)'}]
+  return itemList
+}
+
+/**
+ * 获取仪器状态列表
+ */
+export function getLendItem () {
+  let itemList = [
+    {'id': 0, 'lendItem': '闲置中'},
+    {'id': 1, 'lendItem': '已出借'},
+    {'id': 2, 'lendItem': '维修中'},
+    {'id': 3, 'lendItem': '已丢失'},
+    {'id': 4, 'lendItem': '已报废'}
+  ]
+  return itemList
+}
+
+/**
+ * 获取地图绘制类型列表
+ */
+export function getMapDrawingItem () {
+  let itemList = [
+    {'id': 1, 'drawItem': '点'},
+    {'id': 2, 'drawItem': '线'},
+    {'id': 3, 'drawItem': '面'}
+  ]
   return itemList
 }

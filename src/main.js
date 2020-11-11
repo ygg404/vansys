@@ -17,7 +17,6 @@ import 'vant/lib/index.less'
 import '@/assets/css/mobileui.css'
 import VantForm from '@/components/vant-ui-extend/form'
 
-
 Vue.use(VueCookie)
 Vue.component('VantForm',VantForm)
 Vue.config.productionTip = false

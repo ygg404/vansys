@@ -17,7 +17,7 @@ const _import = require('./import-' + process.env.NODE_ENV)
 
 // 全局路由(无需嵌套上左右整体布局)
 const globalRoutes = [
-  { path: '/projectAutograph', component: _import('common/projectautograph'), name: 'projectAutograph', meta: { title: '项目合同认证签名' } },
+  { path: '/projectauth', component: _import('common/projectauth'), name: 'projectauth', meta: { title: '项目合同认证签名' } },
   { path: '/index', component: _import('common/index'), name: 'index', meta: { title: '首页' } },
   { path: '/404', component: _import('common/404'), name: '404', meta: { title: '404未找到' } },
   { path: '/login', component: _import('common/login'), name: 'login', meta: { title: '登录' } }
@@ -31,8 +31,7 @@ const mainRoutes = {
   redirect: { name: 'login' },
   meta: { title: '主入口整体布局' },
   children: [
-    { path: '/projectAutograph', component: _import('common/projectautograph'), name: 'projectAutograph', meta: { title: '项目合同认证签名' } },
-     { path: '/home', component: _import('common/home'), name: 'home', meta: { title: '个人中心' } },
+    { path: '/home', component: _import('common/home'), name: 'home', meta: { title: '个人中心' } },
     { path: '/home2', component: _import('common/home2'), name: 'home2', meta: { title: '个人中心' } },
     { path: '/theme', component: _import('common/theme'), name: 'theme', meta: { title: '主题' } }
   ],
