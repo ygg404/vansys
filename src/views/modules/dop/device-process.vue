@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :id="dataForm.deviceId" width="75%"
+  <el-dialog :id="dataForm.deviceId" width="95%"
              title="仪器设备借记流程"
              :close-on-click-modal="false"
              :visible.sync="visible">

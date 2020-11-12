@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="title" width="90%"
+    :title="title" width="95%"
     :close-on-click-modal="false"
     :visible.sync="visible">
     <div>

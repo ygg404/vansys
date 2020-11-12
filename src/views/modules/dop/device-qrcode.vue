@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="二维码" :visible.sync="visible" width="80%">
+  <el-dialog title="二维码" :visible.sync="visible" width="92%">
     <div style="text-align: center">
       <div ref="codeTopic" class="code_img">
         <div ref="qrCode"></div>

@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     :title="!dataForm.id ? '新增' : '修改'"
-    :close-on-click-modal="false" width="90%"
+    :close-on-click-modal="false" width="98%"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm"  label-width="110px">
       <el-form-item label="仪器名称" prop="deviceName">

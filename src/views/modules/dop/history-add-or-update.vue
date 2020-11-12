@@ -1,7 +1,7 @@
 <template>
   <el-dialog :id="dataForm.deviceId + dataForm.rentStatus"  append-to-body
     :title="dataForm.rentStatus % 2 == 1 ? '仪器审请单据' : '出借审定单据'"
-    :close-on-click-modal="false" width="80%"
+    :close-on-click-modal="false" width="90%"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="(dataForm.rentStatus == 1 || dataForm.rentStatus == 3) ? bDataRule : aDataRule" ref="dataForm" label-width="120px">
       <el-form-item label="出厂编号：" prop="factoryNum">

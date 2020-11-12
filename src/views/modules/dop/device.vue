@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading" element-loading-text="扫码加载中...">
     <van-row type="flex" justify="space-between" align="bottom" style="margin-bottom:5px; padding:4px 0px;">
       <van-col span="1" />
       <van-col span="15">
@@ -57,7 +57,7 @@
       </el-table-column>
       <el-table-column prop="fileName" header-align="center" align="center" label="仪器证书" width="100">
         <template slot-scope="scope">
-          <span v-if="scope.row.fileName != null" class="check_span" @click="fileLoadToHandle(scope.row.fileName)">查看</span>
+          <span v-if="scope.row.fileName != null && scope.row.fileName != ''" class="check_span" @click="fileLoadToHandle(scope.row.fileName)">查看</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="借还记录" width="100">
@@ -113,6 +113,7 @@
           sidx: 'id',
           order: 'desc'
         },
+        loading: false,
         dataList: [],
         pageIndex: 1,
         pageSize: 25,
@@ -242,7 +243,7 @@
       },
       // 查看仪器文件
       fileLoadToHandle (fileName) {
-        window.open("https://www.gdjxch.cn//uploadFile/report/20200811-01(d9aTnOsG)//word/media/image1.png")
+        window.open(window.SITE_CONFIG['uploadUrl'] + 'dop/' + fileName)
       },
       // 二维码显示
       qrCodeShowHandle (item) {
@@ -268,6 +269,7 @@
       // 微信扫码事件
       wxScanHandle () {
         let that = this
+        this.loading = true
         return new Promise((resolve, reject) => {
           this.$http({
             url: this.$http.adornUrl('/sys/wx/getWxToken'),
@@ -279,48 +281,52 @@
             var msg = ''
             if (data.code === 0) {
               msg = data.sign
-            }
-            wx.config({
-              beta: true,
-              debug: false,
-              appId: msg.appId,
-              timestamp: msg.timestamp,
-              nonceStr: msg.nonceStr,
-              signature: msg.signature,
-              jsApiList: ['checkJsApi', 'scanQRCode']// 微信扫一扫接口]// 扫描二维码功能
-            })
-            wx.ready(function () {
-              // config信息验证成功后会执行ready方法,所有接口调用都必须在config接口获得结果之后
-              // config 是一个客户端的异步操作,所以如果需要在页面加载时调用相关接口,则须把相关接口放在ready函数中调用来确保正确执行.对于用户触发是才调用的接口,则可以直接调用,不需要放在ready函数中
-              wx.checkJsApi({ // 判断当前客户端版本是否支持指定JS接口
-                jsApiList: [
-                  'scanQRCode'
-                ],
-                success: function (res) {
-                  if (res.checkResult.scanQRCode === true) {
-                    wx.scanQRCode({ // 微信扫一扫接口
-                      desc: 'scanQRCode desc',
-                      needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-                      scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
-                      success: function (res) {
-                        that.getDeviceInfo(res.resultStr)
-                        // const getCode = res.resultStr // 当needResult 为 1 时，扫码返回的结果
-                      }
-                    })
-                  } else {
-                    alert('抱歉，当前客户端版本不支持扫一扫')
-                  }
-                },
-                fail: function (res) { // 检测getNetworkType该功能失败时处理
-                  alert('fail失败了' + res)
-                }
+              wx.config({
+                beta: true,
+                debug: false,
+                appId: msg.appId,
+                timestamp: msg.timestamp,
+                nonceStr: msg.nonceStr,
+                signature: msg.signature,
+                jsApiList: ['checkJsApi', 'scanQRCode']// 微信扫一扫接口]// 扫描二维码功能
               })
-            })
-
-            /* 处理失败验证 */
-            wx.error(function (res) {
-              alert('配置验证失败: ' + res.errMsg)
-            })
+              wx.ready(function () {
+                // config信息验证成功后会执行ready方法,所有接口调用都必须在config接口获得结果之后
+                // config 是一个客户端的异步操作,所以如果需要在页面加载时调用相关接口,则须把相关接口放在ready函数中调用来确保正确执行.对于用户触发是才调用的接口,则可以直接调用,不需要放在ready函数中
+                wx.checkJsApi({ // 判断当前客户端版本是否支持指定JS接口
+                  jsApiList: [
+                    'scanQRCode'
+                  ],
+                  success: function (res) {
+                    that.loading = false
+                    if (res.checkResult.scanQRCode === true) {
+                      wx.scanQRCode({ // 微信扫一扫接口
+                        desc: 'scanQRCode desc',
+                        needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                        scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
+                        success: function (res) {
+                          that.getDeviceInfo(res.resultStr)
+                          // const getCode = res.resultStr // 当needResult 为 1 时，扫码返回的结果
+                        }
+                      })
+                    } else {
+                      that.loading = false
+                      that.$notify({ type: 'danger', message: '抱歉，当前客户端版本不支持扫一扫' })
+                    }
+                  },
+                  fail: function (res) { // 检测getNetworkType该功能失败时处理
+                    that.loading = false
+                    that.$notify({ type: 'danger', message: '扫码失败了' })
+                  }
+                })
+              })
+              /* 处理失败验证 */
+              wx.error(function (res) {
+                that.$notify({ type: 'danger', message: '配置验证失败' })
+              })
+            } else {
+              that.loading = false
+            }
             resolve(data)
           })
         })
